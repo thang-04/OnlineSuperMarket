@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<th:block th:replace="dashBoard/fragments/header :: header"></th:block>
+
+
+<body class="sb-nav-fixed">
+
+<th:block th:replace="dashBoard/fragments/topbar :: topbar"></th:block>
+
+
+        <div id="layoutSidenav">
+
+			<!--Sidebar Start-->
+			<th:block th:replace="dashBoard/fragments/sidebar :: sidebar"></th:block>
+			<!--Sidebar End-->
+
+			<!--Content Start-->
+			<div th:replace="~{__${fragmentContent}__}"></div>
+            <!--Content End-->
+
+        </div>
+
+        <script th:src="@{dashBoard/js/jquery.min.js}"></script>
+        <script th:src="@{dashBoard/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+		<script th:src="@{dashBoard/vendor/chart/highcharts.js}"></script>
+		<script th:src="@{dashBoard/vendor/chart/exporting.js}"></script>
+		<script th:src="@{dashBoard/vendor/chart/export-data.js}"></script>
+		<script th:src="@{dashBoard/vendor/chart/accessibility.js}"></script>
+        <script th:src="@{dashBoard/js/scripts.js}"></script>
+        <script th:src="@{dashBoard/js/chart.js}"></script>
+       
+    </body>
+
+</html>

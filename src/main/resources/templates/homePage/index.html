@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<th:block th:replace="homePage/fragments/header :: header"></th:block>
+
+<body>
+
+<!--Topbar Start-->
+<th:block th:replace="homePage/fragments/topbar :: topbar"></th:block>
+<!--Topbar End-->
+
+<!-- Body Start -->
+<!--CHỈ CẦN THAY THẾ MAIN Ở ĐÂY-->
+<div th:replace="~{__${fragmentContent}__}"></div>
+<!-- Body End -->
+
+<!-- Footer Start -->
+<th:block th:replace="homePage/fragments/footer :: footer"></th:block>
+<!-- Footer End -->
+
+	<!-- Javascripts -->
+	<script th:src="@{/homePage/js/jquery.min.js}"></script>
+	<script th:src="@{/homePage/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+	<script th:src="@{/homePage/vendor/bootstrap-select/js/bootstrap-select.min.js}"></script>
+	<script th:src="@{/homePage/vendor/OwlCarousel/owl.carousel.js}"></script>
+	<script th:src="@{/homePage/js/jquery.countdown.min.js}"></script>
+	<script th:src="@{/homePage/js/custom.js}"></script>
+	<script th:src="@{/homePage/js/offset_overlay.js}"></script>
+	<script th:src="@{/homePage/js/night-mode.js}"></script>
+</body>
+</html>
