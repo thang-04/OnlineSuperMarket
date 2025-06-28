@@ -228,13 +228,13 @@
                         <li>
                             <a href="faq.html" class="offer-link"><i class="uil uil-question-circle"></i>Help</a>
                         </li>
-                        <li>
+                        <li sec:authorize="isAuthenticated()">
                             <a href="dashboard_my_wishlist.html" class="option_links" title="Wishlist"><i class='uil uil-heart icon_wishlist'></i><span class="noti_count1">3</span></a>
                         </li>
-                        <li class="dropdown account-dropdown">
+                        <li class="dropdown account-dropdown" sec:authorize="isAuthenticated()">
                             <a href="#" class="opts_account" role="button" id="accountClick" data-bs-auto-close="outside" data-bs-toggle="dropdown" aria-expanded="false">
                                 <img th:src="@{/homePage/images/avatar/img-5.jpg}" alt="">
-                                <span class="user__name">John Doe</span>
+                                <span class="user__name" th:text="${#authentication.principal.fullName}" >John Doe</span>
                                 <i class="uil uil-angle-down"></i>
                             </a>
                             <div class="dropdown-menu dropdown-menu-account dropdown-menu-end" aria-labelledby="accountClick" data-bs-popper="none">
@@ -248,13 +248,13 @@
                                 </div>
                                 <a href="dashboard_overview.html" class="channel_item"><i class="uil uil-apps icon__1"></i>Dashbaord</a>
                                 <a href="dashboard_my_orders.html" class="channel_item"><i class="uil uil-box icon__1"></i>My Orders</a>
-                                <a href="dashboard_my_wishlist.html" class="channel_item"><i class="uil uil-heart icon__1"></i>My Wishlist</a>
-                                <a href="dashboard_my_wallet.html" class="channel_item"><i class="uil uil-usd-circle icon__1"></i>My Wallet</a>
                                 <a href="dashboard_my_addresses.html" class="channel_item"><i class="uil uil-location-point icon__1"></i>My Address</a>
-                                <a href="offers.html" class="channel_item"><i class="uil uil-gift icon__1"></i>Offers</a>
-                                <a href="faq.html" class="channel_item"><i class="uil uil-info-circle icon__1"></i>Faq</a>
-                                <a href="sign_in.html" class="channel_item"><i class="uil uil-lock-alt icon__1"></i>Logout</a>
+                                <a data-bs-toggle="modal" data-bs-target="#logoutModal" class="channel_item"><i class="uil uil-lock-alt icon__1"></i>Logout</a>
                             </div>
+                        </li>
+                        <li class="dropdown account-dropdown" sec:authorize="isAnonymous()">
+                            <a class="btn btn-outline-success rounded-pill px-4 me-2" th:href="@{/login}" >Login</a>
+                            <a class="btn btn-primary rounded-pill px-4" th:href="@{/sign-up}" >Sign Up</a>
                         </li>
                     </ul>
                 </div>
@@ -323,7 +323,7 @@
                                         <li><a class="dropdown-item" href="order_placed.html">Order Placed</a></li>
                                         <li><a class="dropdown-item" href="bill.html">Bill Slip</a></li>
                                         <li><a class="dropdown-item" href="job_detail_view.html">Job Detail View</a></li>
-                                        <li><a class="dropdown-item" href="sign_in.html">Sign In</a></li>
+                                        <li><a class="dropdown-item" th:href="@{/login}">Sign In</a></li>
                                         <li><a class="dropdown-item" href="sign_up.html">Sign Up</a></li>
                                         <li><a class="dropdown-item" href="forgot_password.html">Forgot Password</a></li>
                                     </ul>
@@ -352,5 +352,26 @@
                 </nav>
             </div>
         </div>
+
     </header>
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+
+                    <form th:action="@{/logout}" method="post" style="display: inline;">
+                        <button type="submit" class="btn btn-primary">Logout</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </th:block>
