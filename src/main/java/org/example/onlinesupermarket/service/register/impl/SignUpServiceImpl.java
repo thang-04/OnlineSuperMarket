@@ -3,16 +3,12 @@ package org.example.onlinesupermarket.service.register.impl;
 import org.example.onlinesupermarket.dto.register.SignUpDto;
 import org.example.onlinesupermarket.entity.Role;
 import org.example.onlinesupermarket.entity.User;
-import org.example.onlinesupermarket.mapper.register.UserMapper;
+import org.example.onlinesupermarket.mapper.register.RegisterMapper;
 import org.example.onlinesupermarket.repository.RoleRepository;
 import org.example.onlinesupermarket.repository.UserRepository;
 import org.example.onlinesupermarket.service.register.SignUpService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class SignUpServiceImpl implements SignUpService {
@@ -23,7 +19,7 @@ public class SignUpServiceImpl implements SignUpService {
     private RoleRepository roleRepository;
 
     @Autowired
-    private UserMapper userMapper;
+    private RegisterMapper registerMapper;
 
     public void registerUser(SignUpDto signUpDto) {
         // Validate email availability
@@ -34,7 +30,7 @@ public class SignUpServiceImpl implements SignUpService {
                 .orElseThrow(() -> new RuntimeException("Default user role not found"));
 
         // Create new user
-        User newUser = userMapper.toEntity(signUpDto, userRole);
+        User newUser = registerMapper.toEntity(signUpDto, userRole);
 
         try {
             User savedUser = userRepository.save(newUser);

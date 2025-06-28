@@ -9,11 +9,11 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
-public class UserMapper {
+public class RegisterMapper {
     
     private final PasswordEncoder passwordEncoder;
     
-    public UserMapper(PasswordEncoder passwordEncoder) {
+    public RegisterMapper(PasswordEncoder passwordEncoder) {
         this.passwordEncoder = passwordEncoder;
     }
     
