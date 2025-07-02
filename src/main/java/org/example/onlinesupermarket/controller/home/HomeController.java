@@ -8,10 +8,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/home")
 public class HomeController {
-
+    //truy cap home page
     @GetMapping()
     public String getHomePage(Model model) {
         model.addAttribute("fragmentContent", "homePage/fragments/contentMain :: contentMain");
         return "homePage/index";
     }
+
 }
