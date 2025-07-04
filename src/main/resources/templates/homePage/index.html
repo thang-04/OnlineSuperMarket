@@ -2,12 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 
-<th:block th:replace="homePage/fragments/header :: header"></th:block>
+<th:block th:replace="~{homePage/fragments/header :: header}"></th:block>
 
 <body>
 
 <!--Topbar Start-->
-<th:block th:replace="homePage/fragments/topbar :: topbar"></th:block>
+<th:block th:replace="~{homePage/fragments/topbar :: topbar}"></th:block>
 <!--Topbar End-->
 
 <!-- Body Start -->
@@ -16,7 +16,7 @@
 <!-- Body End -->
 
 <!-- Footer Start -->
-<th:block th:replace="homePage/fragments/footer :: footer"></th:block>
+<th:block th:replace="~{homePage/fragments/footer :: footer}"></th:block>
 <!-- Footer End -->
 
 	<!-- Javascripts -->

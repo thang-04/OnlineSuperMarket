@@ -26,7 +26,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO getCurrentUserDTO() {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email).orElseThrow();
+User user = userRepository.findByEmail(email)
+        .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
         return userMapper.toDTO(user);
     }
 

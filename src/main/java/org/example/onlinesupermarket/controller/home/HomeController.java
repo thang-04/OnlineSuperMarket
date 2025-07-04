@@ -44,4 +44,5 @@ public class HomeController {
         }
         return "redirect:/home/profile";
     }
+
 }

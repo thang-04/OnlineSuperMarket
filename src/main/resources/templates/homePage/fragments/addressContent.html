@@ -1,0 +1,420 @@
+<div class="wrapper" th:fragment="addressContent">
+    <!-- Include Address CSS -->
+    <link rel="stylesheet" th:href="@{/homePage/css/address-style.css}">
+    <!-- Alert Messages -->
+    <div th:if="${error}" class="addr-alert addr-alert-danger alert-dismissible fade show" role="alert">
+        <i class="uil uil-exclamation-triangle"></i>
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <div th:if="${success}" class="addr-alert addr-alert-success alert-dismissible fade show" role="alert">
+        <i class="uil uil-check-circle"></i>
+        <span th:text="${success}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    
+    <div class="gambo-Breadcrumb">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">My Addresses</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-xl-12 col-lg-12 col-md-12">
+                    <div class="dashboard-right">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="d-flex align-items-center justify-content-between mb-4">
+                                    <h4 class="mb-0"><i class="uil uil-location-point"></i> My Address</h4>
+                                    <a href="#" class="addr-add-btn hover-btn" data-bs-toggle="modal" data-bs-target="#address_model">
+                                        <i class="uil uil-plus"></i> Add New Address
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12">
+                                <div class="pdpt-bg">
+                                    <div class="address-body">
+                                        <!-- No Addresses Message -->
+                                        <div th:if="${#lists.isEmpty(addresses)}" class="text-center py-5">
+                                            <div class="addr-empty-state">
+                                                <i class="uil uil-map-marker" style="font-size: 4rem; color: #ccc;"></i>
+                                                <h5 class="mt-3 text-muted">No addresses found</h5>
+                                                <p class="text-muted">Add your first address to get started</p>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Address List -->
+                                        <div th:each="address : ${addresses}" class="addr-item-custom" th:attr="data-address-id=${address.addressId}">
+                                            <div class="addr-icon-custom">
+                                                <i class="uil uil-map-marker"></i>
+                                                <div th:if="${address.defaultAddress}" class="addr-default-badge">
+                                                    <i class="uil uil-check-circle"></i>
+                                                </div>
+                                            </div>
+                                            <div class="addr-dt-all-custom">
+                                                <div class="d-flex justify-content-between align-items-start">
+                                                    <div>
+                                                        <p class="mb-2">
+                                                            <strong th:text="${address.recipient}">Recipient Name</strong>
+                                                        </p>
+                                                        <p class="addr-text-custom">
+                                                            <span th:text="${address.street}">Street</span>,
+                                                            <span th:text="${address.city}">City</span>,
+                                                            <span th:text="${address.province}">Province</span>
+                                                            <span th:text="${address.postalCode}">Postal Code</span>
+                                                        </p>
+                                                    </div>
+                                                    <div th:if="${!address.defaultAddress}" class="default-btn">
+                                                        <button class="btn btn-sm btn-outline-primary addr-set-default-btn" 
+                                                                th:attr="data-address-id=${address.addressId}">
+                                                            Set Default
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <ul class="addr-action-btns">
+                                                    <li>
+                                                        <a href="#" class="addr-action-btn edit-address-btn"
+                                                           data-bs-toggle="modal" data-bs-target="#edit_address_model">
+                                                            <i class="uil uil-edit"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" class="addr-action-btn delete-address-btn" 
+                                                           th:attr="data-address-id=${address.addressId}">
+                                                            <i class="uil uil-trash-alt"></i>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add Address Model Start-->
+    <div id="address_model" class=" modal fade" tabindex="-1" role="dialog" aria-modal="false">
+        <div class="modal-dialog category-area" role="document">
+            <div class="category-area-inner">
+                <div class="addr-modal-header">
+                    <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="uil uil-multiply"></i>
+                    </button>
+                </div>
+                <div class="category-model-content modal-content">
+                    <div class="addr-cate-header">
+                        <h4 class="mb-0">Add New Address</h4>
+                    </div>
+                    <div class="addr-form-custom">
+                        <div class="checout-address-step">
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <form th:action="@{/home/address/add}"
+                                          th:object="${addressDto}"
+                                          method="post" id="addAddressForm"
+                                          class="needs-validation" >
+                                        <div class="address-fieldset">
+                                            <div class="row">
+                                                <div class="col-lg-12 col-md-12">
+                                                    <div class="addr-form-group mt-4">
+                                                        <label class="control-label">Recipient Name*</label>
+                                                        <input th:field="*{recipient}" id="recipient" name="recipient" type="text" placeholder="Enter recipient name" class="addr-form-control input-md" required>
+                                                        <div class="invalid-feedback">Please enter recipient name.</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-12 col-md-12">
+                                                    <div class="addr-form-group mt-4">
+                                                        <label class="control-label">Street Address*</label>
+                                                        <input th:field="*{street}" id="street" name="street" type="text" placeholder="Enter street address" class="addr-form-control input-md" required>
+                                                        <div class="invalid-feedback">Please enter street address.</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12">
+                                                    <div class="addr-form-group mt-4">
+                                                        <label class="control-label">City*</label>
+                                                        <input th:field="*{city}" id="city" name="city" type="text" placeholder="Enter city" class="addr-form-control input-md" required>
+                                                        <div class="invalid-feedback">Please enter city.</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12">
+                                                    <div class="addr-form-group mt-4">
+                                                        <label class="control-label">Province*</label>
+                                                        <input th:field="*{province}" id="province" name="province" type="text" placeholder="Enter province" class="addr-form-control input-md" required>
+                                                        <div class="invalid-feedback">Please enter province.</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12">
+                                                    <div class="addr-form-group mt-4">
+                                                        <label class="control-label">Postal Code*</label>
+                                                        <input th:field="*{postalCode}" id="postalCode" name="postalCode" type="text" placeholder="Enter postal code" class="addr-form-control input-md" required>
+                                                        <div class="invalid-feedback">Please enter postal code.</div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-12">
+                                                    <div class="addr-form-group mt-4">
+                                                        <div class="form-check">
+                                                            <input th:field="*{defaultAddress}" class="addr-form-check-input" type="checkbox" id="isDefault" name="isDefault">
+                                                            <label class="form-check-label" for="isDefault">
+                                                                Set as default address
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <input type="hidden" id="userId" name="userID"/>
+                                                <div class="col-lg-12 col-md-12">
+                                                    <div class="addr-form-group mt-30">
+                                                        <div class="address-btns">
+                                                            <button type="submit" class="addr-save-btn w-100 hover-btn">
+                                                                <i class="uil uil-save"></i> Save Address
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Address Modal Start -->
+    <div id="edit_address_model" class="modal fade" tabindex="-1" role="dialog" aria-modal="false">
+        <div class="modal-dialog category-area" role="document">
+            <div class="category-area-inner">
+                <div class="addr-modal-header">
+                    <button type="button" class="close btn-close" data-bs-dismiss="modal" aria-label="Close">
+                        <i class="uil uil-multiply"></i>
+                    </button>
+                </div>
+                <div class="category-model-content modal-content">
+                    <div class="addr-cate-header">
+                        <h4 class="mb-0">Edit Address</h4>
+                    </div>
+                    <div class="addr-form-custom">
+                        <form th:action="@{/home/address/edit}"
+                              th:object="${addressDto}"
+                                id="editAddressForm" class="needs-validation" method="post">
+                            <input type="hidden" id="edit_addressId" name="addressId" />
+                            <div class="address-fieldset">
+                                <div class="row">
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="addr-form-group mt-4">
+                                            <label class="control-label">Recipient Name*</label>
+                                            <input th:field="*{recipient}" id="edit_recipient" name="recipient" type="text" placeholder="Enter recipient name" class="addr-form-control input-md" required>
+                                            <div class="invalid-feedback">Please enter recipient name.</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="addr-form-group mt-4">
+                                            <label class="control-label">Street Address*</label>
+                                            <input th:field="*{street}" id="edit_street" name="street" type="text" placeholder="Enter street address" class="addr-form-control input-md" required>
+                                            <div class="invalid-feedback">Please enter street address.</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="addr-form-group mt-4">
+                                            <label class="control-label">City*</label>
+                                            <input th:field="*{city}" id="edit_city" name="city" type="text" placeholder="Enter city" class="addr-form-control input-md" required>
+                                            <div class="invalid-feedback">Please enter city.</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="addr-form-group mt-4">
+                                            <label class="control-label">Province*</label>
+                                            <input th:field="*{province}" id="edit_province" name="province" type="text" placeholder="Enter province" class="addr-form-control input-md" required>
+                                            <div class="invalid-feedback">Please enter province.</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="addr-form-group mt-4">
+                                            <label class="control-label">Postal Code*</label>
+                                            <input th:field="*{postalCode}" id="edit_postalCode" name="postalCode" type="text" placeholder="Enter postal code" class="addr-form-control input-md" required>
+                                            <div class="invalid-feedback">Please enter postal code.</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-12">
+                                        <div class="addr-form-group mt-4">
+                                            <div class="form-check">
+                                                <input th:field="*{defaultAddress}" class="addr-form-check-input" type="checkbox" id="edit_isDefault" name="defaultAddress">
+                                                <label class="form-check-label" for="edit_isDefault">
+                                                    Set as default address
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-12 col-md-12">
+                                        <div class="addr-form-group mt-30">
+                                            <div class="address-btns">
+                                                <button type="submit" class="addr-save-btn w-100 hover-btn">
+                                                    <i class="uil uil-save"></i> Save Changes
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- JavaScript for Address Management -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add Address Form
+    const addAddressForm = document.getElementById('addAddressForm');
+    if (addAddressForm) {
+        addAddressForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!addAddressForm.checkValidity()) {
+                e.stopPropagation();
+                addAddressForm.classList.add('was-validated');
+                return;
+            }
+            const formData = new FormData(addAddressForm);
+            fetch('/home/address/add', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    return response.text().then(html => {
+                        document.querySelector('.wrapper').innerHTML = html;
+                    });
+                }
+            });
+        });
+    }
+
+
+    // Delete Address Button Click
+    document.querySelectorAll('.delete-address-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const addressId = this.getAttribute('data-address-id');
+            if (confirm('Are you sure you want to delete this address?')) {
+                fetch(`/home/address/delete/${addressId}`)
+                .then(response => {
+                    if (response.redirected) {
+                        window.location.href = response.url;
+                    } else {
+                        return response.text().then(html => {
+                            document.querySelector('.wrapper').innerHTML = html;
+                        });
+                    }
+                });
+            }
+        });
+    });
+
+    // Set Default Address Button Click
+    document.querySelectorAll('.addr-set-default-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const addressId = this.getAttribute('data-address-id');
+            fetch(`/home/address/set-default/${addressId}`)
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    return response.text().then(html => {
+                        document.querySelector('.wrapper').innerHTML = html;
+                    });
+                }
+            });
+        });
+    });
+
+    // Edit Address Button Click
+    document.querySelectorAll('.edit-address-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const addressId = this.closest('.addr-item-custom').getAttribute('data-address-id');
+            fetch(`/home/address/edit/${addressId}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('edit_addressId').value = data.addressId;
+                    document.getElementById('edit_recipient').value = data.recipient;
+                    document.getElementById('edit_street').value = data.street;
+                    document.getElementById('edit_city').value = data.city;
+                    document.getElementById('edit_province').value = data.province;
+                    document.getElementById('edit_postalCode').value = data.postalCode;
+                    document.getElementById('edit_isDefault').checked = data.defaultAddress;
+                    var editModal = new bootstrap.Modal(document.getElementById('edit_address_model'));
+                    editModal.show();
+                });
+        });
+    });
+
+    // Submit Edit Address Form
+    const editAddressForm = document.getElementById('editAddressForm');
+    if (editAddressForm) {
+        editAddressForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (!editAddressForm.checkValidity()) {
+                e.stopPropagation();
+                editAddressForm.classList.add('was-validated');
+                return;
+            }
+            const formData = new FormData(editAddressForm);
+            fetch('/home/address/edit', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    return response.text().then(html => {
+                        document.querySelector('.wrapper').innerHTML = html;
+                    });
+                }
+            });
+        });
+    }
+
+    // Helper function to show alerts
+    function showAlert(message, type) {
+        const alertDiv = document.createElement('div');
+        alertDiv.className = `addr-alert addr-alert-${type} alert-dismissible fade show`;
+        alertDiv.innerHTML = `
+            <i class="uil uil-${type === 'success' ? 'check-circle' : 'exclamation-triangle'}"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        `;
+        const wrapper = document.querySelector('.wrapper');
+        wrapper.insertBefore(alertDiv, wrapper.firstChild);
+        setTimeout(() => {
+            if (alertDiv.parentNode) {
+                alertDiv.remove();
+            }
+        }, 5000);
+    }
+});
+</script>

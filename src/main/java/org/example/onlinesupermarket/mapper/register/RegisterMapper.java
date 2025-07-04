@@ -35,4 +35,4 @@ public class RegisterMapper {
         signUpDto.setPhoneNumber(user.getPhoneNumber());
         return signUpDto;
     }
-} 
+}
