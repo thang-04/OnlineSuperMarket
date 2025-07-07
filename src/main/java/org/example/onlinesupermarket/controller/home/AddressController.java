@@ -5,10 +5,14 @@ import org.example.onlinesupermarket.entity.User;
 import org.example.onlinesupermarket.security.CustomUserDetails;
 import org.example.onlinesupermarket.service.address.AddressService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
@@ -35,7 +39,18 @@ public class AddressController {
     }
 
     @PostMapping("/add")
-    public String addAddress(@ModelAttribute("addressDto") AddressDTO addressDTO, RedirectAttributes redirectAttributes) {
+    public String addAddress(@Validated @ModelAttribute("addressDto") AddressDTO addressDTO, 
+                           BindingResult bindingResult, 
+                           RedirectAttributes redirectAttributes,
+                           Model model) {
+        if (bindingResult.hasErrors()) {
+            // Add validation errors to model
+            model.addAttribute("fragmentContent", "homePage/fragments/addressContent :: addressContent");
+            model.addAttribute("addresses", addressService.getAllAddressesByUser(getCurrentUser()));
+            model.addAttribute("openModal", "add");
+            return "homePage/index";
+        }
+        
         try {
             User currentUser = getCurrentUser();
             addressService.createAddress((Integer) currentUser.getUserId(), addressDTO);
@@ -71,28 +86,21 @@ public class AddressController {
         return "redirect:/home/address";
     }
 
-    @GetMapping("/edit/{addressId}")
-    public String getAddressForEdit(@PathVariable Integer addressId,@ModelAttribute("addressDto") AddressDTO addressDTO , Model model) {
-        User currentUser = getCurrentUser();
-        try {
-            AddressDTO address = addressService.getAddressById(addressId, currentUser);
-            model.addAttribute("addressDto", address);
-            model.addAttribute("addresses", addressService.getAllAddressesByUser(currentUser));
-        } catch (Exception e) {
-            model.addAttribute("error", "Error loading address for edit: " + e.getMessage());
-        }
-        return "homePage/index";
-    }
 
-    @GetMapping("/edit/{addressId}")
-    @ResponseBody
-    public AddressDTO getAddressForEditJson(@PathVariable Integer addressId) {
-        User currentUser = getCurrentUser();
-        return addressService.getAddressById(addressId, currentUser);
-    }
 
     @PostMapping("/edit")
-    public String editAddress(@ModelAttribute("addressDto") AddressDTO addressDTO, RedirectAttributes redirectAttributes) {
+    public String editAddress(@Validated @ModelAttribute("addressDto") AddressDTO addressDTO, 
+                            BindingResult bindingResult, 
+                            RedirectAttributes redirectAttributes,
+                            Model model) {
+        if (bindingResult.hasErrors()) {
+            // Add validation errors to model
+            model.addAttribute("fragmentContent", "homePage/fragments/addressContent :: addressContent");
+            model.addAttribute("addresses", addressService.getAllAddressesByUser(getCurrentUser()));
+            model.addAttribute("openModal", "edit");
+            return "homePage/index";
+        }
+        
         try {
             User currentUser = getCurrentUser();
             addressService.updateAddress((Integer) currentUser.getUserId(), addressDTO);
@@ -104,9 +112,8 @@ public class AddressController {
     }
 
     private User getCurrentUser() {
-        org.springframework.security.core.Authentication authentication = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
             return userDetails.getUserEntity();
         }
         throw new RuntimeException("User not authenticated");

@@ -31,79 +31,124 @@
     <div class="dashboard-group">
         <div class="container">
             <div class="row">
-                <!-- Profile Info Card -->
-                <div class="col-lg-4 col-md-5">
-                    <div class="profile-card text-center position-relative">
-                        <div>
-                            <img id="profileImage" th:src="${user != null && user.userImg != null ? user.userImg : '/homePage/images/avatar/img-5.jpg'}"
-                                 alt="Profile picture"
-                                 class="profile-avatar" />
-                            <label for="userImg" class="position-absolute bg-white rounded-circle p-2 border shadow-sm"
-                                   style="cursor:pointer;">
-                                <i class="uil uil-camera-plus text-primary"></i>
-                            </label>
-                        </div>
-                        <h4 th:text="${user.fullName}" style="margin-top: 12px;">User Name</h4>
-                        <span>Customer</span>
-                    </div>
-                </div>
-
-                <!-- Profile Form Card -->
-                <div class="col-lg-8 col-md-7">
-                    <div class="profile-card">
-                        <div class="card-title-2 mb-3">
-                            <h4>Edit Profile</h4>
-                        </div>
-                        <div>
-                            <form th:action="@{/home/profile}" method="post" enctype="multipart/form-data" class="profile-form">
-                                <input type="file" id="userImg" name="userImg" class="d-none" accept="image/*">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label>Full Name*</label>
-                                            <input type="text" name="fullName" th:value="${user.fullName}" class="form-control" placeholder="Enter Full Name" required>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label>Email*</label>
-                                            <input type="email" th:value="${user.email}" class="form-control bg-light" readonly>
-                                            <small class="form-text text-muted">Email cannot be changed</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label>Phone Number</label>
-                                            <input type="text" name="phoneNumber" th:value="${user.phoneNumber}" class="form-control" placeholder="Enter Phone Number">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group">
-                                            <label>Address</label>
-<!--                                            <input type="text" name="address" th:value="${user.address}" class="form-control" placeholder="Enter Address">-->
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-12 text-end">
-                                        <button class="btn btn-success profile-btn" type="submit">
-                                            <i class="fas fa-save"></i> Save Changes
-                                        </button>
-                                    </div>
+                    <div class="row">
+                        <!-- Profile Info Card -->
+                        <div class="col-lg-12 col-md-12">
+                            <div class="text-center position-relative">
+                                <div>
+                                    <img id="profileImage" th:src="${userProfileEditDTO != null && userProfileEditDTO.userImg != null ? userProfileEditDTO.userImg : '/homePage/images/avatar/img-5.jpg'}"
+                                         alt="Profile picture"
+                                         class="profile-avatar" />
+                                    <label for="userImgFile" class="position-absolute bg-white rounded-circle p-2 border shadow-sm"
+                                           style="cursor:pointer;">
+                                        <i class="uil uil-camera-plus text-primary"></i>
+                                    </label>
                                 </div>
-                            </form>
+                                <h4 th:text="${userProfileEditDTO.fullName}" style="margin-top: 12px;">User Name</h4>
+                                <span>Customer</span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+        </div>
+    <div class="container">
+    <div class="row mt-5">
+        <!-- Profile Form Card -->  <!-- Sidebar -->
+        <div class="col-xl-3 col-lg-4 col-md-12">
+            <div th:replace="homePage/fragments/sidebar :: sidebar('profile')"></div>
+        </div>
+        <!-- Nội dung profile -->
+        <div class="col-xl-9 col-lg-8 col-md-12">
+            <div class="profile-card">
+                <div class="card-title-2 mb-3">
+                    <h4>Edit Profile</h4>
+                </div>
+                <div>
+                    <form th:action="@{/home/profile}" th:object="${userProfileEditDTO}" method="post" enctype="multipart/form-data" class="profile-form">
+                        <input type="file" id="userImgFile" name="userImgFile" class="d-none" accept="image/*">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Full Name*</label>
+                                    <input type="text" th:field="*{fullName}" class="form-control" placeholder="Enter Full Name" required>
+                                    <div th:if="${#fields.hasErrors('fullName')}">
+                                        <span class="text-danger" th:errors="*{fullName}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Email*</label>
+                                    <input type="email" th:value="${#authentication.name}" class="form-control bg-light" readonly>
+                                    <small class="form-text text-muted">Email cannot be changed</small>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Phone Number</label>
+                                    <input type="text" th:field="*{phoneNumber}" class="form-control" placeholder="Enter Phone Number">
+                                    <div th:if="${#fields.hasErrors('phoneNumber')}">
+                                        <span class="text-danger" th:errors="*{phoneNumber}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    <div class="input-group">
+                                        <input type="hidden" id="addressIdInput" name="addressId" th:value="${defaultAddress != null ? defaultAddress.addressId : ''}">
+                                        <input type="text" id="addressInput" name="address"
+                                               th:value="${defaultAddress != null ? defaultAddress.street + ', ' + defaultAddress.city + ', ' + defaultAddress.province : ''}"
+                                               class="form-control" placeholder="Select Address" readonly required>
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addressModal">
+                                            View
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 text-end">
+                                <button class="btn btn-success profile-btn" type="submit">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
+    </div>
+
+
+<!-- Address Selection Modal -->
+<div class="modal fade" id="addressModal" tabindex="-2" aria-labelledby="addressModalLabel" aria-hidden="true" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addressModalLabel">List Address</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ul class="list-group">
+                                        <li th:each="addr : ${addressList}"
+                                            class="list-group-item list-group-item-action"
+                                            th:classappend="${addr.defaultAddress} ? 'active' : ''"
+                                            th:text="${addr.street + ', ' + addr.city + ', ' + addr.province}" >
+                                            <span th:if="${addr.defaultAddress}">Default Address</span>
+                                        </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- JavaScript for image handling -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const fileInput = document.getElementById('userImg');
+            const fileInput = document.getElementById('userImgFile');
             const profileImage = document.getElementById('profileImage');
-            
-            // Handle file selection
             fileInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
                 if (file) {
@@ -112,13 +157,11 @@
                         alert('Please select an image file');
                         return;
                     }
-                    
                     // Validate file size (max 5MB)
                     if (file.size > 5 * 1024 * 1024) {
                         alert('Image size should be less than 5MB');
                         return;
                     }
-                    
                     // Create preview
                     const reader = new FileReader();
                     reader.onload = function(e) {
@@ -130,4 +173,5 @@
         });
     </script>
 </div>
+
 

@@ -11,7 +11,7 @@
 
 .addr-item-custom:hover {
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    border-color: #007bff;
+    border-color: #f55d2c;
 }
 
 .addr-icon-custom {
@@ -22,7 +22,7 @@
 
 .addr-icon-custom i {
     font-size: 24px;
-    color: #007bff;
+    color: #f55d2c;
 }
 
 .addr-default-badge {
@@ -84,9 +84,9 @@
 }
 
 .addr-action-btn:hover {
-    background: #007bff;
+    background: #f55d2c;
     color: white;
-    border-color: #007bff;
+    border-color: #f55d2c;
     text-decoration: none;
 }
 
@@ -103,7 +103,7 @@
 }
 
 .addr-set-default-btn:hover {
-    background: #007bff;
+    background: #f55d2c;
     color: white;
 }
 
@@ -133,7 +133,7 @@
     align-items: center;
     gap: 8px;
     padding: 10px 20px;
-    background: #007bff;
+    background: #f55d2c;
     color: white;
     text-decoration: none;
     border-radius: 6px;
@@ -142,7 +142,7 @@
 }
 
 .addr-add-btn:hover {
-    background: #0056b3;
+    background: #e54d1c;
     color: white;
     text-decoration: none;
     transform: translateY(-2px);
@@ -197,51 +197,51 @@
 }
 
 .addr-form-control:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+    border-color: #f55d2c;
+    box-shadow: 0 0 0 0.2rem rgba(245, 93, 44, 0.25);
 }
 
 .addr-form-check-input:checked {
-    background-color: #007bff;
-    border-color: #007bff;
+    background-color: #f55d2c;
+    border-color: #f55d2c;
 }
 
 .addr-save-btn {
-    background: #007bff;
+    background: #f55d2c;
     color: white;
     border: none;
-    padding: 12px 24px;
+    padding: 12px 30px;
     border-radius: 6px;
     font-weight: 500;
     transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    cursor: pointer;
 }
 
 .addr-save-btn:hover {
-    background: #0056b3;
+    background: #e54d1c;
     transform: translateY(-2px);
 }
 
 /* Alert Styles - Custom Classes */
 .addr-alert {
-    border-radius: 8px;
-    border: none;
     padding: 15px 20px;
+    border-radius: 6px;
     margin-bottom: 20px;
+    border: 1px solid transparent;
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
 .addr-alert-success {
-    background: #d4edda;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
     color: #155724;
 }
 
 .addr-alert-danger {
-    background: #f8d7da;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
     color: #721c24;
 }
 
@@ -256,7 +256,7 @@
     }
     
     .addr-action-btns {
-        margin-top: 15px;
+        gap: 5px;
     }
     
     .addr-dt-all-custom h4 {
@@ -275,6 +275,7 @@
 
 /* Loading States - Custom Classes */
 .addr-loading {
+    position: relative;
     opacity: 0.6;
     pointer-events: none;
 }
@@ -287,8 +288,8 @@
     width: 20px;
     height: 20px;
     margin: -10px 0 0 -10px;
-    border: 2px solid #f3f3f3;
-    border-top: 2px solid #007bff;
+    border: 2px solid #f55d2c;
+    border-top: 2px solid transparent;
     border-radius: 50%;
     animation: addr-spin 1s linear infinite;
 }

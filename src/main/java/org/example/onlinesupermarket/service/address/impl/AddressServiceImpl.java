@@ -30,7 +30,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public List<AddressDTO> getAllAddressesByUser(User user) {
-        List<Address> addresses = addressRepository.findByUserOrderByDefaultAddressAsc(user);
+        List<Address> addresses = addressRepository.findByUserOrderByDefaultAddressDesc(user);
         return addresses.stream()
                 .map(addressMapper::toDTO)
                 .collect(Collectors.toList());
@@ -49,6 +49,15 @@ public class AddressServiceImpl implements AddressService {
         Address address = addressMapper.toEntity(addressDTO);
         if (user.isPresent()){
             address.setUser(user.get());
+            
+            // If setting as default, remove default from other addresses
+            if (addressDTO.isDefaultAddress()) {
+                addressRepository.findByUserAndDefaultAddressTrue(user.get()).ifPresent(existingDefault -> {
+                    existingDefault.setDefaultAddress(false);
+                    addressRepository.save(existingDefault);
+                });
+            }
+            
             addressRepository.save(address);
         }
     }
@@ -107,6 +116,17 @@ public class AddressServiceImpl implements AddressService {
             address.setCity(addressDTO.getCity());
             address.setProvince(addressDTO.getProvince());
             address.setPostalCode(addressDTO.getPostalCode());
+            
+            // If setting as default, remove default from other addresses
+            if (addressDTO.isDefaultAddress()) {
+                addressRepository.findByUserAndDefaultAddressTrue(user).ifPresent(existingDefault -> {
+                    if (!existingDefault.getAddressId().equals(addressDTO.getAddressId())) {
+                        existingDefault.setDefaultAddress(false);
+                        addressRepository.save(existingDefault);
+                    }
+                });
+            }
+            
             address.setDefaultAddress(addressDTO.isDefaultAddress());
             addressRepository.save(address);
         }
