@@ -124,25 +124,83 @@
 
 <!-- Address Selection Modal -->
 <div class="modal fade" id="addressModal" tabindex="-2" aria-labelledby="addressModalLabel" aria-hidden="true" role="dialog">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addressModalLabel">List Address</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header" style="background: #f55d2c; color: white;">
+                <h5 class="modal-title" id="addressModalLabel">
+                    <i class="uil uil-location-point me-2"></i>Select Address
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <p class="text-muted mb-0">Choose your preferred address or set a new default address:</p>
+                </div>
                 <ul class="list-group">
                                         <li th:each="addr : ${addressList}"
-                                            class="list-group-item list-group-item-action"
-                                            th:classappend="${addr.defaultAddress} ? 'active' : ''"
-                                            th:text="${addr.street + ', ' + addr.city + ', ' + addr.province}" >
-                                            <span th:if="${addr.defaultAddress}">Default Address</span>
+                                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3"
+                                            th:classappend="${addr.defaultAddress} ? 'border-success bg-light' : ''">
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="uil uil-map-marker text-primary me-2"></i>
+                                                    <span th:text="${addr.street + ', ' + addr.city + ', ' + addr.province}" class="fw-medium"></span>
+                                                    <span th:if="${addr.defaultAddress}" class="badge bg-success ms-2">
+                                                        <i class="uil uil-check-circle me-1"></i>Default Address
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div th:if="${!addr.defaultAddress}" class="default-btn ms-3">
+                                                <button class="btn btn-sm btn-outline-warning addr-set-default-btn"
+                                                        th:attr="data-address-id=${addr.addressId}"
+                                                        style="white-space: nowrap;">
+                                                    <i class="uil uil-star me-1"></i>Set Default
+                                                </button>
+                                            </div>
                                         </li>
                 </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+/* Custom modal positioning */
+#addressModal .modal-dialog {
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+}
+
+#addressModal .modal-content {
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+#addressModal .list-group-item {
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+#addressModal .list-group-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+#addressModal .list-group-item.active,
+#addressModal .list-group-item.border-success {
+    border-color: #198754;
+    background-color: #f8fff9;
+}
+
+#addressModal .btn-outline-warning:hover {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #000;
+}
+</style>
 
     <!-- JavaScript for image handling -->
     <script>
@@ -169,6 +227,69 @@
                     };
                     reader.readAsDataURL(file);
                 }
+            });
+        });
+        // Set Default Address Button Click (Individual buttons) - using event delegation
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('addr-set-default-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
+                const addressId = e.target.getAttribute('data-address-id');
+                console.log('Setting default address:', addressId);
+                
+                // Disable button to prevent double click
+                e.target.disabled = true;
+                e.target.textContent = 'Setting...';
+                
+                fetch(`/home/address/set-default/${addressId}?redirect=/home/profile`)
+                    .then(response => {
+                        if (response.redirected) {
+                            // Show success message before redirect
+                            showSuccessMessage('Default address updated successfully!');
+                            setTimeout(() => {
+                                window.location.href = response.url;
+                            }, 1000);
+                        } else {
+                            return response.text().then(html => {
+                                document.querySelector('.wrapper').innerHTML = html;
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error setting default address:', error);
+                        alert('Error setting default address. Please try again.');
+                        // Re-enable button on error
+                        e.target.disabled = false;
+                        e.target.textContent = 'Set Default';
+                    });
+            }
+        });
+        
+        // Helper function to show success message
+        function showSuccessMessage(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                <i class="uil uil-check-circle me-2"></i>${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 3000);
+        }
+        
+        // Debug: Log all address buttons when modal opens
+        document.getElementById('addressModal').addEventListener('shown.bs.modal', function() {
+            const buttons = document.querySelectorAll('.addr-set-default-btn');
+            console.log('Found address buttons:', buttons.length);
+            buttons.forEach((btn, index) => {
+                console.log(`Button ${index}:`, btn.getAttribute('data-address-id'), btn.textContent);
             });
         });
     </script>

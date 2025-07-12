@@ -47,6 +47,7 @@ public class AddressController {
             // Add validation errors to model
             model.addAttribute("fragmentContent", "homePage/fragments/addressContent :: addressContent");
             model.addAttribute("addresses", addressService.getAllAddressesByUser(getCurrentUser()));
+            model.addAttribute("addressDto", addressDTO); // Keep the entered data
             model.addAttribute("openModal", "add");
             return "homePage/index";
         }
@@ -75,7 +76,9 @@ public class AddressController {
     }
 
     @GetMapping("/set-default/{addressId}")
-    public String setDefaultAddress(@PathVariable Integer addressId, RedirectAttributes redirectAttributes) {
+    public String setDefaultAddress(@PathVariable Integer addressId, 
+                                  @RequestParam(value = "redirect", defaultValue = "/home/address") String redirectUrl,
+                                  RedirectAttributes redirectAttributes) {
         try {
             User currentUser = getCurrentUser();
             addressService.setDefaultAddress(addressId, currentUser);
@@ -83,10 +86,8 @@ public class AddressController {
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("error", "Error setting default address: " + e.getMessage());
         }
-        return "redirect:/home/address";
+        return "redirect:" + redirectUrl;
     }
-
-
 
     @PostMapping("/edit")
     public String editAddress(@Validated @ModelAttribute("addressDto") AddressDTO addressDTO, 
@@ -97,6 +98,7 @@ public class AddressController {
             // Add validation errors to model
             model.addAttribute("fragmentContent", "homePage/fragments/addressContent :: addressContent");
             model.addAttribute("addresses", addressService.getAllAddressesByUser(getCurrentUser()));
+            model.addAttribute("addressDto", addressDTO); // Keep the entered data
             model.addAttribute("openModal", "edit");
             return "homePage/index";
         }

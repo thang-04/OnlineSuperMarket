@@ -360,9 +360,11 @@
 <!-- JavaScript for Address Management -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Set Default button state
+            // Initialize Set Default button state (if exists)
             const setDefaultBtn = document.getElementById('setDefaultBtn');
-            setDefaultBtn.setAttribute('disabled', 'disabled');
+            if (setDefaultBtn) {
+                setDefaultBtn.setAttribute('disabled', 'disabled');
+            }
             
     // Add Address Form
     const addAddressForm = document.getElementById('addAddressForm');
@@ -396,6 +398,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
                     
             const formData = new FormData(addAddressForm);
+            
+            // Ensure checkbox value is properly set
+            const isDefaultCheckbox = document.getElementById('isDefault');
+            if (isDefaultCheckbox) {
+                formData.set('defaultAddress', isDefaultCheckbox.checked ? 'true' : 'false');
+            }
+            
             fetch('/home/address/add', {
                 method: 'POST',
                 body: formData
@@ -453,7 +462,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('.addr-set-default-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const addressId = this.getAttribute('data-address-id');
-            fetch(`/home/address/set-default/${addressId}`)
+            fetch(`/home/address/set-default/${addressId}?redirect=/home/address`)
             .then(response => {
                 if (response.redirected) {
                     window.location.href = response.url;
@@ -466,22 +475,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-            // Set Default Button Click (Header button)
-            document.getElementById('setDefaultBtn').addEventListener('click', function() {
-                const addressId = this.getAttribute('data-address-id');
-                if (addressId) {
-                    fetch(`/home/address/set-default/${addressId}`)
-                        .then(response => {
-                            if (response.redirected) {
-                                window.location.href = response.url;
-                            } else {
-                                return response.text().then(html => {
-                                    document.querySelector('.wrapper').innerHTML = html;
-                                });
-                            }
-                        });
-                }
-            });
+            // Set Default Button Click (Header button) - if exists
+            const headerSetDefaultBtn = document.getElementById('setDefaultBtn');
+            if (headerSetDefaultBtn) {
+                headerSetDefaultBtn.addEventListener('click', function() {
+                    const addressId = this.getAttribute('data-address-id');
+                    if (addressId) {
+                        fetch(`/home/address/set-default/${addressId}?redirect=/home/address`)
+                            .then(response => {
+                                if (response.redirected) {
+                                    window.location.href = response.url;
+                                } else {
+                                    return response.text().then(html => {
+                                        document.querySelector('.wrapper').innerHTML = html;
+                                    });
+                                }
+                            });
+                    }
+                });
+            }
 
     // Edit Address Button Click
     document.querySelectorAll('.edit-address-btn').forEach(btn => {
@@ -500,7 +512,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     console.log('Address data:', { addressId, recipient, street, city, province, postalCode, isDefault });
 
-                    // Fill the edit form only if fields are empty (no server data)
+                    // Fill the edit form with current address data
                     const addressIdField = document.getElementById('edit_addressId');
                     const recipientField = document.getElementById('edit_recipient');
                     const streetField = document.getElementById('edit_street');
@@ -509,14 +521,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     const postalCodeField = document.getElementById('edit_postalCode');
                     const isDefaultField = document.getElementById('edit_isDefault');
 
-                    // Only fill if fields are empty (no server data)
-                    if (addressIdField && !addressIdField.value) addressIdField.value = addressId;
-                    if (recipientField && !recipientField.value) recipientField.value = recipient;
-                    if (streetField && !streetField.value) streetField.value = street;
-                    if (cityField && !cityField.value) cityField.value = city;
-                    if (provinceField && !provinceField.value) provinceField.value = province;
-                    if (postalCodeField && !postalCodeField.value) postalCodeField.value = postalCode;
-                    if (isDefaultField && !isDefaultField.checked && isDefault) isDefaultField.checked = isDefault;
+                    // Check if modal was opened with server data (validation errors)
+                    const modal = document.getElementById('edit_address_model');
+                    const hasServerData = modal.getAttribute('data-server-data') === 'true';
+                    
+                    // Only fill form if there's no server data
+                    if (!hasServerData) {
+                        if (addressIdField && (!addressIdField.value || addressIdField.value === '0')) addressIdField.value = addressId;
+                        if (recipientField && !recipientField.value) recipientField.value = recipient;
+                        if (streetField && !streetField.value) streetField.value = street;
+                        if (cityField && !cityField.value) cityField.value = city;
+                        if (provinceField && !provinceField.value) provinceField.value = province;
+                        if (postalCodeField && !postalCodeField.value) postalCodeField.value = postalCode;
+                        if (isDefaultField && !isDefaultField.checked && isDefault) isDefaultField.checked = isDefault;
+                    }
+                    
+                    // Clear the server data flag after processing
+                    modal.removeAttribute('data-server-data');
 
                     console.log('Form fields filled:', {
                         addressId: addressIdField?.value,
@@ -566,6 +587,13 @@ document.addEventListener('DOMContentLoaded', function() {
             }
                     
             const formData = new FormData(editAddressForm);
+            
+            // Ensure checkbox value is properly set
+            const isDefaultCheckbox = document.getElementById('edit_isDefault');
+            if (isDefaultCheckbox) {
+                formData.set('defaultAddress', isDefaultCheckbox.checked ? 'true' : 'false');
+            }
+            
             fetch('/home/address/edit', {
                 method: 'POST',
                 body: formData
@@ -664,9 +692,27 @@ document.addEventListener('DOMContentLoaded', function() {
             if (openModal === 'add') {
                 var addModal = new bootstrap.Modal(document.getElementById('address_model'));
                 addModal.show();
+                
+                // Add validation classes if there are server-side errors
+                var addForm = document.getElementById('addAddressForm');
+                if (addForm) {
+                    addForm.classList.add('was-validated');
+                }
             } else if (openModal === 'edit') {
                 var editModal = new bootstrap.Modal(document.getElementById('edit_address_model'));
                 editModal.show();
+                
+                // Add validation classes if there are server-side errors
+                var editForm = document.getElementById('editAddressForm');
+                if (editForm) {
+                    editForm.classList.add('was-validated');
+                }
+                
+                // If there's server data, don't let JavaScript override it
+                if (addressId && addressId !== null && addressId !== '') {
+                    // Mark that this modal was opened with server data
+                    document.getElementById('edit_address_model').setAttribute('data-server-data', 'true');
+                }
             }
         });
         /*]]>*/
