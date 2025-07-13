@@ -1,0 +1,298 @@
+<div class="wrapper" th:fragment="profileContent">
+    <link th:href="@{/homePage/css/profile.css}" rel="stylesheet">
+
+    <!-- Success/Error Message -->
+    <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${successMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    
+    <!-- Breadcrumb -->
+    <div class="gambo-Breadcrumb">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/home">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Profile</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Section -->
+    <div class="dashboard-group">
+        <div class="container">
+            <div class="row">
+                    <div class="row">
+                        <!-- Profile Info Card -->
+                        <div class="col-lg-12 col-md-12">
+                            <div class="text-center position-relative">
+                                <div>
+                                    <img id="profileImage" th:src="${userProfileEditDTO != null && userProfileEditDTO.userImg != null ? userProfileEditDTO.userImg : '/homePage/images/avatar/img-5.jpg'}"
+                                         alt="Profile picture"
+                                         class="profile-avatar" />
+                                    <label for="userImgFile" class="position-absolute bg-white rounded-circle p-2 border shadow-sm"
+                                           style="cursor:pointer;">
+                                        <i class="uil uil-camera-plus text-primary"></i>
+                                    </label>
+                                </div>
+                                <h4 th:text="${userProfileEditDTO.fullName}" style="margin-top: 12px;">User Name</h4>
+                                <span>Customer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    <div class="container">
+    <div class="row mt-5">
+        <!-- Profile Form Card -->  <!-- Sidebar -->
+        <div class="col-xl-3 col-lg-4 col-md-12">
+            <div th:replace="homePage/fragments/sidebar :: sidebar('profile')"></div>
+        </div>
+        <!-- Nội dung profile -->
+        <div class="col-xl-9 col-lg-8 col-md-12">
+            <div class="profile-card">
+                <div class="card-title-2 mb-3">
+                    <h4>Edit Profile</h4>
+                </div>
+                <div>
+                    <form th:action="@{/home/profile}" th:object="${userProfileEditDTO}" method="post" enctype="multipart/form-data" class="profile-form">
+                        <input type="file" id="userImgFile" name="userImgFile" class="d-none" accept="image/*">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Full Name*</label>
+                                    <input type="text" th:field="*{fullName}" class="form-control" placeholder="Enter Full Name" required>
+                                    <div th:if="${#fields.hasErrors('fullName')}">
+                                        <span class="text-danger" th:errors="*{fullName}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Email*</label>
+                                    <input type="email" th:value="${#authentication.name}" class="form-control bg-light" readonly>
+                                    <small class="form-text text-muted">Email cannot be changed</small>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Phone Number</label>
+                                    <input type="text" th:field="*{phoneNumber}" class="form-control" placeholder="Enter Phone Number">
+                                    <div th:if="${#fields.hasErrors('phoneNumber')}">
+                                        <span class="text-danger" th:errors="*{phoneNumber}"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Address</label>
+                                    <div class="input-group">
+                                        <input type="hidden" id="addressIdInput" name="addressId" th:value="${defaultAddress != null ? defaultAddress.addressId : ''}">
+                                        <input type="text" id="addressInput" name="address"
+                                               th:value="${defaultAddress != null ? defaultAddress.street + ', ' + defaultAddress.city + ', ' + defaultAddress.province : ''}"
+                                               class="form-control" placeholder="Select Address" readonly required>
+                                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#addressModal">
+                                            View
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 text-end">
+                                <button class="btn btn-success profile-btn" type="submit">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+
+<!-- Address Selection Modal -->
+<div class="modal fade" id="addressModal" tabindex="-2" aria-labelledby="addressModalLabel" aria-hidden="true" role="dialog">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header" style="background: #f55d2c; color: white;">
+                <h5 class="modal-title" id="addressModalLabel">
+                    <i class="uil uil-location-point me-2"></i>Select Address
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-3">
+                    <p class="text-muted mb-0">Choose your preferred address or set a new default address:</p>
+                </div>
+                <ul class="list-group">
+                                        <li th:each="addr : ${addressList}"
+                                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center p-3"
+                                            th:classappend="${addr.defaultAddress} ? 'border-success bg-light' : ''">
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex align-items-center">
+                                                    <i class="uil uil-map-marker text-primary me-2"></i>
+                                                    <span th:text="${addr.street + ', ' + addr.city + ', ' + addr.province}" class="fw-medium"></span>
+                                                    <span th:if="${addr.defaultAddress}" class="badge bg-success ms-2">
+                                                        <i class="uil uil-check-circle me-1"></i>Default Address
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div th:if="${!addr.defaultAddress}" class="default-btn ms-3">
+                                                <button class="btn btn-sm btn-outline-warning addr-set-default-btn"
+                                                        th:attr="data-address-id=${addr.addressId}"
+                                                        style="white-space: nowrap;">
+                                                    <i class="uil uil-star me-1"></i>Set Default
+                                                </button>
+                                            </div>
+                                        </li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Custom modal positioning */
+#addressModal .modal-dialog {
+    margin-top: 5vh;
+    margin-bottom: 5vh;
+}
+
+#addressModal .modal-content {
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+#addressModal .list-group-item {
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s ease;
+}
+
+#addressModal .list-group-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+#addressModal .list-group-item.active,
+#addressModal .list-group-item.border-success {
+    border-color: #198754;
+    background-color: #f8fff9;
+}
+
+#addressModal .btn-outline-warning:hover {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #000;
+}
+</style>
+
+    <!-- JavaScript for image handling -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('userImgFile');
+            const profileImage = document.getElementById('profileImage');
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Validate file type
+                    if (!file.type.startsWith('image/')) {
+                        alert('Please select an image file');
+                        return;
+                    }
+                    // Validate file size (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('Image size should be less than 5MB');
+                        return;
+                    }
+                    // Create preview
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        profileImage.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+        // Set Default Address Button Click (Individual buttons) - using event delegation
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('addr-set-default-btn')) {
+                e.preventDefault();
+                e.stopPropagation();
+                const addressId = e.target.getAttribute('data-address-id');
+                console.log('Setting default address:', addressId);
+                
+                // Disable button to prevent double click
+                e.target.disabled = true;
+                e.target.textContent = 'Setting...';
+                
+                fetch(`/home/address/set-default/${addressId}?redirect=/home/profile`)
+                    .then(response => {
+                        if (response.redirected) {
+                            // Show success message before redirect
+                            showSuccessMessage('Default address updated successfully!');
+                            setTimeout(() => {
+                                window.location.href = response.url;
+                            }, 1000);
+                        } else {
+                            return response.text().then(html => {
+                                document.querySelector('.wrapper').innerHTML = html;
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error setting default address:', error);
+                        alert('Error setting default address. Please try again.');
+                        // Re-enable button on error
+                        e.target.disabled = false;
+                        e.target.textContent = 'Set Default';
+                    });
+            }
+        });
+        
+        // Helper function to show success message
+        function showSuccessMessage(message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = 'alert alert-success alert-dismissible fade show position-fixed';
+            alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            alertDiv.innerHTML = `
+                <i class="uil uil-check-circle me-2"></i>${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.body.appendChild(alertDiv);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (alertDiv.parentNode) {
+                    alertDiv.remove();
+                }
+            }, 3000);
+        }
+        
+        // Debug: Log all address buttons when modal opens
+        document.getElementById('addressModal').addEventListener('shown.bs.modal', function() {
+            const buttons = document.querySelectorAll('.addr-set-default-btn');
+            console.log('Found address buttons:', buttons.length);
+            buttons.forEach((btn, index) => {
+                console.log(`Button ${index}:`, btn.getAttribute('data-address-id'), btn.textContent);
+            });
+        });
+    </script>
+</div>
+
+

@@ -3,6 +3,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
@@ -24,22 +25,13 @@ public class Order {
 
     private String couponCode;
 
-    @Column(columnDefinition = "DATETIME2 DEFAULT GETDATE()", updatable = false)
-    private LocalDateTime orderDate;
+    private LocalDateTime orderDate = LocalDateTime.now();
 
-    @Column(length = 100, columnDefinition = "NVARCHAR(100) DEFAULT 'Pending'")
-    private String status;
+    @Column(columnDefinition = "nvarchar(50) default 'Pending'")
+    private String status = "Pending";
 
     private Double totalAmount;
 
-    // Constructor để khởi tạo giá trị mặc định khi tạo đối tượng mới
-    @PrePersist
-    protected void onCreate() {
-        if (orderDate == null) {
-            orderDate = LocalDateTime.now();
-        }
-        if (status == null) {
-            status = "Pending";
-        }
-    }
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<OrderItem> orderItems;
 }

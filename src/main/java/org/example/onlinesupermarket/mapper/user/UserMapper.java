@@ -7,23 +7,25 @@ import org.springframework.stereotype.Component;
 @Component
 public class UserMapper {
 
-    public UserDTO toUserDTO(User user) {
-        if (user == null) {
-            return null;
-        }
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUserId(user.getUserId());
-        userDTO.setEmail(user.getEmail());
-        userDTO.setFullName(user.getFullName());
-        userDTO.setPhoneNumber(user.getPhoneNumber());
-        userDTO.setUserImg(user.getUserImg());
-        if (user.getRole() != null) {
-            userDTO.setRoleId(user.getRole().getRoleId());
-            userDTO.setRoleName(user.getRole().getRoleName());
-        }
-        userDTO.setCreatedAt(user.getCreatedAt());
-        userDTO.setLocked(user.isLocked());
-        return userDTO;
+    public UserDTO toDTO(User user) {
+        UserDTO dto = new UserDTO();
+        dto.setUserId(user.getUserId());
+        dto.setEmail(user.getEmail());
+        dto.setFullName(user.getFullName());
+        dto.setPhoneNumber(user.getPhoneNumber());
+        dto.setUserImg(user.getUserImg());
+        dto.setRoleName(user.getRole() != null ? user.getRole().getRoleName() : null);
+        dto.setLocked(user.isLocked());
+        dto.setAddress(user.getAddresses().stream()
+                .findFirst()
+                .orElse(null));
+        return dto;
+    }
+
+    public void updateEntity(UserDTO dto, User user) {
+        user.setFullName(dto.getFullName());
+        user.setPhoneNumber(dto.getPhoneNumber());
+        user.setUserImg(dto.getUserImg());
     }
 
     public User toUser(UserDTO userDTO) {

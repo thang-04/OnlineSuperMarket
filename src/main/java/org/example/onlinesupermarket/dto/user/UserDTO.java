@@ -1,13 +1,15 @@
 package org.example.onlinesupermarket.dto.user;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.example.onlinesupermarket.entity.Address;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.UniqueElements;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
@@ -16,6 +18,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
+    private Integer userId;
+    private String phoneNumber;
+    private String userImg;
+    private String roleName;
+    private boolean isLocked;
+    private Address address;
+
     @Email(message = "Email is not valid")
     @NotBlank(message = "Email cannot be empty")
     private String email;
@@ -27,15 +36,8 @@ public class UserDTO {
     @NotBlank(message = "Full name cannot be empty")
     private String fullName;
 
-    private Integer userId;
-    private String phoneNumber;
-    private String userImg;
-
     @NotNull(message = "Please select a role")
     private Integer roleId;
-    private String roleName;
     private LocalDateTime createdAt;
-    private boolean isLocked;
     private MultipartFile imageFile;
-
 }

@@ -1,0 +1,300 @@
+/* Address Management Styles - Custom Classes */
+.addr-item-custom {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    background: #fff;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.addr-item-custom:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border-color: #f55d2c;
+}
+
+.addr-icon-custom {
+    position: relative;
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.addr-icon-custom i {
+    font-size: 24px;
+    color: #f55d2c;
+}
+
+.addr-default-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #28a745;
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+}
+
+.addr-dt-all-custom {
+    flex: 1;
+}
+
+.addr-dt-all-custom h4 {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 16px;
+}
+
+.addr-text-custom {
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 10px;
+}
+
+.addr-action-btns {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 10px;
+}
+
+.addr-action-btns li {
+    margin: 0;
+}
+
+.addr-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #f8f9fa;
+    color: #666;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 1px solid #e0e0e0;
+}
+
+.addr-action-btn:hover {
+    background: #f55d2c;
+    color: white;
+    border-color: #f55d2c;
+    text-decoration: none;
+}
+
+.addr-action-btn.delete-address-btn:hover {
+    background: #dc3545;
+    border-color: #dc3545;
+}
+
+.addr-set-default-btn {
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.addr-set-default-btn:hover {
+    background: #f55d2c;
+    color: white;
+}
+
+.addr-empty-state {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.addr-empty-state i {
+    font-size: 4rem;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+.addr-empty-state h5 {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.addr-empty-state p {
+    color: #999;
+    margin-bottom: 20px;
+}
+
+.addr-add-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #f55d2c;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.addr-add-btn:hover {
+    background: #e54d1c;
+    color: white;
+    text-decoration: none;
+    transform: translateY(-2px);
+}
+
+/* Modal Improvements - Custom Classes */
+.addr-modal-header {
+    border-bottom: 1px solid #e0e0e0;
+    padding: 20px;
+}
+
+.addr-modal-header .close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+}
+
+.addr-cate-header {
+    padding: 20px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.addr-cate-header h4 {
+    margin: 0;
+    color: #333;
+    font-weight: 600;
+}
+
+.addr-form-custom {
+    padding: 20px;
+}
+
+.addr-form-group {
+    margin-bottom: 20px;
+}
+
+.addr-form-group label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.addr-form-control {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 12px 15px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+.addr-form-control:focus {
+    border-color: #f55d2c;
+    box-shadow: 0 0 0 0.2rem rgba(245, 93, 44, 0.25);
+}
+
+.addr-form-check-input:checked {
+    background-color: #f55d2c;
+    border-color: #f55d2c;
+}
+
+.addr-save-btn {
+    background: #f55d2c;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.addr-save-btn:hover {
+    background: #e54d1c;
+    transform: translateY(-2px);
+}
+
+/* Alert Styles - Custom Classes */
+.addr-alert {
+    padding: 15px 20px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.addr-alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.addr-alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.addr-alert i {
+    font-size: 18px;
+}
+
+/* Responsive Design - Custom Classes */
+@media (max-width: 768px) {
+    .addr-item-custom {
+        padding: 15px;
+    }
+    
+    .addr-action-btns {
+        gap: 5px;
+    }
+    
+    .addr-dt-all-custom h4 {
+        font-size: 14px;
+    }
+    
+    .addr-text-custom {
+        font-size: 13px;
+    }
+    
+    .addr-add-btn {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+/* Loading States - Custom Classes */
+.addr-loading {
+    position: relative;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.addr-loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid #f55d2c;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: addr-spin 1s linear infinite;
+}
+
+@keyframes addr-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+} 
