@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - Quản lý FAQ</title>
+    <link th:href="@{/dashBoard-static/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/dashBoard-static/css/admin-style.css}" rel="stylesheet">
+    <link th:href="@{/dashBoard-static/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/dashBoard-static/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
+</head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{dashBoard/fragments/topbar :: topbar}"></nav>
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav" th:insert="~{dashBoard/fragments/sidebar :: sidebar}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid">
+                <h2 class="mt-30 page-title">FAQ</h2>
+                <ol class="breadcrumb mb-30">
+                    <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">FAQ</li>
+                </ol>
+
+                <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong th:text="${message}"></strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong th:text="${error}"></strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <div class="card card-static-2 mb-30">
+                    <div class="card-title-2">
+                        <h4>Tất cả FAQ</h4>
+                        <a th:href="@{/admin/faqs/add}" class="add-btn"><i class="fas fa-plus"></i> Thêm FAQ</a>
+                    </div>
+                    <div class="card-body-table">
+                        <div class="table-responsive">
+                            <table class="table ucp-table table-hover">
+                                <thead>
+                                <tr>
+                                    <th style="width:60px">ID</th>
+                                    <th>Câu hỏi</th>
+                                    <th>Thể loại</th>
+                                    <th style="width:100px">Thứ tự</th>
+                                    <th style="width:120px">Trạng thái</th>
+                                    <th style="width:150px">Hành động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="faq : ${faqs}">
+                                    <td th:text="${faq.faqId}"></td>
+                                    <td th:text="${faq.question}"></td>
+                                    <td th:text="${faq.category}"></td>
+                                    <td th:text="${faq.sortOrder}"></td>
+                                    <td>
+                                        <span th:if="${faq.active}" class="badge-item badge-status">Hoạt động</span>
+                                        <span th:unless="${faq.active}" class="badge-item" style="background-color: #6c757d;">Không hoạt động</span>
+                                    </td>
+                                    <td class="action-btns">
+                                        <a th:href="@{/admin/faqs/edit/{id}(id=${faq.faqId})}" class="edit-btn" title="Sửa"><i class="fas fa-edit"></i></a>
+                                        <form th:action="@{/admin/faqs/delete/{id}(id=${faq.faqId})}" method="post" style="display:inline;" onsubmit="return confirm('Bạn chắc chắn muốn xóa FAQ này?');">
+                                            <button type="submit" class="delete-btn" title="Xóa"><i class="fas fa-trash-alt"></i></button>
+                                        </form>
+                                        <form th:action="@{/admin/faqs/toggle-status/{id}(id=${faq.faqId})}" method="post" style="display:inline;">
+                                            <button type="submit" class="status-btn" title="Đổi trạng thái"><i class="fas fa-toggle-on"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="py-4 bg-footer mt-auto" th:insert="~{dashBoard/fragments/footer :: footer}"></footer>
+    </div>
+</div>
+<script th:src="@{/dashBoard-static/js/jquery.min.js}"></script>
+<script th:src="@{/dashBoard-static/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dashBoard-static/js/scripts.js}"></script>
+</body>
+</html>
