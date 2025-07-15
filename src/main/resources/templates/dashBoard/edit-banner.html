@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Gambo Supermarket Admin - Edit Banner</title>
+    <link th:href="@{/dashBoard-static/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/dashBoard-static/css/admin-style.css}" rel="stylesheet">
+    <link th:href="@{/dashBoard-static/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/dashBoard-static/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
+</head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{dashBoard/fragments/topbar :: topbar}"></nav>
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav" th:insert="~{dashBoard/fragments/sidebar :: sidebar}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid">
+                <h2 class="mt-30 page-title">Edit Banner</h2>
+                <ol class="breadcrumb mb-30">
+                    <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/admin/banners}">Banners</a></li>
+                    <li class="breadcrumb-item active">Edit Banner</li>
+                </ol>
+                <div class="row">
+                    <div class="col-lg-8 col-md-12">
+                        <div class="card card-static-2 mb-30">
+                            <div class="card-title-2">
+                                <h4><b>Edit Banner Details</b></h4>
+                            </div>
+                            <div class="card-body-table">
+                                <form th:action="@{/admin/banners/update/{id}(id=${bannerDto.bannerId})}" th:object="${bannerDto}" method="post">
+                                    <div class="post-form">
+                                        <input type="hidden" th:field="*{bannerId}" />
+                                        <div class="form-group">
+                                            <label class="form-label">Title*</label>
+                                            <input type="text" class="form-control" th:field="*{title}" placeholder="Enter Title">
+                                            <div th:if="${#fields.hasErrors('title')}" class="text-danger mt-1" th:errors="*{title}"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Description</label>
+                                            <textarea class="form-control" th:field="*{description}" placeholder="Enter Description"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Image URL*</label>
+                                            <input type="text" class="form-control" th:field="*{imageUrl}" placeholder="Enter Image URL">
+                                            <div th:if="${#fields.hasErrors('imageUrl')}" class="text-danger mt-1" th:errors="*{imageUrl}"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Link URL</label>
+                                            <input type="text" class="form-control" th:field="*{linkUrl}" placeholder="Enter Link URL">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Sort Order</label>
+                                            <input type="number" class="form-control" th:field="*{sortOrder}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Status</label>
+                                            <select class="form-control" th:field="*{active}">
+                                                <option th:value="true">Active</option>
+                                                <option th:value="false">Inactive</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="save-btn hover-btn">Update Banner</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script th:src="@{/dashBoard-static/js/jquery.min.js}"></script>
+<script th:src="@{/dashBoard-static/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dashBoard-static/js/scripts.js}"></script>
+</body>
+</html>

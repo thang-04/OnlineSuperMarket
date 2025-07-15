@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - Quản lý Bài viết</title>
+    <link th:href="@{/dashBoard-static/css/styles.css}" rel="stylesheet">
+    <link th:href="@{/dashBoard-static/css/admin-style.css}" rel="stylesheet">
+    <link th:href="@{/dashBoard-static/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/dashBoard-static/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
+</head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{dashBoard/fragments/topbar :: topbar}"></nav>
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav" th:insert="~{dashBoard/fragments/sidebar :: sidebar}"></div>
+    <div id="layoutSidenav_content">
+        <main>
+            <div class="container-fluid">
+                <h2 class="mt-30 page-title">Bài viết</h2>
+                <ol class="breadcrumb mb-30">
+                    <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Bài viết</li>
+                </ol>
+
+                <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong th:text="${message}"></strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong th:text="${error}"></strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <div class="card card-static-2 mb-30">
+                    <div class="card-title-2">
+                        <h4>Tất cả bài viết</h4>
+                        <a th:href="@{/admin/blogs/form}" class="add-btn"><i class="fas fa-plus"></i> Viết bài mới</a>
+                    </div>
+                    <div class="card-body-table">
+                        <div class="table-responsive">
+                            <table class="table ucp-table table-hover">
+                                <thead>
+                                <tr>
+                                    <th style="width:60px">ID</th>
+                                    <th style="width:150px">Ảnh đại diện</th>
+                                    <th>Tiêu đề</th>
+                                    <th>Tác giả</th>
+                                    <th>Trạng thái</th>
+                                    <th>Ngày tạo</th>
+                                    <th>Hành động</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="blog : ${blogs}">
+                                    <td th:text="${blog.blogId}"></td>
+                                    <td>
+                                        <div class="cate-img">
+                                            <img th:src="${blog.featuredImage != null ? blog.featuredImage : '/images/placeholder.png'}" alt="Ảnh đại diện">
+                                        </div>
+                                    </td>
+                                    <td th:text="${blog.title}"></td>
+                                    <td th:text="${blog.authorName}"></td>
+                                    <td>
+                                        <span th:if="${blog.published}" class="badge-item badge-status">Đã xuất bản</span>
+                                        <span th:unless="${blog.published}" class="badge-item" style="background-color: #6c757d;">Bản nháp</span>
+                                    </td>
+                                    <td th:text="${#temporals.format(blog.createdAt, 'dd-MM-yyyy')}"></td>
+                                    <td class="action-btns">
+                                        <a th:href="@{/admin/blogs/form/{id}(id=${blog.blogId})}" class="edit-btn" title="Sửa"><i class="fas fa-edit"></i></a>
+                                        <form th:action="@{/admin/blogs/delete/{id}(id=${blog.blogId})}" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');">
+                                            <button type="submit" class="delete-btn" title="Xóa"><i class="fas fa-trash-alt"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="py-4 bg-footer mt-auto" th:insert="~{dashBoard/fragments/footer :: footer}"></footer>
+    </div>
+</div>
+<script th:src="@{/dashBoard-static/js/jquery.min.js}"></script>
+<script th:src="@{/dashBoard-static/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dashBoard-static/js/scripts.js}"></script>
+</body>
+</html>

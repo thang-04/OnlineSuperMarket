@@ -18,6 +18,7 @@ public class Product {
     @JoinColumn(name = "categoryId", nullable = false)
     private Category category;
 
+    @Column(columnDefinition = "NVARCHAR(MAX)")
     private String name;
 
     @Column(columnDefinition = "NVARCHAR(MAX)")

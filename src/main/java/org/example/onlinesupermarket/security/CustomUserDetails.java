@@ -1,87 +1,73 @@
-//package org.example.onlinesupermarket.security;
-//
-//import lombok.Getter;
-//import org.example.hotelmanagement.entity.Guest;
-//import org.springframework.security.core.GrantedAuthority;
-//import org.springframework.security.core.userdetails.UserDetails;
-//
-//import java.time.LocalDate;
-//import java.util.Collection;
-//
-//@Getter
-//public class CustomUserDetails implements UserDetails {
-//    private final Guest guest;
-//    private final Collection<? extends GrantedAuthority> authorities;
-//
-//    public CustomUserDetails(Guest guest, Collection<? extends GrantedAuthority> authorities) {
-//        this.guest = guest;
-//        this.authorities = authorities;
-//    }
-//
-//    public String getUserName() {
-//        return guest.getUserName() != null ? guest.getUserName() : "";
-//    }
-//
-//    public String getPhone() {
-//        return guest.getPhone() != null ? guest.getPhone() : "";
-//    }
-//
-//    public LocalDate getBirthday() {
-//        return guest.getDateOfBirth();
-//    }
-//
-//    public String getAddress() {
-//        return guest.getAddress() != null ? guest.getAddress() : "";
-//    }
-//
-//    public String getEmail() {
-//        return guest.getEmail() != null ? guest.getEmail() : "";
-//    }
-//
-//    public String getProfilePicture() {
-//        return guest.getProfilePicture();
-//    }
-//
-//    public int getGuestId() {
-//        return guest.getGuestID();
-//    }
-//
-//    public Guest getUserEntity() {
-//        return this.guest;
-//    }
-//
-//    @Override
-//    public Collection<? extends GrantedAuthority> getAuthorities() {
-//        return authorities;
-//    }
-//
-//    @Override
-//    public String getPassword() {
-//        return guest.getPassword();
-//    }
-//
-//    @Override
-//    public String getUsername() {
-//        return guest.getEmail();
-//    }
-//
-//    @Override
-//    public boolean isAccountNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isAccountNonLocked() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isCredentialsNonExpired() {
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean isEnabled() {
-//        return true;
-//    }
-//}
+package org.example.onlinesupermarket.security;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import org.example.onlinesupermarket.entity.Address;
+import org.example.onlinesupermarket.entity.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.GrantedAuthority;
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.Map;
+
+@Getter
+@AllArgsConstructor
+public class CustomUserDetails implements UserDetails {
+    private final User user;
+    private final Collection<? extends GrantedAuthority> authorities;
+    public String getFullName() {
+        return user.getFullName() != null ? user.getFullName() : "";
+    }
+
+    public String getPhone() {
+        return user.getPhoneNumber();
+    }
+
+    public Address getAddress() {
+        return user.getAddresses() != null && !user.getAddresses().isEmpty() ? user.getAddresses().get(0) : null;
+    }
+    public String getEmail() {
+        return user.getEmail() != null ? user.getEmail() : "";
+    }
+
+    public String userImg() {return user.getUserImg();}
+
+    public Integer getUserId() {return user.getUserId();}
+
+    public User getUserEntity() {return this.user;}
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
+    }
+
+    @Override
+    public String getPassword() {
+        return user.getPassword();
+    }
+
+    @Override
+    public String getUsername() {
+        return user.getEmail();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+}

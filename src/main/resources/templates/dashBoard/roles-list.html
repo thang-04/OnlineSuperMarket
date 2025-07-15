@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Gambo Supermarket - Quản lý Vai trò</title>
+	<link th:href="@{/dashBoard-static/css/styles.css}" rel="stylesheet">
+	<link th:href="@{/dashBoard-static/css/admin-style.css}" rel="stylesheet">
+	<link th:href="@{/dashBoard-static/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+	<link th:href="@{/dashBoard-static/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
+</head>
+
+<body class="sb-nav-fixed">
+<nav th:replace="~{dashBoard/fragments :: topbar}"></nav>
+
+<div id="layoutSidenav">
+	<div th:replace="~{dashBoard/fragments :: sidebar}"></div>
+
+	<div id="layoutSidenav_content">
+		<main>
+			<div class="container-fluid">
+				<h2 class="mt-30 page-title">Vai trò</h2>
+				<ol class="breadcrumb mb-30">
+					<li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+					<li class="breadcrumb-item active">Vai trò</li>
+				</ol>
+				<div class="row justify-content-between">
+					<div class="col-lg-12">
+						<button class="add-btn hover-btn" data-bs-toggle="modal" data-bs-target="#roleModal"
+								onclick="prepareNewRoleForm()">Thêm mới</button>
+					</div>
+
+					<div class="col-lg-12 col-md-12">
+						<div class="card card-static-2 mt-30 mb-30">
+							<div class="card-title-2">
+								<h4>Tất cả Vai trò</h4>
+							</div>
+							<div class="card-body-table">
+								<div th:if="${message}" class="alert alert-success mx-4" role="alert" th:text="${message}"></div>
+								<div th:if="${error}" class="alert alert-danger mx-4" role="alert" th:text="${error}"></div>
+
+								<div class="table-responsive">
+									<table class="table ucp-table table-hover">
+										<thead>
+										<tr>
+											<th style="width:60px">ID</th>
+											<th>Tên Vai trò</th>
+											<th class="text-center">Hành động</th>
+										</tr>
+										</thead>
+										<tbody>
+										<tr th:each="roleItem : ${roles}">
+											<td th:text="${roleItem.roleId}"></td>
+											<td th:text="${roleItem.roleName}"></td>
+											<td class="action-btns text-center">
+												<button class="edit-btn" style="border: none;"
+														th:attr="onclick=|prepareEditRoleForm(${roleItem.roleId}, '${roleItem.roleName}', '${#strings.arrayJoin(roleItem.permissionIds, ',')}')|"
+														data-bs-toggle="modal" data-bs-target="#roleModal">
+													<i class="fas fa-edit"></i> Sửa
+												</button>
+												<form th:action="@{'/admin/roles/delete/' + ${roleItem.roleId}}"
+													  method="post" class="d-inline"
+													  onsubmit="return confirm('Bạn có chắc chắn muốn xóa vai trò này?');">
+													<button type="submit" class="delete-btn" style="border: none; background: none; color: #f55d2c; cursor: pointer;">
+														<i class="fas fa-trash-alt"></i> Xóa
+													</button>
+												</form>
+											</td>
+										</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</main>
+
+		<footer class="py-4 bg-footer mt-auto">
+			<div class="container-fluid">
+				<div class="d-flex align-items-center justify-content-between small">
+					<div class="text-muted-1">© 2025 <b>Gambo Supermarket</b>. by Gambolthemes</div>
+					<div class="footer-links">
+						<a href="#">Privacy Policy</a>
+						<a href="#">Terms &amp; Conditions</a>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</div>
+</div>
+
+<div class="modal fade" id="roleModal" tabindex="-1" aria-labelledby="roleModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<form id="roleForm" th:action="@{/admin/roles/save}" th:object="${role}" method="post">
+				<div class="modal-header">
+					<h5 class="modal-title" id="roleModalLabel">Thêm Vai trò mới</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<input type="hidden" id="roleId" th:field="*{roleId}" />
+
+					<div class="mb-3">
+						<label for="roleName" class="form-label"><strong>Tên Vai trò</strong></label>
+						<input type="text" id="roleName" class="form-control" th:field="*{roleName}" required
+							   placeholder="Ví dụ: QUẢN LÝ KHO">
+					</div>
+
+					<div class="mb-3">
+						<label class="form-label"><strong>Quyền</strong></label>
+						<div class="border p-3">
+							<div class="row">
+								<div class="col-md-4" th:each="permission : ${allPermissions}">
+									<div class="form-check">
+										<input class="form-check-input permission-checkbox" type="checkbox"
+											   th:field="*{permissionIds}" th:value="${permission.id}"
+											   th:id="${'perm-' + permission.id}">
+										<label class="form-check-label" th:for="${'perm-' + permission.id}"
+											   th:text="${permission.name}"></label>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+					<button type="submit" class="btn btn-primary">Lưu lại</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+<script th:src="@{/dashBoard-static/js/jquery.min.js}"></script>
+<script th:src="@{/dashBoard-static/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dashBoard-static/js/scripts.js}"></script>
+<script>
+	function prepareNewRoleForm() {
+		document.getElementById('roleForm').reset();
+		document.getElementById('roleId').value = '';
+		document.getElementById('roleModalLabel').innerText = 'Thêm Vai trò mới';
+	}
+
+	function prepareEditRoleForm(id, name, permissionIds) {
+		document.getElementById('roleForm').reset();
+		document.getElementById('roleModalLabel').innerText = 'Chỉnh sửa Vai trò';
+
+		document.getElementById('roleId').value = id;
+		document.getElementById('roleName').value = name;
+
+		const selectedPermissionIds = permissionIds ? permissionIds.split(',') : [];
+		const checkboxes = document.querySelectorAll('.permission-checkbox');
+		checkboxes.forEach(checkbox => {
+			checkbox.checked = selectedPermissionIds.includes(checkbox.value);
+		});
+	}
+</script>
+</body>
+
+</html>

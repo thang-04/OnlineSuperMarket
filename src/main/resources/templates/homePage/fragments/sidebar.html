@@ -1,0 +1,13 @@
+<div class="left-side-tabs" th:fragment="sidebar(activeTab)">
+    <div class="dashboard-left-links">
+        <a th:href="@{/home/profile}" th:classappend="${activeTab}=='profile' ? 'active' : ''" class="user-item">
+            <i class="uil uil-apps"></i>Profile
+        </a>
+        <a th:href="@{/home/address}" th:classappend="${activeTab}=='address' ? 'active' : ''" class="user-item">
+            <i class="uil uil-location-point"></i>My Address
+        </a>
+        <a th:href="@{/home/my-order}" th:classappend="${activeTab}=='order' ? 'active' : ''" class="user-item">
+            <i class="uil uil-box"></i>My Orders
+        </a>
+    </div>
+</div> 
