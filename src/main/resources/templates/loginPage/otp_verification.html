@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP Verification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link th:href='@{/homePage/vendor/unicons-2.0.1/css/unicons.css}' rel='stylesheet'>
+    <link th:href="@{/homePage/css/style.css}" rel="stylesheet">
+    <link th:href="@{/homePage/css/responsive.css}" rel="stylesheet">
+    <link th:href="@{/homePage/css/night-mode.css}" rel="stylesheet">
+    <link th:href="@{/homePage/css/step-wizard.css}" rel="stylesheet">
+    <link th:href="@{/homePage/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
+    <link th:href="@{/homePage/vendor/OwlCarousel/assets/owl.carousel.css}" rel="stylesheet">
+    <link th:href="@{/homePage/vendor/OwlCarousel/assets/owl.theme.default.min.css}" rel="stylesheet">
+    <link th:href="@{/homePage/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link th:href="@{/homePage/vendor/bootstrap-select/css/bootstrap-select.min.css}" rel="stylesheet">
+</head>
+<body>
+<div class="sign-inup">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5">
+                <div class="sign-form">
+                    <div class="sign-inner">
+                        <div class="sign-logo" id="logo">
+                            <a href="../homePage/index.html"><img src="images/logo.svg" alt=""></a>
+                            <a href="../homePage/index.html"><img class="logo-inverse" src="images/dark-logo.svg" alt=""></a>
+                        </div>
+                        <div class="form-dt">
+                            <div class="form-inpts checout-address-step">
+                                <form th:action="@{/otp-verification}" method="post" onsubmit="return combineOtp()">
+                                    <input type="hidden" name="email" th:value="${email}">
+                                    <div class="form-title"><h6>Enter OTP</h6></div>
+                                    <div class="otp-container d-flex justify-content-center mb-3">
+                                        <input type="text" class="otp-input form-control mx-1" maxlength="1" data-index="0">
+                                        <input type="text" class="otp-input form-control mx-1" maxlength="1" data-index="1">
+                                        <input type="text" class="otp-input form-control mx-1" maxlength="1" data-index="2">
+                                        <input type="text" class="otp-input form-control mx-1" maxlength="1" data-index="3">
+                                        <input type="text" class="otp-input form-control mx-1" maxlength="1" data-index="4">
+                                        <input type="text" class="otp-input form-control mx-1" maxlength="1" data-index="5">
+                                    </div>
+                                    <input type="hidden" name="otp" id="otpFull">
+                                    <button class="login-btn hover-btn h_50" type="submit">Verify OTP</button>
+                                </form>
+                            </div>
+                            <div class="signup-link">
+                                <p>Didn't receive OTP? <a th:href="@{/forgot-password}" class="resend-btn">Resend</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="copyright-text text-center mt-4">
+                    <i class="uil uil-copyright"></i>Copyright 2024 <b>Gambolthemes</b> . All rights reserved
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/homePage/js/jquery.min.js}"></script>
+<script th:src="@{/homePage/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/homePage/vendor/bootstrap-select/js/bootstrap-select.min.js}"></script>
+<script th:src="@{/homePage/vendor/OwlCarousel/owl.carousel.js}"></script>
+<script th:src="@{/homePage/js/jquery.countdown.min.js}"></script>
+<script th:src="@{/homePage/js/custom.js}"></script>
+<script th:src="@{/homePage/js/product.thumbnail.slider.js}"></script>
+<script th:src="@{/homePage/js/offset_overlay.js}"></script>
+<script th:src="@{/homePage/js/night-mode.js}"></script>
+<script>
+    // OTP input logic (copy từ template mẫu)
+    function combineOtp() {
+        const inputs = document.querySelectorAll('.otp-input');
+        let otp = '';
+        inputs.forEach(input => { otp += input.value; });
+        document.getElementById('otpFull').value = otp;
+        if (otp.length < 6) {
+            alert("Please enter the full 6-digit verification code.");
+            return false;
+        }
+        return true;
+    }
+    document.querySelectorAll('.otp-input').forEach((input, index, arr) => {
+        input.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length === 1 && index < arr.length - 1) arr[index + 1].focus();
+        });
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && this.value === '' && index > 0) arr[index - 1].focus();
+        });
+        input.addEventListener('paste', function(e) {
+            e.preventDefault();
+            const pasteData = e.clipboardData.getData('text');
+            const numbers = pasteData.replace(/[^0-9]/g, '');
+            for (let i = 0; i < 6 && i < numbers.length; i++) {
+                if (arr[i]) arr[i].value = numbers[i];
+            }
+            arr[5].focus();
+        });
+    });
+</script>
+</body>
+</html> 

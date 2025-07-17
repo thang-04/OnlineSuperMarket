@@ -2,32 +2,33 @@
 <html lang="en">
 
 <head>
-		<meta charset="utf-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, shrink-to-fit=9">
-		<meta name="description" content="Gambolthemes">
-		<meta name="author" content="Gambolthemes">		
-		<title>Gambo - Sign In</title>
-		
-		<!-- Favicon Icon -->
-		<link rel="icon" type="image/png" href="images/fav.png">
-		
-		<!-- Stylesheets -->
-		<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-		<link th:href='@{/homePage/vendor/unicons-2.0.1/css/unicons.css}' rel='stylesheet'>
-		<link th:href="@{/homePage/css/style.css}" rel="stylesheet">
-		<link th:href="@{/homePage/css/responsive.css}" rel="stylesheet">
-		<link th:href="@{/homePage/css/night-mode.css}" rel="stylesheet">
-		<link th:href="@{/homePage/css/step-wizard.css}" rel="stylesheet">
-		
-		<!-- Vendor Stylesheets -->
-		<link th:href="@{/homePage/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
-		<link th:href="@{/homePage/vendor/OwlCarousel/assets/owl.carousel.css}" rel="stylesheet">
-		<link th:href="@{/homePage/vendor/OwlCarousel/assets/owl.theme.default.min.css}" rel="stylesheet">
-		<link th:href="@{/homePage/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-		<link th:href="@{/homePage/vendor/bootstrap-select/css/bootstrap-select.min.css}" rel="stylesheet">
-		
-	</head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, shrink-to-fit=9">
+	<meta name="description" content="Gambolthemes">
+	<meta name="author" content="Gambolthemes">
+	<title>Gambo - Sign In</title>
+
+	<!-- Favicon Icon -->
+	<link rel="icon" type="image/png" href="images/fav.png">
+
+	<!-- Stylesheets -->
+	<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&amp;display=swap"
+		rel="stylesheet">
+	<link th:href='@{/homePage/vendor/unicons-2.0.1/css/unicons.css}' rel='stylesheet'>
+	<link th:href="@{/homePage/css/style.css}" rel="stylesheet">
+	<link th:href="@{/homePage/css/responsive.css}" rel="stylesheet">
+	<link th:href="@{/homePage/css/night-mode.css}" rel="stylesheet">
+	<link th:href="@{/homePage/css/step-wizard.css}" rel="stylesheet">
+
+	<!-- Vendor Stylesheets -->
+	<link th:href="@{/homePage/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
+	<link th:href="@{/homePage/vendor/OwlCarousel/assets/owl.carousel.css}" rel="stylesheet">
+	<link th:href="@{/homePage/vendor/OwlCarousel/assets/owl.theme.default.min.css}" rel="stylesheet">
+	<link th:href="@{/homePage/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+	<link th:href="@{/homePage/vendor/bootstrap-select/css/bootstrap-select.min.css}" rel="stylesheet">
+
+</head>
 
 <body>
 	<div class="sign-inup">
@@ -38,7 +39,8 @@
 						<div class="sign-inner">
 							<div class="sign-logo" id="logo">
 								<a th:href="@{/home}"><img th:src="@{/homePage/images/logo.svg}" alt=""></a>
-								<a th:href="@{/home}"><img class="logo-inverse" th:src="@{/homePage/images/dark-logo.svg}" alt=""></a>
+								<a th:href="@{/home}"><img class="logo-inverse"
+										th:src="@{/homePage/images/dark-logo.svg}" alt=""></a>
 							</div>
 							<div class="form-dt">
 								<div class="form-inpts checout-address-step">
@@ -52,28 +54,37 @@
 										<span th:text="${successMessage}"></span>
 									</div>
 									<form action="/perform_login" method="post">
-										<div class="form-title"><h6>Sign In</h6></div>
+										<div class="form-title">
+											<h6>Sign In</h6>
+										</div>
 										<div class="form-group pos_rel mb-3">
-											<input id="email" name="email" type="email" placeholder="Enter email" class="form-control lgn_input" required="">
+											<input id="email" name="email" type="email" placeholder="Enter email"
+												class="form-control lgn_input" required="">
 											<i class="uil uil-mobile-android-alt lgn_icon"></i>
 										</div>
 										<div class="form-group pos_rel mb-3">
-											<input id="password1" name="password" type="password" placeholder="Enter Password" class="form-control lgn_input" required="">
+											<input id="password1" name="password" type="password"
+												placeholder="Enter Password" class="form-control lgn_input" required="">
 											<i class="uil uil-padlock lgn_icon"></i>
 										</div>
 										<div class="form-check mb-3">
-											<input class="form-check-input" type="checkbox"
-												   id="remember-me" name="remember-me">
+											<input class="form-check-input" type="checkbox" id="remember-me"
+												name="remember-me">
 											<label class="form-check-label" for="remember-me">
 												Remember me
 											</label>
 										</div>
 										<button class="login-btn hover-btn h_50" type="submit">Sign In Now</button>
 									</form>
+									<div class="text-center mt-3">
+										<a href="/oauth2/authorization/google" class="btn btn-outline-danger w-100">
+											<i class="fab fa-google me-2"></i> Đăng nhập với Google
+										</a>
+									</div>
 								</div>
 								<div class="password-forgor">
 
-									<a href="forgot_password.html">Forgot Password?</a>
+									<a th:href="@{/forgot-password}">Forgot Password?</a>
 								</div>
 								<div class="signup-link">
 									<p>Don't have an account? - <a th:href="@{/sign-up}">Sign Up Now</a></p>
