@@ -1,7 +1,9 @@
 package org.example.onlinesupermarket.service.product;
 
-import org.springframework.stereotype.Service;
+import org.example.onlinesupermarket.entity.Product;
+import java.util.List;
 
-@Service
 public interface ProductService {
+    List<Product> getAllProducts();
+    List<Product> findByCategoryId(Integer categoryId);
 }

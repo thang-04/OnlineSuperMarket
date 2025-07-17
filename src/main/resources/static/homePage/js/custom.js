@@ -308,3 +308,27 @@ $(document).keydown(function (event) {
 		return false;
 	}
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const categoryModal = document.getElementById('category_model');
+    if (categoryModal) {
+        categoryModal.addEventListener('show.bs.modal', function () {
+            fetch('/api/categories')
+                .then(res => res.json())
+                .then(data => {
+                    const list = document.getElementById('categoryList');
+                    list.innerHTML = '';
+                    data.forEach(cat => {
+                        const li = document.createElement('li');
+                        li.innerHTML = `
+                            <a href="#" class="single-cat-item" data-id="${cat.categoryId}">
+                                <div class="icon"><img src="/homePage/images/category/icon-1.svg" alt=""></div>
+                                <div class="text">${cat.name}</div>
+                            </a>
+                        `;
+                        list.appendChild(li);
+                    });
+                });
+        });
+    }
+});
