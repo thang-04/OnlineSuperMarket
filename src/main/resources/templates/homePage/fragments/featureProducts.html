@@ -1,0 +1,32 @@
+<div th:fragment="featureProducts">
+    <div class="section145">
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <h2>Sản phẩm bán chạy nhất</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3" th:each="product : ${featureProducts}">
+                    <div class="product-item">
+                        <a th:href="@{/home/productdetail/{id}(id=${product.productId})}">
+                            <img th:src="${product.images}" alt="" class="product-img"/>
+                        </a>
+                        <div class="product-text-dt">
+                            <h4>
+                                <a th:href="@{/home/productdetail/{id}(id=${product.productId})}" th:text="${product.name}"></a>
+                            </h4>
+                            <div class="product-price" th:text="'Giá: $' + ${product.price}"></div>
+                            <div class="product-sold" th:text="'Đã bán: ' + ${product.totalSold}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-12 text-center">
+                    <a href="/home/similar-products" class="btn btn-primary">See more</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

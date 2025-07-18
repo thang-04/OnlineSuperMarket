@@ -1,6 +1,7 @@
 package org.example.onlinesupermarket.repository;
 
 import org.example.onlinesupermarket.entity.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,7 +22,7 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     @Query("SELECT p FROM Product p LEFT JOIN FETCH p.productImages WHERE p.category.categoryId = :categoryId and p.productId != :productId")
     List<Product> moreProduct(@Param("categoryId") Integer categoryId, @Param("productId") Integer productId);
     // san pham ban chay nhat
-    @Query("SELECT p FROM Product p JOIN OrderItem oi ON p.productId = oi.product.productId GROUP BY p.productId, p.category, p.createdAt, p.description, p.name, p.price, p.status, p.stockQuantity ORDER BY SUM(oi.quantity) DESC")
+    @Query("SELECT p FROM Product p JOIN OrderItem oi ON p.productId = oi.product.productId GROUP BY p.productId, p.category, p.createdAt, p.description, p.name,p.image, p.price, p.status, p.stockQuantity ORDER BY SUM(oi.quantity) DESC")
     List<Product> findTopBestSellingProducts(Pageable pageable);
     // Tìm kiếm sản phẩm theo tên (LIKE, không phân biệt hoa thường)
     List<Product> findByNameContainingIgnoreCase(String name);
@@ -55,4 +56,18 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     // Search + filter + sắp xếp tăng/giảm
     List<Product> findByNameContainingIgnoreCaseAndPriceBetweenOrderByPriceAscNameAsc(String name, Double minPrice, Double maxPrice);
     List<Product> findByNameContainingIgnoreCaseAndPriceBetweenOrderByPriceDescNameAsc(String name, Double minPrice, Double maxPrice);
+    Page<Product> findByNameContainingIgnoreCaseAndCategoryCategoryIdAndPriceBetween(String name, Integer categoryId, Double minPrice, Double maxPrice, Pageable pageable);
+    Page<Product> findByNameContainingIgnoreCaseAndCategoryCategoryId(String name, Integer categoryId, Pageable pageable);
+    Page<Product> findByNameContainingIgnoreCaseAndPriceBetween(String name, Double minPrice, Double maxPrice, Pageable pageable);
+    Page<Product> findByCategoryCategoryIdAndPriceBetween(Integer categoryId, Double minPrice, Double maxPrice, Pageable pageable);
+    Page<Product> findByNameContainingIgnoreCase(String name, Pageable pageable);
+    Page<Product> findByCategoryCategoryId(Integer categoryId, Pageable pageable);
+    Page<Product> findByPriceBetween(Double minPrice, Double maxPrice, Pageable pageable);
+    // JPQL lấy top 10 sản phẩm bán chạy nhất (bao gồm cả sản phẩm chưa bán)
+    @Query("SELECT p, COALESCE(SUM(oi.quantity), 0) as totalSold FROM Product p LEFT JOIN p.orderItems oi GROUP BY p ORDER BY totalSold DESC")
+    List<Object[]> findTop10BestSellingProducts(Pageable pageable);
+
+    // JPQL lấy tất cả sản phẩm bán chạy (phân trang)
+    @Query("SELECT p, COALESCE(SUM(oi.quantity), 0) as totalSold FROM Product p LEFT JOIN p.orderItems oi GROUP BY p ORDER BY totalSold DESC")
+    Page<Object[]> findAllBestSellingProducts(Pageable pageable);
 }

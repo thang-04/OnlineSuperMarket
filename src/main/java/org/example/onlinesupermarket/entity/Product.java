@@ -25,13 +25,15 @@ public class Product {
     private String description;
 
     private Double price;
-
+    private String image;
     private int stockQuantity;
-
     private boolean status = false;
 
     private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<ProductImage> productImages;
+
+    @OneToMany(mappedBy = "product")
+    private List<OrderItem> orderItems;
 }

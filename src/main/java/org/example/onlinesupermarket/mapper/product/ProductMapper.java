@@ -20,9 +20,18 @@ public class ProductMapper {
     public ProductDTO MapperMoreProduct(Product product) {
         ProductDTO dto = new ProductDTO();
         dto.setProductId(product.getProductId());
-        dto.setProductImages(product.getProductImages());
+        dto.setImages(product.getImage());
         dto.setName(product.getName());
         dto.setPrice(product.getPrice());
+        return dto;
+    }
+    public ProductDTO MapperProductWithTotalSold(Product product, Long totalSold) {
+        ProductDTO dto = new ProductDTO();
+        dto.setProductId(product.getProductId());
+        dto.setImages(product.getImage());
+        dto.setName(product.getName());
+        dto.setPrice(product.getPrice());
+        dto.setTotalSold(totalSold);
         return dto;
     }
 }

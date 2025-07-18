@@ -13,5 +13,6 @@ public class ProductDTO {
     private Integer productId;
     private String name;
     private Double price;
-    private List<ProductImage> productImages;
+    private String images;
+    private Long totalSold; // Số lượng bán ra cho sản phẩm bán chạy
 }
