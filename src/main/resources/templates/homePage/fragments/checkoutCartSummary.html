@@ -1,0 +1,37 @@
+<div th:fragment="checkoutCartSummary">
+    <div th:if="${cart == null or #lists.isEmpty(cart.cartItems)}" class="alert alert-info text-center mt-4 mb-4">
+        Giỏ hàng trống
+    </div>
+    <div th:if="${cart != null and !#lists.isEmpty(cart.cartItems)}">
+        <table class="table table-bordered align-middle mb-0 w-100" style="table-layout: fixed;">
+            <thead class="table-light">
+                <tr>
+                    <th>STT</th>
+                    <th>Ảnh</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Đơn giá</th>
+                    <th>Số lượng</th>
+                    <th>Thành tiền</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item, iterStat : ${cart.cartItems}">
+                    <td th:text="${iterStat.index + 1}"></td>
+                    <td>
+                        <img th:src="${#lists.isEmpty(item.product.productImages) ? '/homePage/images/product/default.jpg' : (item.product.productImages.?[isPrimary].size() > 0 ? item.product.productImages.?[isPrimary].get(0).imageUrl : item.product.productImages.get(0).imageUrl)}" alt="Ảnh" class="cart-product-img">
+                    </td>
+                    <td th:text="${item.product.name}"></td>
+                    <td th:text="${#numbers.formatDecimal(item.product.price, 0, 'COMMA', 2, 'POINT')} + ' đ'"></td>
+                    <td th:text="${item.quantity}"></td>
+                    <td th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 0, 'COMMA', 2, 'POINT')} + ' đ'"></td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="d-flex justify-content-end align-items-center mt-3">
+            <div class="me-4">
+                <b>Tổng tiền:</b>
+                <span th:text="${#numbers.formatDecimal(cart.totalAmount, 0, 'COMMA', 2, 'POINT')} + ' đ'"></span>
+            </div>
+        </div>
+    </div>
+</div> 

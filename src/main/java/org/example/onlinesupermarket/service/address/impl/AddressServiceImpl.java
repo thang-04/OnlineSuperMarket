@@ -49,15 +49,17 @@ public class AddressServiceImpl implements AddressService {
         Address address = addressMapper.toEntity(addressDTO);
         if (user.isPresent()){
             address.setUser(user.get());
-            
-            // If setting as default, remove default from other addresses
-            if (addressDTO.isDefaultAddress()) {
+
+            // Nếu user chưa có địa chỉ nào, luôn set default
+            if (addressRepository.findByUser(user.get()).isEmpty()) {
+                address.setDefaultAddress(true);
+            } else if (addressDTO.isDefaultAddress()) {
+                // Nếu chọn default, bỏ default ở địa chỉ cũ
                 addressRepository.findByUserAndDefaultAddressTrue(user.get()).ifPresent(existingDefault -> {
                     existingDefault.setDefaultAddress(false);
                     addressRepository.save(existingDefault);
                 });
             }
-            
             addressRepository.save(address);
         }
     }

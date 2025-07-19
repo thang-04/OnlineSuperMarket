@@ -1,0 +1,4 @@
+<div th:if="${cart == null or #lists.isEmpty(cart.cartItems)}">Giỏ hàng trống</div>
+<div th:if="${cart != null}" th:each="item : ${cart.cartItems}">
+    <!-- Hiển thị thông tin sản phẩm trong giỏ -->
+</div> 

@@ -1,0 +1,10 @@
+<div th:fragment="vnpayResult">
+    <div class="dashboard-right" style="max-width: 600px; margin: 40px auto; text-align: center;">
+        <h2 style="color: #ff7e5f; margin-bottom: 24px;">Kết quả thanh toán VNPay</h2>
+        <div th:if="${result}" class="alert" th:classappend="${result.contains('thành công') ? ' alert-success' : (result.contains('thất bại') || result.contains('không hợp lệ') ? ' alert-danger' : ' alert-warning')}">
+            <span th:text="${result}"></span>
+        </div>
+        <p style="font-size: 18px; margin: 16px 0;">Mã phản hồi: <span th:text="${responseCode}"></span></p>
+        <a href="/home/orders/checkout" class="btn btn-primary" style="margin-top: 24px;">Quay lại trang chủ</a>
+    </div>
+</div>
