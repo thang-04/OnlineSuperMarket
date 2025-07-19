@@ -63,9 +63,9 @@
                     <div class="col-md-12">
                         <div class="row">
                             <div class="col-md-3" th:each="product : ${products}">
-                                <div class="product-item">
+                                <div  class="product-item" style="width: 220px; height: 320px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding: 12px; box-sizing: border-box; margin: 8px;">
                                    <a th:href="@{/home/productdetail/{id}(id=${product.productId})}" class="product-img">
-                                        <img th:src="${#lists.isEmpty(product.image) ? '/homePage/images/product/big-1.jpg' : product.image}" alt="">
+                                        <img th:src="${#lists.isEmpty(product.image) ? 'https://file.hstatic.net/200000585055/file/thit-heo-sach-la-gi-thit-3a_5240e3dc18e34d78bed1d4261c9d1b1a_grande.jpeg' : product.image}" alt="" style="width: 180px; height: 180px; object-fit: cover;">
                                     </a>
                                     <div class="product-text-dt">
                                         <h4 th:text="${product.name}"></h4>

@@ -1,7 +1,7 @@
 //package org.example.onlinesupermarket.security;
 //
-//import org.example.hotelmanagement.entity.Guest;
-//import org.example.hotelmanagement.repository.GuestRepository;
+//import org.example.onlinesupermarket.entity.User;
+//import org.example.onlinesupermarket.repository.UserRepository;
 //import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -11,7 +11,6 @@
 //import org.springframework.stereotype.Service;
 //
 //import java.util.ArrayList;
-//import java.util.Deque;
 //import java.util.List;
 //import java.util.Optional;
 //
@@ -19,25 +18,22 @@
 //public class CustomUserDetailsService implements UserDetailsService {
 //
 //    @Autowired
-//    private GuestRepository guestRepository;
+//    private UserRepository userRepository;
 //
 //    @Override
 //    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        Optional<Guest> optGuest = guestRepository.findByEmail(email);
-//        if (optGuest.isEmpty()) {
-//            throw new UsernameNotFoundException("User not found with email: " + email);
+//        Optional<User> optuser = userRepository.findByEmail(email);
+//        if (optuser.isEmpty()) {
+//            System.out.println("User not found: " + email);
+//            throw new UsernameNotFoundException("User not found: " + email);
 //        }
-//
-//        Guest guest = optGuest.get();
-//        if (guest.getRole() == null) {
-//            throw new UsernameNotFoundException("User has no role assigned: " + email);
-//        }
+//        User user = optuser.get();
+//        System.out.println("Found user: " + user.getFullName() + ", RoleID: " + user.getRole().getRoleId());
 //
 //        List<GrantedAuthority> authorities = new ArrayList<>();
-//        String roleName = guest.getRole().getRoleName().toUpperCase();
-//        authorities.add(new SimpleGrantedAuthority("ROLE_" + roleName));
+//        authorities.add(new SimpleGrantedAuthority("ROLE_" + user.getRole().getRoleName().toUpperCase()));
 //
-//        return new CustomUserDetails(guest, authorities);
+//        //custom user detail
+//        return new CustomUserDetails(user, authorities);
 //    }
 //}
-//

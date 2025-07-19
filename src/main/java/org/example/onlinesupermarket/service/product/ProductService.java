@@ -25,4 +25,5 @@ public interface ProductService {
     List<ProductDTO> getTop10BestSellingProducts();
     // Lấy tất cả sản phẩm bán chạy (phân trang)
     Page<ProductDTO> getAllBestSellingProducts(int pageNo, int pageSize);
+    Product getProductById(Integer productId);
 }

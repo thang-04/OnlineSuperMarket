@@ -4,15 +4,21 @@ import org.example.onlinesupermarket.dto.product.ProductDTO;
 import org.example.onlinesupermarket.dto.product.ProductDetailDTO;
 import org.example.onlinesupermarket.entity.Category;
 import org.example.onlinesupermarket.entity.Product;
+import org.example.onlinesupermarket.entity.WishList;
+import org.example.onlinesupermarket.entity.User;
+import org.example.onlinesupermarket.repository.UserRepository;
 import org.example.onlinesupermarket.service.category.CategoryService;
 import org.example.onlinesupermarket.service.product.ProductService;
+import org.example.onlinesupermarket.service.wishList.WishListService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/home")
@@ -21,6 +27,10 @@ public class HomeController {
     private CategoryService categoryService;
     @Autowired
     private ProductService productService;
+    @Autowired
+    private WishListService wishListService;
+    @Autowired
+    private UserRepository userRepository;
 
     //truy cap home page
     @GetMapping()
@@ -92,10 +102,24 @@ public class HomeController {
     @GetMapping("/productdetail/{id}")
     public String detail(Model model, @PathVariable("id") Integer id) {
         ProductDetailDTO detail = productService.getProductDetail(id);
+        if (detail == null || detail.getProductId() == null) {
+            model.addAttribute("error", "Không tìm thấy sản phẩm hoặc sản phẩm lỗi dữ liệu.");
+            return "homePage/error";
+        }
         Category category = categoryService.findByName(detail.getCategoryName());
         Integer categoryId = category.getCategoryId();
-        List<ProductDTO> moreProduct = productService.MoreLikeThis(categoryId, id);
-        List<ProductDTO> featuredProducts = productService.getTopBestSellingProducts(8); // Lấy top 8 sản phẩm bán chạy
+        Integer userId = 1;
+        User user = userRepository.findByUserId(userId);
+        boolean isInWishlist = wishListService.isProductInWishList(user, productService.getProductById(id));
+        // Xử lý trạng thái wishlist cho moreProduct
+        List<ProductDTO> moreProductRaw = productService.MoreLikeThis(categoryId, id);
+        List<ProductDTO> moreProduct = moreProductRaw.stream().map(p -> {
+            boolean inWish = wishListService.isProductInWishList(user, productService.getProductById(p.getProductId()));
+            p.setInWishlist(inWish);
+            return p;
+        }).collect(Collectors.toList());
+        List<ProductDTO> featuredProducts = productService.getTopBestSellingProducts(8);
+        model.addAttribute("isInWishlist", isInWishlist);
         model.addAttribute("moreProduct", moreProduct);
         model.addAttribute("detail", detail);
         model.addAttribute("featuredProducts", featuredProducts);
@@ -104,8 +128,34 @@ public class HomeController {
     }
     @GetMapping("/wishlist")
     public String viewWishList(Model model) {
+        Integer userId = 1; // giả lập user id
+        User user = userRepository.findByUserId(userId);
+        List<WishList> wishLists = wishListService.getWishListByUser(user);
+        model.addAttribute("wishLists", wishLists);
         model.addAttribute("fragmentContent", "homePage/fragments/wishlist :: wishlist");
         return "homePage/index";
+    }
+
+    @PostMapping("/wishlist/add/{productId}")
+    public String addToWishList(@PathVariable Integer productId, RedirectAttributes redirectAttributes) {
+        Integer userId = 1; // giả lập user id
+        User user = userRepository.findByUserId(userId);
+        Product product = productService.getProductById(productId);
+        wishListService.addProductToWishList(user, product);
+        return "redirect:/home/productdetail/" + productId;
+    }
+
+    @PostMapping("/wishlist/remove/{productId}")
+    public String removeFromWishList(@PathVariable Integer productId, @RequestParam(value = "from", required = false) String from) {
+        Integer userId = 1; // giả lập user id
+        User user = userRepository.findByUserId(userId);
+        Product product = productService.getProductById(productId);
+        wishListService.removeProductFromWishList(user, product);
+        if ("wishlist".equals(from)) {
+            return "redirect:/home/wishlist";
+        } else {
+            return "redirect:/home/productdetail/" + productId;
+        }
     }
 
     // Hiển thị 10 sản phẩm bán chạy nhất (feature products)

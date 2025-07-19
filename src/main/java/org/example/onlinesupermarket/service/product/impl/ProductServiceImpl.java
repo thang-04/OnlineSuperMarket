@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -39,10 +40,14 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductDetailDTO getProductDetail(Integer productId) {
         Optional<Product> product = productRepository.findWithImages(productId);
-        if(product.isPresent()) {
+        try {
+            if(product.isEmpty() || product.get().getProductId() == null) {
+                throw new org.springframework.data.crossstore.ChangeSetPersister.NotFoundException();
+            }
             return productMapper.ProductDetailMapper(product.get());
+        } catch (org.springframework.data.crossstore.ChangeSetPersister.NotFoundException e) {
+            return null;
         }
-        else return null;
     }
 //logic san pham tuong tu(fill theo category)
     @Override
@@ -156,5 +161,10 @@ public class ProductServiceImpl implements ProductService {
             // Tất cả sản phẩm
             return productRepository.findAll(pageable);
         }
+    }
+
+    @Override
+    public Product getProductById(Integer productId) {
+        return productRepository.findById(productId).orElse(null);
     }
 }

@@ -15,4 +15,5 @@ public class ProductDTO {
     private Double price;
     private String images;
     private Long totalSold; // Số lượng bán ra cho sản phẩm bán chạy
+    private boolean isInWishlist;
 }

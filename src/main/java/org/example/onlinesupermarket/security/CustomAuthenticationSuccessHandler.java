@@ -34,7 +34,6 @@
 //            }
 //        }
 //
-//        // Không có URL trước đó -> redirect theo vai trò
 //        String redirectURL = request.getContextPath();
 //        if (hasRole(authentication, "ROLE_ADMIN")) {
 //            redirectURL += "/dashboard";

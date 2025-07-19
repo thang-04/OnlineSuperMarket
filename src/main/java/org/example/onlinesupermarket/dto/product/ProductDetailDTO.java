@@ -19,4 +19,6 @@ public class ProductDetailDTO {
     private Double price;
     private int stockQuantity;
     private List<ProductImage> productImages;
+    private String image;
+    private Integer productId;
 }

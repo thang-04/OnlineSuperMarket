@@ -8,14 +8,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class ProductMapper {
     public ProductDetailDTO ProductDetailMapper(Product product) {
-            ProductDetailDTO dto = new ProductDetailDTO();
-            dto.setCategoryName(product.getCategory().getName());
-            dto.setProductImages(product.getProductImages());
-            dto.setName(product.getName());
-            dto.setDescription(product.getDescription());
-            dto.setPrice(product.getPrice());
-            dto.setStockQuantity(product.getStockQuantity());
-            return dto;
+        if (product == null || product.getProductId() == null) {
+            throw new IllegalArgumentException("Product or productId is null");
+        }
+        ProductDetailDTO dto = new ProductDetailDTO();
+        dto.setCategoryName(product.getCategory().getName());
+        dto.setProductImages(product.getProductImages());
+        dto.setName(product.getName());
+        dto.setDescription(product.getDescription());
+        dto.setPrice(product.getPrice());
+        dto.setStockQuantity(product.getStockQuantity());
+        dto.setProductId(product.getProductId());
+        dto.setImage(product.getImage());
+        return dto;
     }
     public ProductDTO MapperMoreProduct(Product product) {
         ProductDTO dto = new ProductDTO();
