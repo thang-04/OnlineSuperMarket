@@ -37,14 +37,14 @@ public class FileServiceImpl implements FileService {
             }
 
             String fileName = System.currentTimeMillis() + "_" + originalFileName;
-
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
 
             try (InputStream inputStream = file.getInputStream()) {
                 Files.copy(inputStream, targetLocation, StandardCopyOption.REPLACE_EXISTING);
             }
 
-            return fileName;
+            return "/uploads/" + fileName;
+
         } catch (IOException ex) {
             throw new RuntimeException("Could not store file " + originalFileName + ". Please try again!", ex);
         }

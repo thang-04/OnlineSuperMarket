@@ -14,9 +14,12 @@ import org.example.onlinesupermarket.service.user.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -58,7 +61,6 @@ public class UserServiceImpl implements UserService {
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email).orElseThrow();
 
-        logger.info("[ProfileUpdate] Updating profile for user: {}", email);
         if (fullName == null || fullName.trim().isEmpty()) {
             logger.warn("[ProfileUpdate] Full name is empty");
             throw new IllegalArgumentException("Full name is required");
@@ -69,22 +71,16 @@ public class UserServiceImpl implements UserService {
 
         if (profileImage != null && !profileImage.isEmpty()) {
             try {
-                logger.info("[ProfileUpdate] Uploading new profile image for user: {}", email);
                 String imageUrl = fileUploadService.uploadProfileImage(profileImage);
                 user.setUserImg(imageUrl);
-                logger.info("[ProfileUpdate] New profile image URL: {}", imageUrl);
             } catch (IOException e) {
-                logger.error("[ProfileUpdate] Failed to upload profile image: {}", e.getMessage(), e);
                 throw new RuntimeException("Failed to upload profile image: " + e.getMessage(), e);
             } catch (IllegalArgumentException e) {
-                logger.error("[ProfileUpdate] Invalid image file: {}", e.getMessage(), e);
                 throw new RuntimeException("Invalid image file: " + e.getMessage(), e);
             }
         } else {
-            logger.info("[ProfileUpdate] No new profile image uploaded for user: {}", email);
         }
         userRepository.save(user);
-        logger.info("[ProfileUpdate] User profile saved for user: {}", email);
     }
 
     @Override
@@ -160,10 +156,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isEmailExits(String emamil) {
-        if(userRepository.existsByEmail(emamil)){
+    @Transactional(readOnly = true)
+    public boolean isEmailExits(String email) {
+        if (!StringUtils.hasText(email)) {
             return false;
         }
-        return  true;
+        String trimmedEmail = email.trim();
+        return userRepository.existsByEmailIgnoreCase(trimmedEmail);
+    }
+
+    @Override
+    public Page<UserDTO> getUsers(String keyword, Integer roleId, Pageable pageable) {
+        Page<User> userPage = userRepository.findByFilters(keyword, roleId, pageable);
+        return userPage.map(userMapper::toDTO);
     }
 }

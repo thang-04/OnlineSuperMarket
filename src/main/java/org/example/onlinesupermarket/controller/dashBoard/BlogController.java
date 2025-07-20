@@ -1,10 +1,15 @@
 package org.example.onlinesupermarket.controller.dashBoard;
 
+import jakarta.validation.Valid;
 import org.example.onlinesupermarket.dto.blog.BlogDTO;
-import org.example.onlinesupermarket.service.BlogService;
+import org.example.onlinesupermarket.service.blog.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -17,8 +22,20 @@ public class BlogController {
     private BlogService blogService;
 
     @GetMapping
-    public String listBlogs(Model model) {
-        model.addAttribute("blogs", blogService.getAllBlogs());
+    public String listBlogs(Model model,
+                            @RequestParam(name = "title", required = false) String title,
+                            @RequestParam(name = "published", required = false) Boolean published,
+                            @RequestParam(name = "page", defaultValue = "1") int page,
+                            @RequestParam(name = "size", defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<BlogDTO> blogPage = blogService.getBlogs(title, published, pageable);
+
+        model.addAttribute("blogPage", blogPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("title", title);
+        model.addAttribute("published", published);
+
         return "dashBoard/blogs-list";
     }
 
@@ -29,21 +46,27 @@ public class BlogController {
     }
 
     @GetMapping("/form/{id}")
-    public String showEditBlogForm(@PathVariable Integer id, Model model) {
+    public String showEditBlogForm(@PathVariable Integer id, Model model, RedirectAttributes redirectAttributes) {
         try {
             model.addAttribute("blog", blogService.findById(id));
+            return "dashBoard/blog-form";
         } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("error", "Không tìm thấy bài viết!");
             return "redirect:/admin/blogs";
         }
-        return "dashBoard/blog-form";
     }
 
     @PostMapping("/save")
-    public String saveBlog(@ModelAttribute("blog") BlogDTO blogDTO,
+    public String saveBlog(@Valid @ModelAttribute("blog") BlogDTO blogDTO,
+                           BindingResult result,
                            @RequestParam("imageFile") MultipartFile imageFile,
                            RedirectAttributes redirectAttributes) {
-        blogDTO.setAuthorName("Admin");
 
+        if (result.hasErrors()) {
+            return "dashBoard/blog-form";
+        }
+
+        blogDTO.setAuthorName("Admin");
         blogService.save(blogDTO, imageFile);
         redirectAttributes.addFlashAttribute("message", "Lưu bài viết thành công!");
         return "redirect:/admin/blogs";
@@ -55,7 +78,8 @@ public class BlogController {
             blogService.deleteById(id);
             redirectAttributes.addFlashAttribute("message", "Xóa bài viết thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Lỗi khi xóa bài viết.");
+            // Hiển thị lỗi cụ thể từ service (ví dụ: "Không thể xóa bài viết đã xuất bản")
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/admin/blogs";
     }

@@ -32,7 +32,7 @@
                                 <h4><b>Add Banner Details</b></h4>
                             </div>
                             <div class="card-body-table">
-                                <form th:action="@{/admin/banners/add}" th:object="${bannerDto}" method="post">
+                                <form th:action="@{/admin/banners/add}" th:object="${bannerDto}" method="post" enctype="multipart/form-data">
                                     <div class="post-form">
                                         <div class="form-group">
                                             <label class="form-label">Title*</label>
@@ -43,18 +43,22 @@
                                             <label class="form-label">Description</label>
                                             <textarea class="form-control" th:field="*{description}" placeholder="Enter Description"></textarea>
                                         </div>
+
                                         <div class="form-group">
-                                            <label class="form-label">Image URL*</label>
-                                            <input type="text" class="form-control" th:field="*{imageUrl}" placeholder="Enter Image URL">
+                                            <label class="form-label">Image File*</label>
+                                            <input type="file" class="form-control" name="imageFile" accept="image/*">
                                             <div th:if="${#fields.hasErrors('imageUrl')}" class="text-danger mt-1" th:errors="*{imageUrl}"></div>
                                         </div>
+
                                         <div class="form-group">
                                             <label class="form-label">Link URL</label>
                                             <input type="text" class="form-control" th:field="*{linkUrl}" placeholder="Enter Link URL">
+                                            <div th:if="${#fields.hasErrors('linkUrl')}" class="text-danger mt-1" th:errors="*{linkUrl}"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label">Sort Order</label>
                                             <input type="number" class="form-control" th:field="*{sortOrder}">
+                                            <div th:if="${#fields.hasErrors('sortOrder')}" class="text-danger mt-1" th:errors="*{sortOrder}"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label">Status</label>
@@ -78,5 +82,4 @@
 <script th:src="@{/dashBoard-static/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/dashBoard-static/js/scripts.js}"></script>
 </body>
-
 </html>

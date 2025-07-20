@@ -104,4 +104,4 @@ public class ProfileController {
         }
         throw new RuntimeException("User not authenticated");
     }
-} 
+}

@@ -5,16 +5,13 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<meta name="description-gambolthemes" content="">
-	<meta name="author-gambolthemes" content="">
-	<title>Gambo Supermarket Admin</title>
+	<title>Gambo Supermarket Admin - Customers</title>
 	<link th:href="@{/dashBoard-static/css/styles.css}" rel="stylesheet">
 	<link th:href="@{/dashBoard-static/css/admin-style.css}" rel="stylesheet">
 	<link th:href="@{/dashBoard-static/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
 	<link th:href="@{/dashBoard-static/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
 </head>
 
-</head>
 <body class="sb-nav-fixed">
 <nav th:replace="~{dashBoard/fragments/topbar :: topbar}"></nav>
 <div id="layoutSidenav">
@@ -41,10 +38,28 @@
 							<div class="card-title-2">
 								<h4>All Customers</h4>
 								<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addUserModal">
-									Add New Customer
+									<i class="fas fa-plus-circle"></i> Add New Customer
 								</button>
 							</div>
 							<div class="card-body-table">
+								<form th:action="@{/admin/users}" method="get" class="mb-3">
+									<div class="row">
+										<div class="col-md-5">
+											<input type="text" name="keyword" class="form-control" placeholder="Search by name or email..." th:value="${keyword}">
+										</div>
+										<div class="col-md-4">
+											<select name="roleId" class="form-control">
+												<option value="">-- All Roles --</option>
+												<option th:each="role : ${roles}" th:value="${role.roleId}" th:text="${role.roleName}" th:selected="${roleId != null && roleId == role.roleId}"></option>
+											</select>
+										</div>
+										<div class="col-md-3">
+											<button type="submit" class="btn btn-info"><i class="fas fa-search"></i> Filter</button>
+											<a th:href="@{/admin/users}" class="btn btn-secondary"><i class="fas fa-eraser"></i> Clear</a>
+										</div>
+									</div>
+								</form>
+
 								<div class="table-responsive">
 									<table class="table ucp-table table-hover">
 										<thead>
@@ -63,7 +78,7 @@
 											<td th:text="${user.userId}">1</td>
 											<td>
 												<div class="cate-img-6">
-													<img th:src="${user.userImg != null ? user.userImg : '/images/avatar/default.png'}" alt="">
+													<img th:src="${user.userImg != null and not #strings.isEmpty(user.userImg) ? user.userImg : '/images/avatar/default.png'}" alt="User Image">
 												</div>
 											</td>
 											<td th:text="${user.fullName}">Joginder Singh</td>
@@ -72,13 +87,33 @@
 											<td th:text="${user.roleName}">Customer</td>
 											<td class="action-btns">
 												<a th:href="@{/admin/users/view/{id}(id=${user.userId})}" class="view-shop-btn" title="View"><i class="fas fa-eye"></i></a>
-												<a th:href="@{/admin/users/edit/{id}(id=${user.userId})}" class="edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
-												<a th:href="@{/admin/users/delete/{id}(id=${user.userId})}" class="delete-btn" title="Delete" onclick="return confirm('Are you sure you want to delete this user?');"><i class="fas fa-trash-alt"></i></a>
+												<th:block th:unless="${#strings.equalsIgnoreCase(user.roleName, 'Customer')}">
+													<a th:href="@{/admin/users/edit/{id}(id=${user.userId})}" class="edit-btn" title="Edit"><i class="fas fa-edit"></i></a>
+													<a th:href="@{/admin/users/delete/{id}(id=${user.userId})}" class="delete-btn" title="Delete" onclick="return confirm('Are you sure you want to delete this user?');"><i class="fas fa-trash-alt"></i></a>
+												</th:block>
 											</td>
+										</tr>
+										<tr th:if="${users == null or users.isEmpty()}">
+											<td colspan="7" class="text-center">No users found.</td>
 										</tr>
 										</tbody>
 									</table>
 								</div>
+
+								<nav aria-label="Page navigation" th:if="${totalPages != null and totalPages > 0}">
+									<ul class="pagination justify-content-center">
+										<li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+											<a class="page-link" th:href="@{/admin/users(page=${currentPage - 1}, size=10, keyword=${keyword}, roleId=${roleId})}">Previous</a>
+										</li>
+										<li class="page-item" th:each="i : ${#numbers.sequence(1, totalPages)}" th:classappend="${currentPage == i} ? 'active'">
+											<a class="page-link" th:href="@{/admin/users(page=${i}, size=10, keyword=${keyword}, roleId=${roleId})}" th:text="${i}"></a>
+										</li>
+										<li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+											<a class="page-link" th:href="@{/admin/users(page=${currentPage + 1}, size=10, keyword=${keyword}, roleId=${roleId})}">Next</a>
+										</li>
+									</ul>
+								</nav>
+
 							</div>
 						</div>
 					</div>
@@ -88,7 +123,7 @@
 			<div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
 				<div class="modal-dialog modal-lg">
 					<div class="modal-content">
-						<form th:action="@{/admin/users/create}" th:object="${user}" method="post" enctype="multipart/form-data">
+						<form th:action="@{/admin/users/create}" th:object="${newUser}" method="post" enctype="multipart/form-data">
 							<div class="modal-header">
 								<h5 class="modal-title" id="addUserModalLabel">Add New Customer</h5>
 								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -110,6 +145,7 @@
 										<div class="form-group mt-3">
 											<label class="form-label">Password*</label>
 											<input type="password" class="form-control" th:field="*{password}" placeholder="Enter Password">
+											<div th:if="${#fields.hasErrors('password')}" class="text-danger mt-1" th:errors="*{password}"></div>
 										</div>
 									</div>
 									<div class="col-md-6">
@@ -125,6 +161,7 @@
 												<option value="">-- Select Role --</option>
 												<option th:each="role : ${roles}" th:value="${role.roleId}" th:text="${role.roleName}"></option>
 											</select>
+											<div th:if="${#fields.hasErrors('roleId')}" class="text-danger mt-1" th:errors="*{roleId}"></div>
 										</div>
 									</div>
 									<div class="col-md-12">
@@ -149,8 +186,8 @@
 				<div class="d-flex align-items-center justify-content-between small">
 					<div class="text-muted-1">© 2024 <b>Gambo Supermarket</b>. by <a href="https://themeforest.net/user/gambolthemes">Gambolthemes</a></div>
 					<div class="footer-links">
-						<a href="http://gambolthemes.net/html-items/gambo_supermarket_demo/privacy_policy.html">Privacy Policy</a>
-						<a href="http://gambolthemes.net/html-items/gambo_supermarket_demo/term_and_conditions.html">Terms &amp; Conditions</a>
+						<a href="#">Privacy Policy</a>
+						<a href="#">Terms &amp; Conditions</a>
 					</div>
 				</div>
 			</div>
@@ -161,7 +198,7 @@
 <script th:src="@{/dashBoard-static/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/dashBoard-static/js/scripts.js}"></script>
 
-<script th:if="${#fields.hasErrors('user')}">
+<script th:if="${openCreateModal == true or #fields.hasErrors('newUser.*')}">
 	document.addEventListener('DOMContentLoaded', function() {
 		var addUserModal = new bootstrap.Modal(document.getElementById('addUserModal'));
 		addUserModal.show();

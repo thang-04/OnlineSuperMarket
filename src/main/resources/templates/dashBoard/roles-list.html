@@ -13,11 +13,9 @@
 </head>
 
 <body class="sb-nav-fixed">
-<nav th:replace="~{dashBoard/fragments :: topbar}"></nav>
-
+<nav th:replace="~{dashBoard/fragments/topbar :: topbar}"></nav>
 <div id="layoutSidenav">
-	<div th:replace="~{dashBoard/fragments :: sidebar}"></div>
-
+	<div th:replace="~{dashBoard/fragments/sidebar :: sidebar}"></div>
 	<div id="layoutSidenav_content">
 		<main>
 			<div class="container-fluid">
@@ -56,7 +54,7 @@
 											<td th:text="${roleItem.roleName}"></td>
 											<td class="action-btns text-center">
 												<button class="edit-btn" style="border: none;"
-														th:attr="onclick=|prepareEditRoleForm(${roleItem.roleId}, '${roleItem.roleName}', '${#strings.arrayJoin(roleItem.permissionIds, ',')}')|"
+														th:attr="onclick=|prepareEditRoleForm(${roleItem.roleId}, '${roleItem.roleName}')|"
 														data-bs-toggle="modal" data-bs-target="#roleModal">
 													<i class="fas fa-edit"></i> Sửa
 												</button>
@@ -110,22 +108,6 @@
 							   placeholder="Ví dụ: QUẢN LÝ KHO">
 					</div>
 
-					<div class="mb-3">
-						<label class="form-label"><strong>Quyền</strong></label>
-						<div class="border p-3">
-							<div class="row">
-								<div class="col-md-4" th:each="permission : ${allPermissions}">
-									<div class="form-check">
-										<input class="form-check-input permission-checkbox" type="checkbox"
-											   th:field="*{permissionIds}" th:value="${permission.id}"
-											   th:id="${'perm-' + permission.id}">
-										<label class="form-check-label" th:for="${'perm-' + permission.id}"
-											   th:text="${permission.name}"></label>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
@@ -140,24 +122,13 @@
 <script th:src="@{/dashBoard-static/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/dashBoard-static/js/scripts.js}"></script>
 <script>
-	function prepareNewRoleForm() {
-		document.getElementById('roleForm').reset();
-		document.getElementById('roleId').value = '';
-		document.getElementById('roleModalLabel').innerText = 'Thêm Vai trò mới';
-	}
-
-	function prepareEditRoleForm(id, name, permissionIds) {
+	function prepareEditRoleForm(id, name) { // Remove the permissionIds parameter
 		document.getElementById('roleForm').reset();
 		document.getElementById('roleModalLabel').innerText = 'Chỉnh sửa Vai trò';
 
 		document.getElementById('roleId').value = id;
 		document.getElementById('roleName').value = name;
 
-		const selectedPermissionIds = permissionIds ? permissionIds.split(',') : [];
-		const checkboxes = document.querySelectorAll('.permission-checkbox');
-		checkboxes.forEach(checkbox => {
-			checkbox.checked = selectedPermissionIds.includes(checkbox.value);
-		});
 	}
 </script>
 </body>

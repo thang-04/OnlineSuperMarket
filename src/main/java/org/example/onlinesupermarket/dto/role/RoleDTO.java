@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -12,5 +11,4 @@ import java.util.Set;
 public class RoleDTO {
     private Integer roleId;
     private String roleName;
-    private Set<Integer> permissionIds;
 }

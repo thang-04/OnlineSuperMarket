@@ -35,6 +35,25 @@
                         <a th:href="@{/admin/faqs/add}" class="add-btn"><i class="fas fa-plus"></i> Thêm FAQ</a>
                     </div>
                     <div class="card-body-table">
+                        <form th:action="@{/admin/faqs}" method="get" class="mb-4">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="text" name="question" class="form-control" placeholder="Tìm theo câu hỏi..." th:value="${question}">
+                                </div>
+                                <div class="col-md-4">
+                                    <select name="status" class="form-control">
+                                        <option value="">-- Mọi trạng thái --</option>
+                                        <option value="true" th:selected="${status != null and status}">Hoạt động</option>
+                                        <option value="false" th:selected="${status != null and !status}">Không hoạt động</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-info"><i class="fas fa-search"></i> Lọc</button>
+                                    <a th:href="@{/admin/faqs}" class="btn btn-secondary"><i class="fas fa-eraser"></i> Xóa lọc</a>
+                                </div>
+                            </div>
+                        </form>
+
                         <div class="table-responsive">
                             <table class="table ucp-table table-hover">
                                 <thead>
@@ -48,7 +67,7 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="faq : ${faqs}">
+                                <tr th:each="faq : ${faqPage.content}">
                                     <td th:text="${faq.faqId}"></td>
                                     <td th:text="${faq.question}"></td>
                                     <td th:text="${faq.category}"></td>
@@ -67,9 +86,26 @@
                                         </form>
                                     </td>
                                 </tr>
+                                <tr th:if="${faqPage.empty}">
+                                    <td colspan="6" class="text-center">Không tìm thấy FAQ nào.</td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
+
+                        <nav aria-label="Page navigation" th:if="${faqPage.totalPages > 1}">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item" th:classappend="${faqPage.first} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/admin/faqs(page=${currentPage - 1}, question=${question}, status=${status})}">Trước</a>
+                                </li>
+                                <li class="page-item" th:each="i : ${#numbers.sequence(1, faqPage.totalPages)}" th:classappend="${currentPage == i} ? 'active'">
+                                    <a class="page-link" th:href="@{/admin/faqs(page=${i}, question=${question}, status=${status})}" th:text="${i}"></a>
+                                </li>
+                                <li class="page-item" th:classappend="${faqPage.last} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/admin/faqs(page=${currentPage + 1}, question=${question}, status=${status})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

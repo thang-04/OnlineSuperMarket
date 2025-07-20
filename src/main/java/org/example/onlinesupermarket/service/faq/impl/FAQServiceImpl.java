@@ -6,11 +6,12 @@ import org.example.onlinesupermarket.mapper.faq.FAQMapper;
 import org.example.onlinesupermarket.repository.FAQRepository;
 import org.example.onlinesupermarket.service.faq.FAQService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -23,10 +24,9 @@ public class FAQServiceImpl implements FAQService {
     private FAQMapper faqMapper;
 
     @Override
-    public List<FAQDTO> getAllFAQs() {
-        return faqRepository.findAllOrderBySortOrder().stream()
-                .map(faqMapper::toDto)
-                .collect(Collectors.toList());
+    public Page<FAQDTO> getFAQs(String question, Boolean active, Pageable pageable) {
+        Page<FAQ> faqPage = faqRepository.findWithFiltersAndPagination(question, active, pageable);
+        return faqPage.map(faqMapper::toDto);
     }
 
     @Override
@@ -38,9 +38,13 @@ public class FAQServiceImpl implements FAQService {
 
     @Override
     public FAQDTO saveFAQ(FAQDTO faqDto) {
-        FAQ faq = (faqDto.getFaqId() != null)
-                ? faqRepository.findById(faqDto.getFaqId()).orElse(new FAQ())
-                : new FAQ();
+        FAQ faq;
+        if (faqDto.getFaqId() != null) {
+            faq = faqRepository.findById(faqDto.getFaqId())
+                    .orElseThrow(() -> new RuntimeException("FAQ not found with id: " + faqDto.getFaqId()));
+        } else {
+            faq = new FAQ();
+        }
         faqMapper.updateEntityFromDto(faqDto, faq);
         FAQ savedFAQ = faqRepository.save(faq);
         return faqMapper.toDto(savedFAQ);
@@ -61,14 +65,6 @@ public class FAQServiceImpl implements FAQService {
         faq.setActive(!faq.isActive());
         faqRepository.save(faq);
     }
-
-    @Override
-    public List<FAQDTO> getActiveFAQs() {
-        return faqRepository.findActiveOrderBySortOrder().stream()
-                .map(faqMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
 
     @Override
     public List<String> getActiveCategories() {

@@ -19,7 +19,6 @@
                     <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
                     <li class="breadcrumb-item active">Bài viết</li>
                 </ol>
-
                 <div th:if="${message}" class="alert alert-success alert-dismissible fade show" role="alert">
                     <strong th:text="${message}"></strong>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -28,19 +27,37 @@
                     <strong th:text="${error}"></strong>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-
                 <div class="card card-static-2 mb-30">
                     <div class="card-title-2">
                         <h4>Tất cả bài viết</h4>
                         <a th:href="@{/admin/blogs/form}" class="add-btn"><i class="fas fa-plus"></i> Viết bài mới</a>
                     </div>
                     <div class="card-body-table">
+                        <form th:action="@{/admin/blogs}" method="get" class="mb-4">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="text" name="title" class="form-control" placeholder="Tìm theo tiêu đề..." th:value="${title}">
+                                </div>
+                                <div class="col-md-4">
+                                    <select name="published" class="form-control">
+                                        <option value="">-- Mọi trạng thái --</option>
+                                        <option value="true" th:selected="${published != null and published}">Đã xuất bản</option>
+                                        <option value="false" th:selected="${published != null and !published}">Bản nháp</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <button type="submit" class="btn btn-info"><i class="fas fa-search"></i> Lọc</button>
+                                    <a th:href="@{/admin/blogs}" class="btn btn-secondary"><i class="fas fa-eraser"></i> Xóa lọc</a>
+                                </div>
+                            </div>
+                        </form>
+
                         <div class="table-responsive">
                             <table class="table ucp-table table-hover">
                                 <thead>
                                 <tr>
                                     <th style="width:60px">ID</th>
-                                    <th style="width:150px">Ảnh đại diện</th>
+                                    <th style="width:150px">Ảnh</th>
                                     <th>Tiêu đề</th>
                                     <th>Tác giả</th>
                                     <th>Trạng thái</th>
@@ -49,11 +66,11 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="blog : ${blogs}">
+                                <tr th:each="blog : ${blogPage.content}">
                                     <td th:text="${blog.blogId}"></td>
                                     <td>
                                         <div class="cate-img">
-                                            <img th:src="${blog.featuredImage != null ? blog.featuredImage : '/images/placeholder.png'}" alt="Ảnh đại diện">
+                                            <img th:src="@{${blog.featuredImage != null ? blog.featuredImage : '/images/placeholder.png'}}" alt="Ảnh đại diện" style="width: 100px; height: auto;">
                                         </div>
                                     </td>
                                     <td th:text="${blog.title}"></td>
@@ -62,17 +79,34 @@
                                         <span th:if="${blog.published}" class="badge-item badge-status">Đã xuất bản</span>
                                         <span th:unless="${blog.published}" class="badge-item" style="background-color: #6c757d;">Bản nháp</span>
                                     </td>
-                                    <td th:text="${#temporals.format(blog.createdAt, 'dd-MM-yyyy')}"></td>
+                                    <td th:text="${#temporals.format(blog.createdAt, 'dd-MM-yyyy HH:mm')}"></td>
                                     <td class="action-btns">
                                         <a th:href="@{/admin/blogs/form/{id}(id=${blog.blogId})}" class="edit-btn" title="Sửa"><i class="fas fa-edit"></i></a>
-                                        <form th:action="@{/admin/blogs/delete/{id}(id=${blog.blogId})}" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');">
+                                        <form th:if="${!blog.published}" th:action="@{/admin/blogs/delete/{id}(id=${blog.blogId})}" method="post" style="display:inline;" onsubmit="return confirm('Bạn có chắc chắn muốn xóa bài viết này?');">
                                             <button type="submit" class="delete-btn" title="Xóa"><i class="fas fa-trash-alt"></i></button>
                                         </form>
                                     </td>
                                 </tr>
+                                <tr th:if="${blogPage.empty}">
+                                    <td colspan="7" class="text-center">Không tìm thấy bài viết nào.</td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
+
+                        <nav aria-label="Page navigation" th:if="${blogPage.totalPages > 1}">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item" th:classappend="${blogPage.first} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/admin/blogs(page=${currentPage - 1}, title=${title}, published=${published})}">Trước</a>
+                                </li>
+                                <li class="page-item" th:each="i : ${#numbers.sequence(1, blogPage.totalPages)}" th:classappend="${currentPage == i} ? 'active'">
+                                    <a class="page-link" th:href="@{/admin/blogs(page=${i}, title=${title}, published=${published})}" th:text="${i}"></a>
+                                </li>
+                                <li class="page-item" th:classappend="${blogPage.last} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/admin/blogs(page=${currentPage + 1}, title=${title}, published=${published})}">Sau</a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
             </div>

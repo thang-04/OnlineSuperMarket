@@ -1,11 +1,9 @@
 package org.example.onlinesupermarket.controller.dashBoard;
 
 import jakarta.validation.Valid;
-import org.example.onlinesupermarket.dto.permission.PermissionDTO;
 import org.example.onlinesupermarket.dto.role.RoleDTO;
 import org.example.onlinesupermarket.entity.Role;
 import org.example.onlinesupermarket.mapper.role.RoleMapper;
-import org.example.onlinesupermarket.service.permission.PermissionService;
 import org.example.onlinesupermarket.service.role.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,18 +22,13 @@ public class RoleController {
     private RoleService roleService;
 
     @Autowired
-    private PermissionService permissionService;
-
-    @Autowired
     private RoleMapper roleMapper;
 
     @GetMapping("")
     public String showRolesList(Model model) {
         List<RoleDTO> roles = roleService.getAllRoles();
-        List<PermissionDTO> permissions = permissionService.findAllPermissions();
 
         model.addAttribute("roles", roles);
-        model.addAttribute("allPermissions", permissions);
         if (!model.containsAttribute("role")) {
             model.addAttribute("role", new RoleDTO());
         }
@@ -46,7 +39,6 @@ public class RoleController {
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("role", new RoleDTO());
-        model.addAttribute("allPermissions", permissionService.findAllPermissions());
         return "dashBoard/role-form";
     }
 
@@ -59,7 +51,6 @@ public class RoleController {
         RoleDTO roleDTO = roleMapper.toRoleDTO(role);
 
         model.addAttribute("role", roleDTO);
-        model.addAttribute("allPermissions", permissionService.findAllPermissions());
         return "dashBoard/role-form";
     }
 
@@ -71,7 +62,6 @@ public class RoleController {
         if (bindingResult.hasErrors()) {
             redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.role", bindingResult);
             redirectAttributes.addFlashAttribute("role", roleDTO);
-            redirectAttributes.addFlashAttribute("allPermissions", permissionService.findAllPermissions());
 
             if (roleDTO.getRoleId() != null) {
                 return "redirect:/admin/roles/edit/" + roleDTO.getRoleId();
