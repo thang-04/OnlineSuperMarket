@@ -40,4 +40,6 @@ public class User {
     private LocalDateTime createdAt ;
 
     private boolean isLocked = false;
+
+
 }

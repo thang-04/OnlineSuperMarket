@@ -3,35 +3,37 @@
         Giỏ hàng trống
     </div>
     <div th:if="${cart != null and !#lists.isEmpty(cart.cartItems)}">
-        <table class="table table-bordered align-middle mb-0 w-100" style="table-layout: fixed;">
-            <thead class="table-light">
-                <tr>
-                    <th>STT</th>
-                    <th>Ảnh</th>
-                    <th>Tên sản phẩm</th>
-                    <th>Đơn giá</th>
-                    <th>Số lượng</th>
-                    <th>Thành tiền</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="item, iterStat : ${cart.cartItems}">
-                    <td th:text="${iterStat.index + 1}"></td>
-                    <td>
-                        <img th:src="${#lists.isEmpty(item.product.productImages) ? '/homePage/images/product/default.jpg' : (item.product.productImages.?[isPrimary].size() > 0 ? item.product.productImages.?[isPrimary].get(0).imageUrl : item.product.productImages.get(0).imageUrl)}" alt="Ảnh" class="cart-product-img">
-                    </td>
-                    <td th:text="${item.product.name}"></td>
-                    <td th:text="${#numbers.formatDecimal(item.product.price, 0, 'COMMA', 2, 'POINT')} + ' đ'"></td>
-                    <td th:text="${item.quantity}"></td>
-                    <td th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 0, 'COMMA', 2, 'POINT')} + ' đ'"></td>
-                </tr>
-            </tbody>
-        </table>
-        <div class="d-flex justify-content-end align-items-center mt-3">
+        <div class="row g-3">
+            <div class="col-12" th:each="item, iterStat : ${cart.cartItems}">
+                <div class="card shadow-sm border-0 flex-row align-items-center p-2 cart-item-card">
+                    <div class="cart-img-wrap me-3">
+                        <img th:src="${item.product.image != null ? item.product.image : '/homePage/images/product/default.jpg'}" alt="" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h6 class="mb-1" th:text="${item.product.name}"></h6>
+                            <span class="badge bg-light text-dark">x <b th:text="${item.quantity}"></b></span>
+                        </div>
+                        <div class="text-muted small mb-1">Đơn giá: <span th:text="${#numbers.formatDecimal(item.product.price, 0, 'COMMA', 2, 'POINT')} + ' đ'"></span></div>
+                        <div class="fw-bold text-success">Thành tiền: <span th:text="${#numbers.formatDecimal(item.product.price * item.quantity, 0, 'COMMA', 2, 'POINT')} + ' đ'"></span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-end align-items-center mt-4">
             <div class="me-4">
                 <b>Tổng tiền:</b>
-                <span th:text="${#numbers.formatDecimal(cart.totalAmount, 0, 'COMMA', 2, 'POINT')} + ' đ'"></span>
+                <span class="fs-5 text-danger" th:text="${#numbers.formatDecimal(cart.totalAmount, 0, 'COMMA', 2, 'POINT')} + ' đ'"></span>
             </div>
         </div>
     </div>
+    <style>
+        .cart-item-card { transition: box-shadow 0.2s; }
+        .cart-item-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+        .cart-img-wrap { min-width: 50px; }
+        @media (max-width: 576px) {
+            .cart-item-card { flex-direction: column; align-items: flex-start !important; }
+            .cart-img-wrap { margin-bottom: 10px; }
+        }
+    </style>
 </div> 
