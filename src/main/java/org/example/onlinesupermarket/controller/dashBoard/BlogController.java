@@ -1,7 +1,7 @@
 package org.example.onlinesupermarket.controller.dashBoard;
 
 import org.example.onlinesupermarket.dto.blog.BlogDTO;
-import org.example.onlinesupermarket.service.BlogService;
+import org.example.onlinesupermarket.service.blog.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

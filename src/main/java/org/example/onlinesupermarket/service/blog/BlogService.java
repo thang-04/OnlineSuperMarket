@@ -1,4 +1,4 @@
-package org.example.onlinesupermarket.service;
+package org.example.onlinesupermarket.service.blog;
 
 import org.example.onlinesupermarket.dto.blog.BlogDTO;
 import org.springframework.web.multipart.MultipartFile;

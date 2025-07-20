@@ -18,7 +18,6 @@ public class Blog {
     @Column(nullable = false)
     private String title;
 
-    @Lob
     @Column(columnDefinition = "NVARCHAR(MAX)", nullable = false)
     private String content;
 
