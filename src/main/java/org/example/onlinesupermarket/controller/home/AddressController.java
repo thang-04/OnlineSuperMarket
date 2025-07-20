@@ -77,11 +77,11 @@ public class AddressController {
         try {
             User currentUser = getCurrentUser();
             addressService.createAddress((Integer) currentUser.getUserId(), addressDTO);
-            redirectAttributes.addFlashAttribute("success", "Address added successfully!");
+            redirectAttributes.addFlashAttribute("success", "Địa chỉ đã được thêm thành công!");
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error adding address: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Lỗi khi thêm địa chỉ: " + e.getMessage());
         }
-        return "redirect:/orders/checkout";
+        return "redirect:/home/orders/checkout";
     }
 
 

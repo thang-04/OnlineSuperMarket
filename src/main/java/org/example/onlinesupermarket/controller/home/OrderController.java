@@ -34,11 +34,12 @@ public class OrderController {
     private CartService cartService;
 
     @GetMapping("/checkout")
-    public String checkoutForm(Model model, Principal principal) {
+    public String checkoutForm(Model model, Principal principal, RedirectAttributes redirectAttributes) {
         User user = userService.findByEmail(principal.getName());
         model.addAttribute("addresses", addressRepo.findByUser(user));
         Cart cart = cartService.getCartByUser(user);
         model.addAttribute("cart", cart);
+        model.addAttribute("addressDto", new org.example.onlinesupermarket.dto.address.AddressDTO());
         model.addAttribute("fragmentContent", "homePage/fragments/checkoutContent :: checkoutContent");
         return "homePage/index";
     }

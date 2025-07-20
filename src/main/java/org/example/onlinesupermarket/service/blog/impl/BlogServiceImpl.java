@@ -63,4 +63,10 @@ public class BlogServiceImpl implements BlogService {
         }
         blogRepository.deleteById(id);
     }
+
+    @Override
+    public List<BlogDTO> searchBlogs(String keyword) {
+        return blogRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword)
+                .stream().map(blogMapper::toDto).collect(java.util.stream.Collectors.toList());
+    }
 }

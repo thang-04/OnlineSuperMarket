@@ -9,4 +9,5 @@ public interface BlogService {
     BlogDTO findById(Integer id);
     BlogDTO save(BlogDTO blogDTO, MultipartFile imageFile);
     void deleteById(Integer id);
+    List<BlogDTO> searchBlogs(String keyword);
 }
