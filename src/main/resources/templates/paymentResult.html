@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Payment Result</title>
+</head>
+<body>
+    <h2>Kết quả thanh toán VNPay</h2>
+    <p th:text="${result}"></p>
+    <p>Mã phản hồi: <span th:text="${responseCode}"></span></p>
+    <a href="/home/orders/checkout">Quay lại trang chủ</a>
+</body>
+</html> 
