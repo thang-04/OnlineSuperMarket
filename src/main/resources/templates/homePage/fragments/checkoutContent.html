@@ -1,0 +1,115 @@
+<div th:fragment="checkoutContent">
+    <div class="wrapper">
+        <div class="gambo-Breadcrumb">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <nav aria-label="breadcrumb">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item"><a th:href="@{/home}">Home</a></li>
+                                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                            </ol>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="all-product-grid">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <form id="checkoutForm" th:action="@{/home/orders/checkout}" method="post">
+                            <div class="checkout-card mb-4">
+                                <h4 class="mb-3"><i class="uil uil-location-point"></i> Chọn địa chỉ giao hàng</h4>
+                                <div th:if="${#lists.isEmpty(addresses)}">
+                                    <p>Bạn chưa có địa chỉ nào. Vui lòng nhập địa chỉ giao hàng:</p>
+                                    <form th:action="@{/home/address/add-checkout}" method="post">
+                                        <div class="card card-body mb-3">
+                                            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                                            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                                            <div class="row g-2">
+                                                <div class="col-12 mb-2">
+                                                    <label class="form-label">Họ tên người nhận*</label>
+                                                    <input type="text" class="form-control" name="recipient" required>
+                                </div>
+                                                <div class="col-12 mb-2">
+                                                    <label class="form-label">Địa chỉ*</label>
+                                                    <input type="text" class="form-control" name="street" required>
+                                                            </div>
+                                                <div class="col-md-4 mb-2">
+                                                    <label class="form-label">Thành phố*</label>
+                                                    <input type="text" class="form-control" name="city" required>
+                                                    </div>
+                                                <div class="col-md-4 mb-2">
+                                                    <label class="form-label">Tỉnh*</label>
+                                                    <input type="text" class="form-control" name="province" required>
+                                                </div>
+                                                <div class="col-md-4 mb-2">
+                                                    <label class="form-label">Mã bưu điện*</label>
+                                                    <input type="text" class="form-control" name="postalCode" required>
+                                            </div>
+                                                <div class="col-12 mb-2">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" name="defaultAddress" checked>
+                                                        <label class="form-check-label">Đặt làm địa chỉ mặc định</label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12 text-end">
+                                                    <button type="submit" class="btn btn-success">Lưu địa chỉ và tiếp tục</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div th:if="${!#lists.isEmpty(addresses)}">
+                                    <div class="list-group">
+                                        <label th:each="addr, iterStat : ${addresses}" class="list-group-item d-flex align-items-center">
+                                            <input type="radio" name="addressId" th:value="${addr.addressId}"
+                                                th:checked="${addr.defaultAddress} ? true : (${#lists.select(addresses, a -> a.defaultAddress).isEmpty()} ? ${iterStat.index == 0} : false)" required>
+                                            <span class="ms-2" th:text="${addr.street + ', ' + addr.city + ', ' + addr.province}"></span>
+                                            <span th:if="${addr.defaultAddress}" class="badge bg-success ms-2">Mặc định</span>
+                                                                </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="checkout-card mb-4">
+                                <h4 class="mb-3"><i class="uil uil-credit-card"></i> Chọn phương thức thanh toán</h4>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="cod" value="COD" checked required>
+                                    <label class="form-check-label" for="cod">Thanh toán khi nhận hàng (COD)</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="paymentMethod" id="vnpay" value="VNPAY" required>
+                                    <label class="form-check-label" for="vnpay">Thanh toán qua VNPay</label>
+                                </div>
+                            </div>
+                            <div class="text-end mt-3">
+                                <button type="submit" class="btn btn-primary">Đặt hàng</button>
+                        </div>
+                        </form>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="pdpt-bg mt-0">
+                            <div class="pdpt-title">
+                                <h4>Thông tin đơn hàng</h4>
+                            </div>
+                            <div th:replace="homePage/fragments/checkoutCartSummary :: checkoutCartSummary"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <style>
+      @media (min-width: 992px) {
+        .pdpt-bg {
+          min-width: 600px;
+        }
+        .table th, .table td {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+    </style>
+</div>

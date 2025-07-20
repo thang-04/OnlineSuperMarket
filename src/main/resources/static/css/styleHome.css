@@ -34,4 +34,17 @@
     box-shadow: 0 2px 16px rgba(0,0,0,0.07);
     padding: 32px 24px;
     min-height: 500px;
+}
+.cart-product-img {
+    width: 70px;
+    height: 70px;
+    object-fit: cover;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    background: #fff;
+    border: 1px solid #eee;
+    transition: box-shadow 0.2s;
+}
+.cart-product-img:hover {
+    box-shadow: 0 4px 16px rgba(255,126,95,0.15);
 } 

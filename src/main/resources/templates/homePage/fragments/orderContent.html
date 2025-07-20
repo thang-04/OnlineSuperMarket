@@ -82,7 +82,7 @@
                                                 <div class="total-checkout-group">
                                                     <div class="cart-total-dil">
                                                         <h4>Sub Total</h4>
-                                                        <span th:text="${#numbers.formatDecimal(order.calculatedTotal, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                                                        <span th:text="${#numbers.formatDecimal(orderTotals[order.orderId], 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
                                                     </div>
                                                     <div class="cart-total-dil pt-3">
                                                         <h4>Coupon</h4>
@@ -91,7 +91,7 @@
                                                 </div>
                                                 <div class="main-total-cart">
                                                     <h2>Total</h2>
-                                                    <span th:text="${#numbers.formatDecimal(order.calculatedTotal, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+                                                    <span th:text="${#numbers.formatDecimal(orderTotals[order.orderId], 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
                                                 </div>
                                             </div>
                                             <div class="alert-offer mt-2" th:if="${order.status == 'Delivered'}">
@@ -140,7 +140,7 @@
                                                                             <img th:src="@{/homePage/images/groceries.svg}" alt="" style="width:65px;height:65px;object-fit:cover; border-radius:8px;">
                                                                         </div>
                                                                         <div class="flex-grow-1">
-                                                                            <div class="fw-semibold fs-5" th:text="${item.productName}"></div>
+                                                                            <div class="fw-semibold fs-5" th:text="${item.product.name}"></div>
                                                                             <div class="text-muted small fs-6">x<span th:text="${item.quantity}"></span> &nbsp;|&nbsp; <span th:text="${#numbers.formatDecimal(item.unitPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span> mỗi sản phẩm</div>
                                                                         </div>
                                                                         <div class="text-end ms-2" style="min-width:120px;">
@@ -152,9 +152,9 @@
                                                             <hr>
                                                             <!-- Tổng kết bill -->
                                                             <div class="d-flex flex-column align-items-end">
-                                                                <div class="mb-1 fs-5"><strong>Sub Total:</strong> <span th:text="${#numbers.formatDecimal(order.calculatedTotal, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span></div>
+                                                                <div class="mb-1 fs-5"><strong>Sub Total:</strong> <span th:text="${#numbers.formatDecimal(orderTotals[order.orderId], 0, 'COMMA', 0, 'POINT')} + ' đ'"></span></div>
                                                                 <div class="mb-1 fs-5"><strong>Coupon:</strong> <span th:text="${order.couponCode != null ? order.couponCode : 'None'}"></span></div>
-                                                                <div class="fs-3 fw-bold "><strong>Total:</strong> <span th:text="${#numbers.formatDecimal(order.calculatedTotal, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span></div>
+                                                                <div class="fs-3 fw-bold "><strong>Total:</strong> <span th:text="${#numbers.formatDecimal(orderTotals[order.orderId], 0, 'COMMA', 0, 'POINT')} + ' đ'"></span></div>
                                                             </div>
                                                         </div>
                                                     </div>

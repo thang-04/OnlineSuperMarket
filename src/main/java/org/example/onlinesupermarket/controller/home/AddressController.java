@@ -62,6 +62,28 @@ public class AddressController {
         return "redirect:/home/address";
     }
 
+    @PostMapping("/add-checkout")
+    public String addAddressFromCheckout(@Validated @ModelAttribute("addressDto") AddressDTO addressDTO,
+                                         BindingResult bindingResult,
+                                         RedirectAttributes redirectAttributes,
+                                         Model model) {
+        if (bindingResult.hasErrors()) {
+            // Add validation errors to model
+            model.addAttribute("fragmentContent", "homePage/fragments/checkoutContent :: checkoutContent");
+            model.addAttribute("addresses", addressService.getAllAddressesByUser(getCurrentUser()));
+            model.addAttribute("addressDto", addressDTO); // Keep the entered data
+            return "homePage/index";
+        }
+        try {
+            User currentUser = getCurrentUser();
+            addressService.createAddress((Integer) currentUser.getUserId(), addressDTO);
+            redirectAttributes.addFlashAttribute("success", "Address added successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error adding address: " + e.getMessage());
+        }
+        return "redirect:/orders/checkout";
+    }
+
 
     @GetMapping("/delete/{addressId}")
     public String deleteAddress(@PathVariable Integer addressId, RedirectAttributes redirectAttributes) {
