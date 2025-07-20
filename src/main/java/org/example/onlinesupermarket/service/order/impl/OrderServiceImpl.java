@@ -1,5 +1,6 @@
 package org.example.onlinesupermarket.service.order.impl;
 
+import org.example.onlinesupermarket.dto.order.OrderDTO;
 import org.example.onlinesupermarket.entity.*;
 import org.example.onlinesupermarket.repository.*;
 import org.example.onlinesupermarket.service.order.OrderService;
@@ -7,7 +8,13 @@ import org.example.onlinesupermarket.service.cart.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -58,13 +65,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Order getOrderById(Long orderId) {
+    public Order getOrderById(Integer orderId) {
         return orderRepo.findById(orderId).orElseThrow();
     }
 
     @Override
     public void updateOrderStatus(Integer orderId, String status) {
-        Order order = orderRepo.findById(orderId.longValue()).orElseThrow();
+        Order order = orderRepo.findById(orderId).orElseThrow();
         order.setStatus(status);
         orderRepo.save(order);
     }
@@ -75,5 +82,21 @@ public class OrderServiceImpl implements OrderService {
         return order.getOrderItems().stream()
                 .mapToDouble(item -> item.getUnitPrice() * item.getQuantity())
                 .sum();
+    }
+
+
+    @Override
+    public Map<String, Object> getDashboardStatistics() {
+        Map<String, Object> stats = new HashMap<>();
+
+        stats.put("pendingOrders", orderRepo.countByStatus("PENDING"));
+        stats.put("cancelledOrders", orderRepo.countByStatus("CANCELLED"));
+        stats.put("processingOrders", orderRepo.countByStatus("PROCESSING"));
+        stats.put("recentOrders", orderRepo.findTop5ByOrderByOrderDateDesc());
+
+        LocalDateTime startOfDay = LocalDate.now().atStartOfDay();
+        Double todayIncome = orderRepo.findTodayIncome(startOfDay);
+        stats.put("todayIncome", todayIncome != null ? todayIncome : 0.0);
+        return stats;
     }
 }

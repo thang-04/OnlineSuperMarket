@@ -4,13 +4,16 @@ import org.example.onlinesupermarket.dto.blog.BlogDTO;
 import org.example.onlinesupermarket.entity.Blog;
 import org.example.onlinesupermarket.mapper.blog.BlogMapper;
 import org.example.onlinesupermarket.repository.BlogRepository;
-import org.example.onlinesupermarket.service.BlogService;
+import org.example.onlinesupermarket.service.blog.BlogService;
 import org.example.onlinesupermarket.service.file.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,13 +26,18 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     private BlogMapper blogMapper;
     @Autowired
-    private FileService fileStorageService;
+    private FileService fileService;
 
     @Override
     public List<BlogDTO> getAllBlogs() {
         return blogRepository.findAllByOrderByCreatedAtDesc().stream()
                 .map(blogMapper::toDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());}
+
+    @Override
+    public Page<BlogDTO> getBlogs(String title, Boolean published, Pageable pageable) {
+        Page<Blog> blogPage = blogRepository.findWithFilters(title, published, pageable);
+        return blogPage.map(blogMapper::toDto);
     }
 
     @Override
@@ -41,14 +49,19 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public BlogDTO save(BlogDTO blogDTO, MultipartFile imageFile) {
-        Blog blog = (blogDTO.getBlogId() != null)
-                ? blogRepository.findById(blogDTO.getBlogId()).orElse(new Blog())
-                : new Blog();
+        Blog blog;
+        if (blogDTO.getBlogId() != null) {
+            blog = blogRepository.findById(blogDTO.getBlogId())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy bài viết với ID: " + blogDTO.getBlogId()));
+        } else {
+            blog = new Blog();
+            blog.setCreatedAt(LocalDateTime.now());
+        }
 
         blogMapper.updateEntityFromDto(blogDTO, blog);
 
         if (imageFile != null && !imageFile.isEmpty()) {
-            String fileName = fileStorageService.storeFile(imageFile);
+            String fileName = fileService.storeFile(imageFile);
             blog.setFeaturedImage("/uploads/" + fileName);
         }
 
@@ -58,9 +71,20 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     public void deleteById(Integer id) {
-        if (!blogRepository.existsById(id)) {
-            throw new RuntimeException("Không tìm thấy bài viết để xóa.");
+        Blog blog = blogRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy bài viết để xóa."));
+
+        // Logic nghiệp vụ: Không cho xóa bài viết đã xuất bản
+        if (blog.isPublished()) {
+            throw new IllegalStateException("Không thể xóa bài viết đã được xuất bản.");
         }
+
         blogRepository.deleteById(id);
+    }
+
+    @Override
+    public List<BlogDTO> searchBlogs(String keyword) {
+        return blogRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCase(keyword, keyword)
+                .stream().map(blogMapper::toDto).collect(java.util.stream.Collectors.toList());
     }
 }

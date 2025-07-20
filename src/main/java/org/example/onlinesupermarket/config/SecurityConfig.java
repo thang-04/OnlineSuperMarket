@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.example.onlinesupermarket.security.CustomAuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -34,6 +36,11 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, CustomOAuth2UserService customOAuth2UserService) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
@@ -45,7 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/home/**","/home").permitAll()
 
                         // Admin routes
-                        .requestMatchers("/dashboard/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
@@ -55,7 +62,7 @@ public class SecurityConfig {
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .successHandler(authenticationSuccessHandler())
-                        .failureUrl("/login?error=true")
+                        .failureHandler(authenticationFailureHandler())
                         .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2

@@ -2,10 +2,8 @@
 package org.example.onlinesupermarket.service.role.imple;
 
 import org.example.onlinesupermarket.dto.role.RoleDTO;
-import org.example.onlinesupermarket.entity.Permission;
 import org.example.onlinesupermarket.entity.Role;
 import org.example.onlinesupermarket.mapper.role.RoleMapper;
-import org.example.onlinesupermarket.repository.PermissionRepository;
 import org.example.onlinesupermarket.repository.RoleRepository;
 import org.example.onlinesupermarket.repository.UserRepository;
 import org.example.onlinesupermarket.service.role.RoleService;
@@ -23,8 +21,6 @@ public class RoleServiceImple implements RoleService {
     @Autowired
     private RoleRepository roleRepository;
 
-    @Autowired
-    private PermissionRepository permissionRepository;
 
     @Autowired
     private RoleMapper roleMapper;
@@ -69,14 +65,6 @@ public class RoleServiceImple implements RoleService {
         }
 
         role.setRoleName(roleDTO.getRoleName());
-
-        Set<Permission> permissions = new HashSet<>();
-
-        if (roleDTO.getPermissionIds() != null && !roleDTO.getPermissionIds().isEmpty()) {
-            permissions = new HashSet<>(permissionRepository.findAllById(roleDTO.getPermissionIds()));
-        }
-
-        role.setPermissions(permissions);
 
         return roleRepository.save(role);
     }

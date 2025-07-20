@@ -1,8 +1,6 @@
-// src/main/java/org/example/onlinesupermarket/mapper/role/RoleMapper.java
 package org.example.onlinesupermarket.mapper.role;
 
 import org.example.onlinesupermarket.dto.role.RoleDTO;
-import org.example.onlinesupermarket.entity.Permission;
 import org.example.onlinesupermarket.entity.Role;
 import org.springframework.stereotype.Component;
 
@@ -19,14 +17,6 @@ public class RoleMapper {
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setRoleId(role.getRoleId());
         roleDTO.setRoleName(role.getRoleName());
-
-        if (role.getPermissions() != null) {
-            roleDTO.setPermissionIds(
-                    role.getPermissions().stream()
-                            .map(Permission::getId)
-                            .collect(Collectors.toSet())
-            );
-        }
 
         return roleDTO;
     }

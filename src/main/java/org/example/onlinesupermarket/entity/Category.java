@@ -13,7 +13,8 @@ public class Category {
     private Integer categoryId;
 
     private String name;
-
+    @Column(name="CategoryPreview")
+    private String categoryPreview;
     @Column(length = 500)
     private String description;
 }

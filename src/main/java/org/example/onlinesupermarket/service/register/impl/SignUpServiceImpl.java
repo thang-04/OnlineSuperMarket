@@ -6,6 +6,7 @@ import org.example.onlinesupermarket.entity.User;
 import org.example.onlinesupermarket.mapper.register.RegisterMapper;
 import org.example.onlinesupermarket.repository.RoleRepository;
 import org.example.onlinesupermarket.repository.UserRepository;
+import org.example.onlinesupermarket.service.email.PasswordResetService;
 import org.example.onlinesupermarket.service.register.SignUpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class SignUpServiceImpl implements SignUpService {
     @Autowired
     private RegisterMapper registerMapper;
 
+    @Autowired
+    private PasswordResetService passwordResetService;
+
     public void registerUser(SignUpDto signUpDto) {
         // Validate email availability
         isEmailAvailable(signUpDto);
@@ -35,6 +39,8 @@ public class SignUpServiceImpl implements SignUpService {
         try {
             User savedUser = userRepository.save(newUser);
             System.out.println("User saved successfully with ID: " + savedUser.getUserId());
+            // Send OTP for email verification
+            passwordResetService.generateOTP(savedUser.getEmail());
         } catch (Exception e) {
             System.err.println("Error saving user: " + e.getMessage());
             e.printStackTrace();

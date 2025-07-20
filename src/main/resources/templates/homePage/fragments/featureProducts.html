@@ -1,0 +1,93 @@
+<div th:fragment="featureProducts" class="section145">
+    <div class="container" style="margin-top: 90px;">
+        <div class="row">
+            <!-- Sidebar Filter -->
+            <div class="col-md-3">
+                <div class="filter-sidebar beautiful-filter p-4 shadow rounded-4 bg-white">
+                    <h5 class="mb-4 fw-bold d-flex align-items-center"><i class="uil uil-filter me-2"></i>Bộ lọc sản phẩm</h5>
+                    <form th:action="@{/home/feature-products}" method="get">
+                        <div class="filter-group mb-4">
+                            <label for="name" class="form-label fw-semibold"><i class="uil uil-search"></i> Tên sản phẩm</label>
+                            <input type="text" id="name" name="name" th:value="${name}" placeholder="Nhập tên sản phẩm" class="form-control rounded-pill px-3 py-2">
+                        </div>
+                        <div class="filter-group mb-4">
+                            <label for="categoryId" class="form-label fw-semibold"><i class="uil uil-apps"></i> Danh mục</label>
+                            <select id="categoryId" name="categoryId" class="form-select rounded-pill px-3 py-2">
+                                <option value="">Tất cả</option>
+                                <option th:each="cat : ${categories}"
+                                        th:value="${cat.categoryId}"
+                                        th:text="${cat.name}"
+                                        th:selected="${cat.categoryId} == ${categoryId}"></option>
+                            </select>
+                        </div>
+                        <div class="filter-group mb-4">
+                            <label for="minPrice" class="form-label fw-semibold"><i class="uil uil-money-bill"></i> Giá từ</label>
+                            <input type="number" id="minPrice" name="minPrice" min="0" step="0.01" th:value="${minPrice}" placeholder="0" class="form-control rounded-pill px-3 py-2">
+                        </div>
+                        <div class="filter-group mb-4">
+                            <label for="maxPrice" class="form-label fw-semibold"><i class="uil uil-money-bill"></i> Đến</label>
+                            <input type="number" id="maxPrice" name="maxPrice" min="0" step="0.01" th:value="${maxPrice}" placeholder="999999" class="form-control rounded-pill px-3 py-2">
+                        </div>
+                        <div class="filter-group mb-4">
+                            <label for="sortType" class="form-label fw-semibold"><i class="uil uil-sort"></i> Sắp xếp</label>
+                            <select id="sortType" name="sortType" th:value="${sortType}" class="form-select rounded-pill px-3 py-2">
+                                <option value="bestselling" th:selected="${sortType} == 'bestselling'">Bán chạy nhất</option>
+                                <option value="newest" th:selected="${sortType} == 'newest'">Mới nhất</option>
+                                <option value="price_asc" th:selected="${sortType} == 'price_asc'">Giá tăng dần</option>
+                                <option value="price_desc" th:selected="${sortType} == 'price_desc'">Giá giảm dần</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill py-2 fw-bold fs-5">Lọc <i class="uil uil-filter"></i></button>
+                    </form>
+                </div>
+            </div>
+            <!-- Product Grid -->
+            <div class="col-md-9">
+                <h3 class="mb-4 fw-bold text-dark">Feature Product</h3>
+                <div class="row g-4">
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3" th:each="product : ${products}">
+                        <div class="product-item">
+                            <a th:href="@{'/home/productdetail/' + ${product.productId}}" class="product-img">
+                                <img th:src="@{${product.images != null and !#strings.isEmpty(product.images) ? product.images : (product.images != null and !#strings.isEmpty(product.images) ? product.images : 'https://file.hstatic.net/200000585055/file/thit-heo-sach-la-gi-thit-3a_5240e3dc18e34d78bed1d4261c9d1b1a_grande.jpeg')}}" alt="" style="height: 200px; object-fit: cover;">
+                            </a>
+                            <div class="product-text-dt">
+                                <h4 th:text="${product.name}"></h4>
+                                <div class="product-price" th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></div>
+                                <div class="qty-cart">
+                                    <div class="quantity buttons_added">
+                                        <input type="button" value="-" class="minus minus-btn">
+                                        <input type="number" step="1" name="quantity" value="1" class="input-text qty text">
+                                        <input type="button" value="+" class="plus plus-btn">
+                                    </div>
+                                    <span class="cart-icon"><i class="uil uil-shopping-cart-alt"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Pagination -->
+                <div class="row mt-5 mb-5">
+                    <div class="col-12">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination beautiful-pagination justify-content-center mt-4" th:if="${totalPage > 1}">
+                                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                                    <a class="page-link rounded-circle" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;" th:href="@{/home/feature-products(pageNo=${currentPage - 1}, name=${name}, categoryId=${categoryId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortType=${sortType})}" tabindex="-1">
+                                        <i class="fa fa-chevron-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, totalPage)}" th:classappend="${pageNum == currentPage} ? 'active'">
+                                    <a class="page-link rounded-circle" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;" th:href="@{/home/feature-products(pageNo=${pageNum}, name=${name}, categoryId=${categoryId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortType=${sortType})}" th:text="${pageNum}"></a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage == totalPage} ? 'disabled'">
+                                    <a class="page-link rounded-circle" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;" th:href="@{/home/feature-products(pageNo=${currentPage + 1}, name=${name}, categoryId=${categoryId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortType=${sortType})}">
+                                        <i class="fa fa-chevron-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

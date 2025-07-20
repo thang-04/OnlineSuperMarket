@@ -1,0 +1,136 @@
+<div th:fragment="blogContent">
+    <!-- Body Start -->
+    <div class="wrapper wrapper-blog">
+        <div class="default-dt">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 col-md-12">
+                        <div class="default_tabs">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb blog-breadcrumb">
+                                    <li class="breadcrumb-item"><a th:href="@{/home}">Home</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Our Blog</li>
+                                </ol>
+                            </nav>						
+                        </div>
+                        <div class="title129">	
+                            <h3 class="blog-titlebar-heading">Welcome to Our Blog</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="blog-gambo">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 col-md-5">
+                        <div class="pdpt-bg-left mt-0">
+                            <div class="blog-search-widget">
+                                <form th:action="@{/home/blog}" method="get" class="form-group blog-from mb-0 d-flex">
+                                    <input name="search" type="text" placeholder="Search here..." class="form-control input-md" th:value="${param.search}">
+                                    <button type="submit" class="blog-search-btn">
+                                        <i class="uil uil-search"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="pdpt-bg-left mt-30">
+                            <div class="pdpt-title">
+                                <h4>Categories</h4>
+                            </div>
+                            <ul class="top-posts pl-2 pr-2">
+                                <li>
+                                    <div class="blog-top-item">
+                                        <a href="#" class="post-cate-link mb-0">Food & Life Style</a>
+                                        <span class="cate-count">1</span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="blog-top-item">
+                                        <a href="#" class="post-cate-link mb-0">Personal Care</a>
+                                        <span class="cate-count">1</span>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="blog-top-item">
+                                        <a href="#" class="post-cate-link mb-0">Uncategories</a>
+                                        <span class="cate-count">2</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="pdpt-bg-left">
+                            <div class="pdpt-title">
+                                <h4>Recent Posts</h4>
+                            </div>
+                            <ul class="top-posts">
+                                <li class="media-list" th:each="recentBlog, blogStat : ${blogs}" th:if="${blogStat.index < 3}">
+                                    <div class="blog-top-item media">
+                                        <div class="media-left">
+                                            <img class="ft-plus-square icon-bg-circle bg-cyan mr-0" th:src="${recentBlog.featuredImage}" alt="">
+                                        </div>
+                                        <div class="media-body">
+                                            <a th:href="@{'/home/blog/' + ${recentBlog.blogId}}" class="top-post-link" th:text="${recentBlog.title}">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</a>
+                                            <span class="blog-time" th:text="${#temporals.format(recentBlog.createdAt, 'dd MMM, yyyy')}">8 May, 2020</span>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="pdpt-bg-left mb-30">
+                            <div class="pdpt-title">
+                                <h4>Tags</h4>
+                            </div>
+                            <div class="cntct-social">
+                                <div class="team-social tagcloud">
+                                    <a href="#" class="tag-cloud-link tag-link-position-1 hover-btn">Food</a>
+                                    <a href="#" class="tag-cloud-link tag-link-position-1 hover-btn">Grocery</a>
+                                    <a href="#" class="tag-cloud-link tag-link-position-1 hover-btn">Life Style</a>
+                                    <a href="#" class="tag-cloud-link tag-link-position-1 hover-btn">Vegetables</a>
+                                    <a href="#" class="tag-cloud-link tag-link-position-1 hover-btn">Fruits</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 col-md-7">
+                        <div class="blog-item" th:each="blog : ${blogs}">
+                            <a th:href="@{'/home/blog/' + ${blog.blogId}}" class="blog-img">
+                                <img th:src="${blog.featuredImage}" alt="">
+                                <div class="blog-cate-badge" th:text="${blog.authorName}">Food & Life Style</div>
+                            </a>
+                            <div class="date-icons-group">
+                                <div class="blog-time sz-14" th:text="${#temporals.format(blog.createdAt, 'dd MMM, yyyy')}">15 May, 2020</div>
+                                <ul class="like-share-icons">
+                                    <li>
+                                        <a href="#" class="like-share"><i class="uil uil-thumbs-up"></i><span>5</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="like-share"><i class="uil uil-share-alt"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="blog-detail">
+                                <h4 th:text="${blog.title}">Blog Title Here</h4>
+                                <p th:text="${#strings.abbreviate(blog.content, 300)}">Maecenas viverra odio sed mauris mattis blandit. Nullam et dolor vitae erat scelerisque vulputate. Maecenas felis arcu, pulvinar id cursus eget, ultrices ac metus. Mauris condimentum tortor sapien, laoreet ornare nibh iaculis eu. Donec posuere ipsum at malesuada egestas. Pellentesque accumsan lacus urna, sed suscipit ipsum bibendum sit amet.</p>
+                                <a th:href="@{'/home/blog/' + ${blog.blogId}}">Read More</a>
+                            </div>
+                        </div>
+                        <div class="blog-more-btn">
+                            <div class="pagination-area text-center">
+                                <nav aria-label="navigation"> 
+                                    <span aria-current="page" class="page-numbers current">1</span>
+                                    <a class="page-numbers" href="#">2</a>
+                                    <a class="page-numbers" href="#">3</a>
+                                    <a class="next page-numbers" href="#"><i class="uil uil-angle-double-right"></i></a>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Body End -->
+</div>
+
+

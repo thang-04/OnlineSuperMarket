@@ -18,7 +18,6 @@ public class Blog {
     @Column(nullable = false)
     private String title;
 
-    @Lob
     @Column(columnDefinition = "NVARCHAR(MAX)", nullable = false)
     private String content;
 
@@ -32,5 +31,4 @@ public class Blog {
     private boolean published = false;
 
     private LocalDateTime createdAt;
-
 }

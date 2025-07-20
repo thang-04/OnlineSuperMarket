@@ -1,0 +1,62 @@
+
+<div th:fragment="blogDetailContent">
+    <!-- Body Start -->
+    <div class="wrapper">
+        <div class="blog-dt-vw banner-blog banner.visible parallax">
+            <div class="blog-inner">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12">
+                            <h1 th:text="${blog.title}">Blog Title Here</h1>
+                            <div class="extra-info">
+                                <span class="entry-date" th:text="${#temporals.format(blog.createdAt, 'EEEE, MMMM dd, yyyy')}">Tuesday, May 19, 2020</span>
+                                <div class="single-post-cat">
+                                    <a href="#" th:text="${blog.authorName}">Food &amp; Lifestyle</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="blog-single-dts-text">
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-10">
+                        <div class="bb-des12">
+                            <div class="blog-des-dt142">
+                                <div th:utext="${blog.content}">
+                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras rutrum turpis vitae facilisis tempus. Donec in blandit risus, eget pretium mauris. Aliquam nec venenatis massa. Ut vel nulla id velit dictum rutrum nec vel ex. Phasellus sit amet faucibus massa, in feugiat augue. Maecenas eget dapibus turpis, a finibus justo. Suspendisse pretium lorem non lorem faucibus, non sagittis nisi finibus. Sed efficitur massa ac nibh condimentum interdum. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Suspendisse luctus, ex ut congue interdum, nibh turpis malesuada orci, vel vulputate arcu velit condimentum orci. Ut sed dictum lacus.</p>
+                                    <ul class="joby-list-dt mt-21">
+                                        <li><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p></li>
+                                        <li><p>Sed ut dui et tellus euismod accumsan.</p></li>
+                                        <li><p>Aenean sed neque vitae nisi commodo ultricies sed ut sapien.</p></li>
+                                        <li><p>Sed euismod urna vel lacus porta imperdiet.</p></li>
+                                        <li><p>Proin id neque condimentum, eleifend ipsum sed, luctus nisi.</p></li>
+                                        <li><p>Ut eu sem eget dolor bibendum tempor.</p></li>
+                                        <li><p>Sed scelerisque purus id nunc semper, in elementum quam fringilla.</p></li>
+                                        <li><p>Donec pulvinar enim vel convallis egestas.</p></li>
+                                    </ul>
+                                    <p class="mt-21">Sed imperdiet erat eget nunc cursus dictum. Maecenas urna nisl, lacinia sit amet convallis quis, mattis eu ligula. Quisque ultricies lacinia volutpat. Integer malesuada vehicula blandit. Maecenas commodo scelerisque maximus. Nam et metus cursus, congue mi a, iaculis arcu. Etiam quis porta ipsum, nec sodales dui. Fusce gravida odio sed leo luctus, sit amet sollicitudin dui laoreet. Nunc vestibulum risus in varius venenatis. Quisque mattis rhoncus erat et feugiat. Aenean vitae tristique quam. Quisque feugiat risus lorem, eget viverra eros auctor a. Sed nec lorem vel risus ornare maximus. Maecenas id sodales massa, id venenatis odio. Integer aliquet dolor vel lectus mollis condimentum.</p>
+                                    <p class="mt-21">Proin lacinia risus vel lectus tempor dapibus vitae quis tellus. Donec ligula mi, suscipit in pulvinar at, commodo eu ipsum. Pellentesque sed neque ut ante feugiat semper. Donec consectetur id odio tempus blandit. Nullam sit amet nunc tristique magna venenatis fermentum ac vel felis. Nam eget elit mattis dui fringilla vehicula nec eu quam. Nam convallis risus ac mi finibus, a venenatis enim congue.</p>
+                                </div>
+                            </div>
+                            <div class="date-icons-group vew1458">
+                                <div class="blog-time sz-14"></div>
+                                <ul class="like-share-icons">
+                                    <li>
+                                        <a href="#" class="like-share ss18"><i class="uil uil-thumbs-up"></i><span>5</span></a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="like-share ss18"><i class="uil uil-share-alt"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Body End -->
+</div>

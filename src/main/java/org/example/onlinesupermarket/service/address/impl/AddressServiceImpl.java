@@ -3,13 +3,12 @@ package org.example.onlinesupermarket.service.address.impl;
 import org.example.onlinesupermarket.dto.address.AddressDTO;
 import org.example.onlinesupermarket.entity.Address;
 import org.example.onlinesupermarket.entity.User;
+import org.example.onlinesupermarket.mapper.address.AddressMapper;
 import org.example.onlinesupermarket.repository.AddressRepository;
 import org.example.onlinesupermarket.repository.UserRepository;
 import org.example.onlinesupermarket.service.address.AddressService;
-import org.example.onlinesupermarket.mapper.address.AddressMapper;
 import org.example.onlinesupermarket.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,7 +44,7 @@ public class AddressServiceImpl implements AddressService {
     
     @Override
     public void createAddress(Integer userId, AddressDTO addressDTO) {
-        Optional<User> user = userRepository.findByUserId(userId);
+        Optional<User> user = userRepository.getUserId(userId);
         Address address = addressMapper.toEntity(addressDTO);
         if (user.isPresent()){
             address.setUser(user.get());
@@ -108,7 +107,7 @@ public class AddressServiceImpl implements AddressService {
     
     @Override
     public void updateAddress(Integer userId, AddressDTO addressDTO) {
-        Optional<User> userOpt = userRepository.findByUserId(userId);
+        Optional<User> userOpt = userRepository.getUserId(userId);
         if (userOpt.isPresent()) {
             User user = userOpt.get();
             Address address = addressRepository.findByUserAndAddressId(user, addressDTO.getAddressId())

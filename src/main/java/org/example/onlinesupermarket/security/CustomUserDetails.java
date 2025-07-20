@@ -82,7 +82,8 @@ public class CustomUserDetails implements UserDetails, OAuth2User {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        // Only enable login if email is verified
+        return user.isEmailVerified();
     }
 
     @Override

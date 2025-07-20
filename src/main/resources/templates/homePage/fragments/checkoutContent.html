@@ -23,52 +23,51 @@
                                 <h4 class="mb-3"><i class="uil uil-location-point"></i> Chọn địa chỉ giao hàng</h4>
                                 <div th:if="${#lists.isEmpty(addresses)}">
                                     <p>Bạn chưa có địa chỉ nào. Vui lòng nhập địa chỉ giao hàng:</p>
-                                    <form th:action="@{/home/address/add-checkout}" method="post">
-                                        <div class="card card-body mb-3">
-                                            <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
-                                            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
-                                            <div class="row g-2">
-                                                <div class="col-12 mb-2">
-                                                    <label class="form-label">Họ tên người nhận*</label>
-                                                    <input type="text" class="form-control" name="recipient" required>
+                                    <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                                        <i class="uil uil-plus"></i> Thêm địa chỉ mới
+                                    </button>
                                 </div>
-                                                <div class="col-12 mb-2">
-                                                    <label class="form-label">Địa chỉ*</label>
-                                                    <input type="text" class="form-control" name="street" required>
+                                <div th:if="${!#lists.isEmpty(addresses)}">
+                                    <div class="mb-3">
+                                        <p class="text-muted mb-2">Chọn địa chỉ giao hàng:</p>
+                                    </div>
+                                    <div class="address-selection">
+                                        <div th:each="addr, iterStat : ${addresses}" class="address-option mb-3">
+                                            <div class="card" th:classappend="${addr.defaultAddress} ? 'border-success' : 'border-light'">
+                                                <div class="card-body p-3">
+                                                    <div class="d-flex align-items-start">
+                                                        <div class="form-check me-3 mt-1">
+                                                            <input class="form-check-input" type="radio" name="addressId" 
+                                                                   th:value="${addr.addressId}"
+                                                                   th:checked="${addr.defaultAddress} ? true : (${iterStat.index == 0})"
+                                                                   required>
+                                                        </div>
+                                                        <div class="flex-grow-1">
+                                                            <div class="d-flex align-items-center mb-2">
+                                                                <i class="uil uil-map-marker text-primary me-2"></i>
+                                                                <strong th:text="${addr.recipient}">Người nhận</strong>
+                                                                <span th:if="${addr.defaultAddress}" class="badge bg-success ms-2">
+                                                                    <i class="uil uil-check-circle me-1"></i>Mặc định
+                                                                </span>
                                                             </div>
-                                                <div class="col-md-4 mb-2">
-                                                    <label class="form-label">Thành phố*</label>
-                                                    <input type="text" class="form-control" name="city" required>
+                                                            <p class="mb-1 text-muted" th:text="${addr.street}">Địa chỉ</p>
+                                                            <p class="mb-0 text-muted" th:text="${addr.city + ', ' + addr.province + ' - ' + addr.postalCode}">Thành phố, Tỉnh - Mã bưu điện</p>
+                                                        </div>
+                                                        <div th:if="${!addr.defaultAddress}" class="ms-3 align-self-center">
+                                                            <a th:href="@{'/home/address/set-default/' + ${addr.addressId} + '?redirect=/home/orders/checkout'}"
+                                                               class="btn btn-sm btn-outline-warning addr-set-default-btn" style="white-space: nowrap;">
+                                                                <i class="uil uil-star me-1"></i>Đặt làm mặc định
+                                                            </a>
+                                                        </div>
                                                     </div>
-                                                <div class="col-md-4 mb-2">
-                                                    <label class="form-label">Tỉnh*</label>
-                                                    <input type="text" class="form-control" name="province" required>
-                                                </div>
-                                                <div class="col-md-4 mb-2">
-                                                    <label class="form-label">Mã bưu điện*</label>
-                                                    <input type="text" class="form-control" name="postalCode" required>
-                                            </div>
-                                                <div class="col-12 mb-2">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" name="defaultAddress" checked>
-                                                        <label class="form-check-label">Đặt làm địa chỉ mặc định</label>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12 text-end">
-                                                    <button type="submit" class="btn btn-success">Lưu địa chỉ và tiếp tục</button>
                                                 </div>
                                             </div>
                                         </div>
-                                    </form>
-                                </div>
-                                <div th:if="${!#lists.isEmpty(addresses)}">
-                                    <div class="list-group">
-                                        <label th:each="addr, iterStat : ${addresses}" class="list-group-item d-flex align-items-center">
-                                            <input type="radio" name="addressId" th:value="${addr.addressId}"
-                                                th:checked="${addr.defaultAddress} ? true : (${#lists.select(addresses, a -> a.defaultAddress).isEmpty()} ? ${iterStat.index == 0} : false)" required>
-                                            <span class="ms-2" th:text="${addr.street + ', ' + addr.city + ', ' + addr.province}"></span>
-                                            <span th:if="${addr.defaultAddress}" class="badge bg-success ms-2">Mặc định</span>
-                                                                </label>
+                                    </div>
+                                    <div class="mt-3">
+                                        <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addAddressModal">
+                                            <i class="uil uil-plus"></i> Thêm địa chỉ mới
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -85,7 +84,7 @@
                             </div>
                             <div class="text-end mt-3">
                                 <button type="submit" class="btn btn-primary">Đặt hàng</button>
-                        </div>
+                            </div>
                         </form>
                     </div>
                     <div class="col-lg-6 col-md-6">
@@ -100,6 +99,63 @@
             </div>
         </div>
     </div>
+
+    <!-- Add Address Modal đặt ngoài form -->
+    <div class="modal fade" id="addAddressModal" tabindex="-1" aria-labelledby="addAddressModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header" style="background: #f55d2c; color: white;">
+                    <h5 class="modal-title" id="addAddressModalLabel">
+                        <i class="uil uil-plus me-2"></i>Thêm địa chỉ mới
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form th:action="@{/home/address/add-checkout}" th:object="${addressDto}" method="post">
+                    <div class="modal-body">
+                        <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+                        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Họ tên người nhận*</label>
+                                <input th:field="*{recipient}" type="text" class="form-control" placeholder="Nhập họ tên người nhận" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Địa chỉ*</label>
+                                <input th:field="*{street}" type="text" class="form-control" placeholder="Nhập địa chỉ chi tiết" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Thành phố*</label>
+                                <input th:field="*{city}" type="text" class="form-control" placeholder="Nhập thành phố" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Tỉnh*</label>
+                                <input th:field="*{province}" type="text" class="form-control" placeholder="Nhập tỉnh" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Mã bưu điện*</label>
+                                <input th:field="*{postalCode}" type="text" class="form-control" placeholder="Nhập mã bưu điện" required>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input th:field="*{defaultAddress}" class="form-check-input" type="checkbox" id="setAsDefault">
+                                    <label class="form-check-label" for="setAsDefault">
+                                        Đặt làm địa chỉ mặc định
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="uil uil-save me-1"></i>Lưu địa chỉ
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <style>
       @media (min-width: 992px) {
         .pdpt-bg {
@@ -111,5 +167,67 @@
           text-overflow: ellipsis;
         }
       }
+      .address-option .card:hover {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border-color: #f55d2c !important;
+      }
+      .address-option .card.border-success {
+        background-color: #f8fff9;
+      }
+      .form-check-input:checked {
+        background-color: #f55d2c;
+        border-color: #f55d2c;
+      }
     </style>
+    <script>
+        // Handle address selection
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event to address cards
+            document.querySelectorAll('.address-option .card').forEach(card => {
+                card.addEventListener('click', function(e) {
+                    // Don't trigger if clicking on radio button
+                    if (e.target.type === 'radio') return;
+                    // Find and check the radio button inside this card
+                    const radio = this.querySelector('input[type="radio"]');
+                    if (radio) {
+                        radio.checked = true;
+                        // Update visual feedback
+                        document.querySelectorAll('.address-option .card').forEach(c => {
+                            c.classList.remove('border-success');
+                            c.classList.add('border-light');
+                        });
+                        this.classList.remove('border-light');
+                        this.classList.add('border-success');
+                    }
+                });
+            });
+            // Handle radio button change
+            document.querySelectorAll('input[name="addressId"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    // Update visual feedback for all cards
+                    document.querySelectorAll('.address-option .card').forEach(card => {
+                        card.classList.remove('border-success');
+                        card.classList.add('border-light');
+                    });
+                    // Highlight selected card
+                    if (this.checked) {
+                        const selectedCard = this.closest('.card');
+                        if (selectedCard) {
+                            selectedCard.classList.remove('border-light');
+                            selectedCard.classList.add('border-success');
+                        }
+                    }
+                });
+            });
+            // Auto-select default address on page load
+            const defaultRadio = document.querySelector('input[name="addressId"]:checked');
+            if (defaultRadio) {
+                const defaultCard = defaultRadio.closest('.card');
+                if (defaultCard) {
+                    defaultCard.classList.remove('border-light');
+                    defaultCard.classList.add('border-success');
+                }
+            }
+        });
+    </script>
 </div>
