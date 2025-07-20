@@ -28,7 +28,9 @@
                                         </div>
                                         <div th:each="wishList : ${wishLists}" class="cart-item">
                                             <div class="cart-product-img">
-                                                <img th:src="@{'/static/homePage/images/product/' + ${wishList.product.image}}" alt="" style="width: 80px; height: 80px; object-fit: cover;">
+                                                <a th:href="@{/home/productdetail/{id}(id=${wishList.product.productId})}">
+                                                <img th:src="${wishList.product.image}" alt="" style="width: 80px; height: 80px; object-fit: cover;">
+                                                </a>
                                             </div>
                                             <div class="cart-text">
                                                 <h4 th:text="${wishList.product.name}"></h4>

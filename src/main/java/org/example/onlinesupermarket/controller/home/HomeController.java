@@ -32,42 +32,51 @@ public class HomeController {
     @Autowired
     private UserRepository userRepository;
 
-    //truy cap home page
     @GetMapping()
-    public String getHomePage(
+    public String homePage(Model model) {
+        List<Category> categories = categoryService.getAllCategories();
+        List<ProductDTO> featureProducts = productService.getTop10BestSellingProducts();
+        List<ProductDTO> newestProducts = productService.getTop10NewestProducts();
+        model.addAttribute("fragmentContent", "homePage/fragments/homePage :: homePage");
+        model.addAttribute("categories", categories);
+        model.addAttribute("featureProducts", featureProducts);
+        model.addAttribute("newestProducts", newestProducts);
+        return "homePage/index";
+    }
+
+    //truy cap home page
+    @GetMapping("/listproduct")
+    public String getList(
             Model model,
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "categoryId", required = false) Integer categoryId,
             @RequestParam(value = "minPrice", required = false) Double minPrice,
             @RequestParam(value = "maxPrice", required = false) Double maxPrice,
-            @RequestParam(value = "sortByPrice", required = false, defaultValue = "asc") String sortByPrice,
+            @RequestParam(value = "sortType", required = false, defaultValue = "newest") String sortType,
             @RequestParam(value = "pageNo", required = false, defaultValue = "1") int pageNo
     ) {
-        List<Category> categories = categoryService.getAllCategories();
         int pageSize = 8;
-        Page<Product> products = productService.searchProducts(name, categoryId, minPrice, maxPrice, sortByPrice, pageNo, pageSize);
-        int totalPage = products.getTotalPages();
-        int currentPage = pageNo;
-        model.addAttribute("totalPage", totalPage);
-        model.addAttribute("currentPage", currentPage);
+        Page<ProductDTO> page = productService.filterAllProducts(name, categoryId, minPrice, maxPrice, sortType, pageNo, pageSize);
+        List<Category> categories = categoryService.getAllCategories();
+        model.addAttribute("products", page.getContent());
+        model.addAttribute("totalPage", page.getTotalPages());
+        model.addAttribute("currentPage", pageNo);
         model.addAttribute("categories", categories);
-        model.addAttribute("products", products);
         model.addAttribute("name", name);
         model.addAttribute("categoryId", categoryId);
         model.addAttribute("minPrice", minPrice);
         model.addAttribute("maxPrice", maxPrice);
-        model.addAttribute("sortByPrice", sortByPrice);
+        model.addAttribute("sortType", sortType);
         model.addAttribute("fragmentContent", "homePage/fragments/contentMain :: contentMain");
         return "homePage/index";
     }
 
     @GetMapping("/categoryId")
-    public String searchByCategoryId(@RequestParam(name="categoryId") Integer categoryId, Model model) {
+    public String searchByCategoryId(@RequestParam(name = "categoryId") Integer categoryId, Model model) {
         List<Product> products = null;
-        if(categoryId == 0) {
+        if (categoryId == 0) {
 //          products = productService.getAllProducts();
-        }
-        else {
+        } else {
             products = productService.findByCategoryId(categoryId);
         }
         List<Category> categories = categoryService.getAllCategories();
@@ -76,6 +85,7 @@ public class HomeController {
         model.addAttribute("fragmentContent", "homePage/fragments/contentMain :: contentMain");
         return "homePage/index";
     }
+
     @GetMapping("/search")
     public String searchProduct(
             @RequestParam(value = "name", required = false) String name,
@@ -99,6 +109,7 @@ public class HomeController {
         model.addAttribute("fragmentContent", "homePage/fragments/contentMain :: contentMain");
         return "homePage/index";
     }
+
     @GetMapping("/productdetail/{id}")
     public String detail(Model model, @PathVariable("id") Integer id) {
         ProductDetailDTO detail = productService.getProductDetail(id);
@@ -126,6 +137,7 @@ public class HomeController {
         model.addAttribute("fragmentContent", "homePage/fragments/productdetail :: productdetail");
         return "homePage/index";
     }
+
     @GetMapping("/wishlist")
     public String viewWishList(Model model) {
         Integer userId = 1; // giả lập user id
@@ -160,9 +172,27 @@ public class HomeController {
 
     // Hiển thị 10 sản phẩm bán chạy nhất (feature products)
     @GetMapping("/feature-products")
-    public String getFeatureProducts(Model model) {
-        List<ProductDTO> featureProducts = productService.getTop10BestSellingProducts();
-        model.addAttribute("featureProducts", featureProducts);
+    public String getFeatureProductsPage(
+            Model model,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "minPrice", required = false) Double minPrice,
+            @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "sortType", required = false, defaultValue = "bestselling") String sortType,
+            @RequestParam(value = "pageNo", defaultValue = "1") int pageNo
+    ) {
+        int pageSize = 8;
+        Page<ProductDTO> page = productService.filterBestSellingProducts(name, categoryId, minPrice, maxPrice, sortType, pageNo, pageSize);
+        List<Category> categories = categoryService.getAllCategories();
+        model.addAttribute("products", page.getContent());
+        model.addAttribute("totalPage", page.getTotalPages());
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("categories", categories);
+        model.addAttribute("name", name);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("sortType", sortType);
         model.addAttribute("fragmentContent", "homePage/fragments/featureProducts :: featureProducts");
         return "homePage/index";
     }
@@ -178,4 +208,31 @@ public class HomeController {
         model.addAttribute("fragmentContent", "homePage/fragments/similarProducts :: similarProducts");
         return "homePage/index";
     }
+
+    @GetMapping("/newest-products")
+    public String getNewestProducts(
+            Model model,
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "categoryId", required = false) Integer categoryId,
+            @RequestParam(value = "minPrice", required = false) Double minPrice,
+            @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+            @RequestParam(value = "sortType", required = false, defaultValue = "newest") String sortType,
+            @RequestParam(value = "pageNo", defaultValue = "1") int pageNo
+    ) {
+        int pageSize = 8;
+        Page<ProductDTO> page = productService.filterNewestProducts(name, categoryId, minPrice, maxPrice, sortType, pageNo, pageSize);
+        List<Category> categories = categoryService.getAllCategories();
+        model.addAttribute("products", page.getContent());
+        model.addAttribute("totalPage", page.getTotalPages());
+        model.addAttribute("currentPage", pageNo);
+        model.addAttribute("categories", categories);
+        model.addAttribute("name", name);
+        model.addAttribute("categoryId", categoryId);
+        model.addAttribute("minPrice", minPrice);
+        model.addAttribute("maxPrice", maxPrice);
+        model.addAttribute("sortType", sortType);
+        model.addAttribute("fragmentContent", "homePage/fragments/newestProducts :: newestProducts");
+        return "homePage/index";
+    }
 }
+

@@ -30,30 +30,20 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     List<Product> findByPriceBetween(Double minPrice, Double maxPrice);
     // Kết hợp tìm kiếm tên và filter giá
     List<Product> findByNameContainingIgnoreCaseAndPriceBetween(String name, Double minPrice, Double maxPrice);
-    // Sắp xếp theo giá tăng dần
     List<Product> findAllByOrderByPriceAsc();
-    // Sắp xếp theo giá giảm dần
     List<Product> findAllByOrderByPriceDesc();
-    // Sắp xếp theo giá tăng dần, nếu cùng giá thì theo tên
     List<Product> findAllByOrderByPriceAscNameAsc();
-    // Sắp xếp theo giá giảm dần, nếu cùng giá thì theo tên
     List<Product> findAllByOrderByPriceDescNameAsc();
-    // Search tên + sắp xếp tăng dần
     List<Product> findByNameContainingIgnoreCaseOrderByPriceAsc(String name);
     List<Product> findByNameContainingIgnoreCaseOrderByPriceDesc(String name);
-    // Search tên + sắp xếp tăng dần
     List<Product> findByNameContainingIgnoreCaseOrderByPriceAscNameAsc(String name);
     List<Product> findByNameContainingIgnoreCaseOrderByPriceDescNameAsc(String name);
-    // Filter giá + sắp xếp tăng/giảm
     List<Product> findByPriceBetweenOrderByPriceAsc(Double minPrice, Double maxPrice);
     List<Product> findByPriceBetweenOrderByPriceDesc(Double minPrice, Double maxPrice);
-    // Filter giá + sắp xếp tăng/giảm
     List<Product> findByPriceBetweenOrderByPriceAscNameAsc(Double minPrice, Double maxPrice);
     List<Product> findByPriceBetweenOrderByPriceDescNameAsc(Double minPrice, Double maxPrice);
-    // Search + filter + sắp xếp tăng/giảm
     List<Product> findByNameContainingIgnoreCaseAndPriceBetweenOrderByPriceAsc(String name, Double minPrice, Double maxPrice);
     List<Product> findByNameContainingIgnoreCaseAndPriceBetweenOrderByPriceDesc(String name, Double minPrice, Double maxPrice);
-    // Search + filter + sắp xếp tăng/giảm
     List<Product> findByNameContainingIgnoreCaseAndPriceBetweenOrderByPriceAscNameAsc(String name, Double minPrice, Double maxPrice);
     List<Product> findByNameContainingIgnoreCaseAndPriceBetweenOrderByPriceDescNameAsc(String name, Double minPrice, Double maxPrice);
     Page<Product> findByNameContainingIgnoreCaseAndCategoryCategoryIdAndPriceBetween(String name, Integer categoryId, Double minPrice, Double maxPrice, Pageable pageable);
@@ -70,4 +60,33 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
     // JPQL lấy tất cả sản phẩm bán chạy (phân trang)
     @Query("SELECT p, COALESCE(SUM(oi.quantity), 0) as totalSold FROM Product p LEFT JOIN p.orderItems oi GROUP BY p ORDER BY totalSold DESC")
     Page<Object[]> findAllBestSellingProducts(Pageable pageable);
+    // JPQL lấy top 10 sản phẩm mới nhất
+    @Query("SELECT p FROM Product p ORDER BY p.createdAt DESC")
+    List<Product> findTop10NewestProducts(Pageable pageable);
+    // Lấy tất cả sản phẩm sắp xếp theo ngày tạo mới nhất (phân trang)
+    Page<Product> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
+    // Filter + phân trang sản phẩm bán chạy nhất
+    @Query("SELECT p, COALESCE(SUM(oi.quantity), 0) as totalSold FROM Product p LEFT JOIN p.orderItems oi " +
+            "WHERE (:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "AND (:categoryId IS NULL OR p.category.categoryId = :categoryId) " +
+            "AND (:minPrice IS NULL OR p.price >= :minPrice) " +
+            "AND (:maxPrice IS NULL OR p.price <= :maxPrice) " +
+            "GROUP BY p ORDER BY totalSold DESC")
+    Page<Object[]> filterBestSellingProducts(@Param("name") String name,
+                                             @Param("categoryId") Integer categoryId,
+                                             @Param("minPrice") Double minPrice,
+                                             @Param("maxPrice") Double maxPrice,
+                                             Pageable pageable);
+
+    // Filter + phân trang sản phẩm mới nhất
+    @Query("SELECT p FROM Product p WHERE (:name IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))) " +
+            "AND (:categoryId IS NULL OR p.category.categoryId = :categoryId) " +
+            "AND (:minPrice IS NULL OR p.price >= :minPrice) " +
+            "AND (:maxPrice IS NULL OR p.price <= :maxPrice)")
+    Page<Product> filterNewestProducts(@Param("name") String name,
+                                       @Param("categoryId") Integer categoryId,
+                                       @Param("minPrice") Double minPrice,
+                                       @Param("maxPrice") Double maxPrice,
+                                       Pageable pageable);
 }

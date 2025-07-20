@@ -21,5 +21,5 @@ public class Address {
     private String city;
     private String province;
     private String postalCode;
-    private boolean isDefault = false;
+    private boolean defaultAddress = false;
 }

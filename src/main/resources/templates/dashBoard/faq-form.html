@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="${faq.faqId == null ? 'Admin - Thêm FAQ' : 'Admin - Chỉnh sửa FAQ'}"></title>
+  <link th:href="@{/dashBoard-static/css/styles.css}" rel="stylesheet">
+  <link th:href="@{/dashBoard-static/css/admin-style.css}" rel="stylesheet">
+  <link th:href="@{/dashBoard-static/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+  <link th:href="@{/dashBoard-static/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
+</head>
+<body class="sb-nav-fixed">
+<nav th:replace="~{dashBoard/fragments/topbar :: topbar}"></nav>
+<div id="layoutSidenav">
+  <div id="layoutSidenav_nav" th:insert="~{dashBoard/fragments/sidebar :: sidebar}"></div>
+  <div id="layoutSidenav_content">
+    <main>
+      <div class="container-fluid">
+        <h2 class="mt-30 page-title" th:text="${faq.faqId == null ? 'Thêm FAQ' : 'Chỉnh sửa FAQ'}"></h2>
+        <ol class="breadcrumb mb-30">
+          <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
+          <li class="breadcrumb-item"><a th:href="@{/admin/faqs}">FAQ</a></li>
+          <li class="breadcrumb-item active" th:text="${faq.faqId == null ? 'Thêm mới' : 'Chỉnh sửa'}"></li>
+        </ol>
+
+        <div class="row">
+          <div class="col-lg-8">
+            <div class="card card-static-2 mb-30">
+              <div class="card-body-table">
+                <form th:action="@{/admin/faqs/save}" th:object="${faq}" method="post">
+                  <input type="hidden" th:field="*{faqId}">
+                  <div class="post-form">
+                    <div class="form-group">
+                      <label class="form-label">Câu hỏi*</label>
+                      <input type="text" class="form-control" th:field="*{question}" placeholder="Nhập câu hỏi">
+                      <div th:if="${#fields.hasErrors('question')}" class="text-danger mt-1" th:errors="*{question}"></div>
+                    </div>
+
+                    <div class="form-group mt-4">
+                      <label class="form-label">Câu trả lời*</label>
+                      <textarea class="form-control" th:field="*{answer}" rows="5" placeholder="Nhập câu trả lời"></textarea>
+                      <div th:if="${#fields.hasErrors('answer')}" class="text-danger mt-1" th:errors="*{answer}"></div>
+                    </div>
+
+                    <div class="row mt-4">
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="form-label">Thể loại</label>
+                          <input type="text" class="form-control" th:field="*{category}" placeholder="VD: General, Payment, Shipping">
+                        </div>
+                      </div>
+                      <div class="col-md-6">
+                        <div class="form-group">
+                          <label class="form-label">Thứ tự sắp xếp</label>
+                          <input type="number" class="form-control" th:field="*{sortOrder}">
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group mt-4">
+                      <label class="form-label">Trạng thái</label>
+                      <select class="form-control" th:field="*{active}">
+                        <option th:value="true">Hoạt động</option>
+                        <option th:value="false">Không hoạt động</option>
+                      </select>
+                    </div>
+
+                    <button class="save-btn hover-btn mt-4" type="submit">Lưu FAQ</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <footer class="py-4 bg-footer mt-auto" th:insert="~{dashBoard/fragments/footer :: footer}"></footer>
+  </div>
+</div>
+<script th:src="@{/dashBoard-static/js/jquery.min.js}"></script>
+<script th:src="@{/dashBoard-static/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dashBoard-static/js/scripts.js}"></script>
+</body>
+</html>

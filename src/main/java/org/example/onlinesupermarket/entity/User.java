@@ -34,10 +34,15 @@ public class User {
     @JoinColumn(name = "roleId", nullable = false)
     private Role role;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Address> addresses;
+
     private LocalDateTime createdAt ;
 
     private boolean isLocked = false;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WishList> wishLists;
+
+
 }

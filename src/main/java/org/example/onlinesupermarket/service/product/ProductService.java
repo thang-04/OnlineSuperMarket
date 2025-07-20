@@ -25,5 +25,16 @@ public interface ProductService {
     List<ProductDTO> getTop10BestSellingProducts();
     // Lấy tất cả sản phẩm bán chạy (phân trang)
     Page<ProductDTO> getAllBestSellingProducts(int pageNo, int pageSize);
+    // Lấy tất cả sản phẩm bán chạy nhất (phân trang, không filter Java)
+    // Lấy tất cả sản phẩm mới nhất (phân trang, không filter Java)
+   Page<ProductDTO> getAllNewestProducts(int pageNo, int pageSize);
+    // Lấy top 10 sản phẩm mới nhất
+    List<ProductDTO> getTop10NewestProducts();
     Product getProductById(Integer productId);
+    // Lấy toàn bộ sản phẩm, phân trang, sắp xếp theo ngày tạo mới nhất
+    Page<Product> getAllProductsSortedByCreatedAtDesc(int pageNo, int pageSize);
+    Page<ProductDTO> filterBestSellingProducts(String name, Integer categoryId, Double minPrice, Double maxPrice, String sortType, int pageNo, int pageSize);
+    Page<ProductDTO> filterNewestProducts(String name, Integer categoryId, Double minPrice, Double maxPrice, String sortType, int pageNo, int pageSize);
+    Page<ProductDTO> filterAllProducts(String name, Integer categoryId, Double minPrice, Double maxPrice, String sortType, int pageNo, int pageSize);
+    Page<ProductDTO> filterAllProductsNoSort(String name, Integer categoryId, Double minPrice, Double maxPrice, int pageNo, int pageSize);
 }

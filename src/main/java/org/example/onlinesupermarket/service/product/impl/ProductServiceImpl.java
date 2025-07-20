@@ -11,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -76,10 +77,24 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<ProductDTO> getTop10NewestProducts() {
+        Pageable pageable = PageRequest.of(0, 10);
+        List<Product> products = productRepository.findTop10NewestProducts(pageable);
+        return products.stream().map(productMapper::MapperMoreProduct).collect(Collectors.toList());
+    }
+
+    @Override
     public Page<ProductDTO> getAllBestSellingProducts(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         Page<Object[]> page = productRepository.findAllBestSellingProducts(pageable);
         return page.map(obj -> productMapper.MapperProductWithTotalSold((Product) obj[0], (Long) obj[1]));
+    }
+
+    @Override
+    public Page<ProductDTO> getAllNewestProducts(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Page<Product> page = productRepository.findAllByOrderByCreatedAtDesc(pageable);
+        return page.map(productMapper::MapperMoreProduct);
     }
 
     @Override
@@ -164,7 +179,86 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public Page<Product> getAllProductsSortedByCreatedAtDesc(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, org.springframework.data.domain.Sort.by("createdAt").descending());
+        return productRepository.findAll(pageable);
+    }
+
+    @Override
     public Product getProductById(Integer productId) {
         return productRepository.findById(productId).orElse(null);
+    }
+
+    @Override
+    public Page<ProductDTO> filterBestSellingProducts(String name, Integer categoryId, Double minPrice, Double maxPrice, String sortType, int pageNo, int pageSize) {
+        Pageable pageable;
+        if ("price_asc".equals(sortType)) {
+            pageable = PageRequest.of(pageNo - 1, pageSize, org.springframework.data.domain.Sort.by("price").ascending());
+        } else if ("price_desc".equals(sortType)) {
+            pageable = PageRequest.of(pageNo - 1, pageSize, org.springframework.data.domain.Sort.by("price").descending());
+        } else { // bestselling (default)
+            pageable = PageRequest.of(pageNo - 1, pageSize);
+        }
+        Page<Object[]> page = productRepository.filterBestSellingProducts(
+            (name == null || name.isEmpty()) ? null : name,
+            categoryId,
+            minPrice,
+            maxPrice,
+            pageable
+        );
+        return page.map(obj -> productMapper.MapperProductWithTotalSold((Product) obj[0], (Long) obj[1]));
+    }
+
+    @Override
+    public Page<ProductDTO> filterNewestProducts(String name, Integer categoryId, Double minPrice, Double maxPrice, String sortType, int pageNo, int pageSize) {
+        Pageable pageable;
+        if ("price_asc".equals(sortType)) {
+            pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("price").ascending());
+        } else if ("price_desc".equals(sortType)) {
+            pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("price").descending());
+        } else { // newest (default)
+            pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("createdAt").descending());
+        }
+        Page<Product> page = productRepository.filterNewestProducts(
+            (name == null || name.isEmpty()) ? null : name,
+            categoryId,
+            minPrice,
+            maxPrice,
+            pageable
+        );
+        return page.map(productMapper::MapperMoreProduct);
+    }
+
+    @Override
+    public Page<ProductDTO> filterAllProducts(String name, Integer categoryId, Double minPrice, Double maxPrice, String sortType, int pageNo, int pageSize) {
+        Pageable pageable;
+        if ("price_asc".equals(sortType)) {
+            pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("price").ascending());
+        } else if ("price_desc".equals(sortType)) {
+            pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("price").descending());
+        } else { // newest (default)
+            pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by("createdAt").descending());
+        }
+        Page<Product> page = productRepository.filterNewestProducts(
+            (name == null || name.isEmpty()) ? null : name,
+            categoryId,
+            minPrice,
+            maxPrice,
+            pageable
+        );
+        return page.map(productMapper::MapperMoreProduct);
+    }
+
+    @Override
+    public Page<ProductDTO> filterAllProductsNoSort(String name, Integer categoryId, Double minPrice, Double maxPrice, int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        Page<Product> page = productRepository.filterNewestProducts(
+            (name == null || name.isEmpty()) ? null : name,
+            categoryId,
+            minPrice,
+            maxPrice,
+            pageable
+        );
+        return page.map(productMapper::MapperMoreProduct);
     }
 }

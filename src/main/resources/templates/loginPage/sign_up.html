@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, shrink-to-fit=9">
+		<meta name="description" content="Gambolthemes">
+		<meta name="author" content="Gambolthemes">		
+		<title>Gambo - Sign Up</title>
+		
+		<!-- Favicon Icon -->
+		<link rel="icon" type="image/png" href="images/fav.png">
+
+
+	<!-- Stylesheets -->
+	<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+	<link th:href='@{/homePage/vendor/unicons-2.0.1/css/unicons.css}' rel='stylesheet'>
+	<link th:href="@{/homePage/css/style.css}" rel="stylesheet">
+	<link th:href="@{/homePage/css/responsive.css}" rel="stylesheet">
+	<link th:href="@{/homePage/css/night-mode.css}" rel="stylesheet">
+	<link th:href="@{/homePage/css/step-wizard.css}" rel="stylesheet">
+
+	<!-- Vendor Stylesheets -->
+	<link th:href="@{/homePage/vendor/fontawesome-free/css/all.min.css}" rel="stylesheet">
+	<link th:href="@{/homePage/vendor/OwlCarousel/assets/owl.carousel.css}" rel="stylesheet">
+	<link th:href="@{/homePage/vendor/OwlCarousel/assets/owl.theme.default.min.css}" rel="stylesheet">
+	<link th:href="@{/homePage/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+	<link th:href="@{/homePage/vendor/bootstrap-select/css/bootstrap-select.min.css}" rel="stylesheet">
+		
+	</head>
+
+<body>
+	<div class="sign-inup">
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-lg-5">
+					<div class="sign-form">
+						<div class="sign-inner">
+							<div class="sign-logo" id="logo">
+								<div class="sign-logo" id="logo">
+									<a th:href="@{/home}"><img th:src="@{/homePage/images/logo.svg}" alt=""></a>
+									<a th:href="@{/home}"><img class="logo-inverse" th:src="@{/homePage/images/dark-logo.svg}" alt=""></a>
+								</div>
+								<div class="form-dt">
+									<div class="form-inpts checout-address-step">
+										<!-- Hiển thị thông báo lỗi -->
+										<div th:if="${errorMessage}" class="alert alert-danger" role="alert">
+											<span th:text="${errorMessage}"></span>
+										</div>
+
+										<!-- Hiển thị thông báo thành công -->
+										<div th:if="${successMessage}" class="alert alert-success" role="alert">
+											<span th:text="${successMessage}"></span>
+										</div>
+									<form th:action="@{/sign-up}" th:object="${signUpDto}" method="post">
+										<div class="form-title"><h6>Sign Up</h6></div>
+										
+										<!-- Full Name -->
+										<div class="form-group pos_rel mb-3">
+											<input id="fullName" th:field="*{fullName}" type="text" placeholder="Full name" class="form-control lgn_input" th:classappend="${#fields.hasErrors('fullName')} ? 'is-invalid' : ''">
+											<i class="uil uil-user-circle lgn_icon"></i>
+											<div th:if="${#fields.hasErrors('fullName')}" class="invalid-feedback" style="text-align:left;">
+												<span th:text="${#fields.errors('fullName') != null && #fields.errors('fullName').size() > 0 ? #fields.errors('fullName')[0] : ''}"></span>
+											</div>
+										</div>
+										
+										<!-- Email -->
+										<div class="form-group pos_rel mb-3">
+											<input id="email" th:field="*{email}" type="email" placeholder="Email Address" class="form-control lgn_input" th:classappend="${#fields.hasErrors('email')} ? 'is-invalid' : ''">
+											<i class="uil uil-envelope lgn_icon"></i>
+											<div th:if="${#fields.hasErrors('email')}" class="invalid-feedback" style="text-align:left;">
+												<span th:text="${#fields.errors('email') != null && #fields.errors('email').size() > 0 ? #fields.errors('email')[0] : ''}"></span>
+											</div>
+										</div>
+
+										<!-- Password -->
+										<div class="form-group pos_rel mb-3">
+											<input id="password" th:field="*{password}" type="password" placeholder="Password" class="form-control lgn_input" th:classappend="${#fields.hasErrors('password')} ? 'is-invalid' : ''">
+											<i class="uil uil-padlock lgn_icon"></i>
+											<div th:if="${#fields.hasErrors('password')}" class="invalid-feedback" style="text-align:left;">
+												<span th:text="${#fields.errors('password') != null && #fields.errors('password').size() > 0 ? #fields.errors('password')[0] : ''}"></span>
+											</div>
+										</div>
+										
+										<!-- Confirm Password -->
+										<div class="form-group pos_rel mb-3">
+											<input id="confirmPassword" th:field="*{confirmPassword}" type="password" placeholder="Confirm Password" class="form-control lgn_input" th:classappend="${#fields.hasErrors('confirmPassword') or #fields.hasErrors('passwordsMatch')} ? 'is-invalid' : ''">
+											<i class="uil uil-padlock lgn_icon"></i>
+											<div th:if="${#fields.hasErrors('confirmPassword')}" class="invalid-feedback" style="text-align:left;">
+												<span th:text="${#fields.errors('confirmPassword')[0]}"></span>
+											</div>
+											<div th:if="${#fields.hasErrors('passwordsMatch')}" class="invalid-feedback" style="text-align:left;">
+												<span th:text="${#fields.errors('passwordsMatch')[0]}"></span>
+											</div>
+										</div>
+										
+										<button class="login-btn hover-btn" type="submit">Sign Up Now</button>
+									</form>
+								</div>
+								<div class="signup-link">
+									<p>I have an account? - <a th:href="@{/login}">Sign In Now</a></p>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="copyright-text text-center mt-4">
+						<i class="uil uil-copyright"></i>Copyright 2024 <b>Gambolthemes</b> . All rights reserved
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+	<!-- Javascripts -->
+	<script th:src="@{/homePage/js/jquery.min.js}"></script>
+	<script th:src="@{/homePage/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+	<script th:src="@{/homePage/vendor/bootstrap-select/js/bootstrap-select.min.js}"></script>
+	<script th:src="@{/homePage/vendor/OwlCarousel/owl.carousel.js}"></script>
+	<script th:src="@{/homePage/js/jquery.countdown.min.js}"></script>
+	<script th:src="@{/homePage/js/custom.js}"></script>
+	<script th:src="@{/homePage/js/product.thumbnail.slider.js}"></script>
+	<script th:src="@{/homePage/js/offset_overlay.js}"></script>
+	<script th:src="@{/homePage/js/night-mode.js}"></script>
+
+
+</body>
+
+</html>

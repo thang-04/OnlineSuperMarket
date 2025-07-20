@@ -1,0 +1,43 @@
+/* Sidebar improvements */
+.left-side-tabs {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    padding: 24px 0;
+    margin-bottom: 24px;
+}
+.dashboard-left-links .user-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 32px;
+    color: #333;
+    font-weight: 500;
+    border-left: 4px solid transparent;
+    transition: all 0.2s;
+    border-radius: 0 24px 24px 0;
+    margin-bottom: 8px;
+}
+.dashboard-left-links .user-item.active,
+.dashboard-left-links .user-item:hover {
+    background: linear-gradient(90deg, #ff7e5f 0%, #feb47b 100%);
+    color: #fff;
+    border-left: 4px solid #ff7e5f;
+}
+.dashboard-left-links .user-item i {
+    margin-right: 12px;
+    font-size: 20px;
+}
+/* Dashboard content improvements */
+.dashboard-right {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+    padding: 32px 24px;
+    min-height: 500px;
+}
+.beautiful-filter { background: #fff; border-radius: 18px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); }
+.beautiful-filter label { font-weight: 500; }
+.beautiful-pagination .page-link { border: 2px solid #1976d2; color: #1976d2; font-weight: bold; transition: 0.2s; }
+.beautiful-pagination .page-item.active .page-link, .beautiful-pagination .page-link:hover { background: #1976d2; color: #fff; border-color: #1976d2; }
+.beautiful-pagination .page-link:focus { box-shadow: none; }
+

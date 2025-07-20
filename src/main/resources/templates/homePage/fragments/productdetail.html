@@ -16,7 +16,9 @@
                         <p class="pp-descp" th:utext="${detail.description}"></p>
                         <div class="product-group-dt">
                             <ul>
-                                <li><div class="main-price">Price<span th:utext="${detail.price}"></span></div></li>
+                                <li><div class="main-price fs-2 fw-bold text-danger mb-3" style="font-size:2.2rem; letter-spacing:1px; background: #fffbe7; display:inline-block; padding: 6px 18px; border-radius: 12px; box-shadow: 0 2px 8px #ffe08280;">
+    Giá: <span th:utext="${#numbers.formatDecimal(detail.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+</div></li>
                             </ul>
                             <ul class="gty-wish-share">
                                 <li>
@@ -74,7 +76,7 @@
                                             <input type="number" step="1" name="quantity" value="1" class="input-text qty text">
                                             <input type="button" value="+" class="plus plus-btn">
                                         </div>
-                                        <div class="cart-item-price" th:utext="${more.price}"></div>
+                                        <div class="cart-item-price text-danger fw-bold mb-2" style="font-size:1.2rem; background: #fffbe7; display:inline-block; padding: 3px 12px; border-radius: 8px; box-shadow: 0 1px 4px #ffe08280;" th:utext="${#numbers.formatDecimal(more.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></div>
                                     </div>
                                 </div>
                             </div>
