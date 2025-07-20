@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @Controller
-@RequestMapping("/cart")
+@RequestMapping("/home/cart")
 public class CartController {
     @Autowired
     private CartService cartService;
@@ -32,7 +32,7 @@ public class CartController {
     public String addToCart(@RequestParam Integer productId, @RequestParam int quantity, Principal principal) {
         User user = userService.findByEmail(principal.getName());
         cartService.addItem(user, productId, quantity);
-        return "redirect:/cart";
+        return "redirect:/home";
     }
 
     @PostMapping("/update")
