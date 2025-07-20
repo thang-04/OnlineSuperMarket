@@ -41,6 +41,8 @@ public class User {
 
     private boolean isLocked = false;
 
+    private boolean emailVerified = false;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<WishList> wishLists;
 

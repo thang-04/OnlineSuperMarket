@@ -6,9 +6,11 @@
                 <div class="col-xl-3 col-lg-4 col-md-12">
                     <div class="left-side-tabs">
                         <div class="dashboard-left-links">
-                            <a href="dashboard_overview.html" class="user-item"><i class="uil uil-apps"></i>Overview</a>
-                            <a href="dashboard_my_orders.html" class="user-item"><i class="uil uil-box"></i>My Orders</a>
-                            <a href="dashboard_my_wishlist.html" class="user-item active"><i class="uil uil-heart"></i>Shopping Wishlist</a>
+                            <a th:href="@{/home/profile}" class="user-item"><i class="uil uil-apps"></i>Overview</a>
+                            <a th:href="@{/home/orders}" th:classappend="${activeTab}=='order' ? 'active' : ''" class="user-item">
+                                <i class="uil uil-box"></i>My Orders
+                            </a>
+                            <a th:href="@{/home/wishlist}" class="user-item active"><i class="uil uil-heart"></i>Shopping Wishlist</a>
                         </div>
                     </div>
                 </div>

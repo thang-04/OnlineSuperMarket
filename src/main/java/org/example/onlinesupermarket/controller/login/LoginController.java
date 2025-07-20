@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.example.onlinesupermarket.repository.UserRepository;
+import org.example.onlinesupermarket.entity.User;
+import jakarta.servlet.http.HttpServletRequest;
 
 
 @Controller
@@ -22,15 +25,25 @@ public class LoginController {
     private SignUpService signUpService;
     @Autowired
     private PasswordResetService passwordResetService;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/login")
     public String loginPage(@RequestParam(value = "error", required = false) String error,
                             @RequestParam(value = "logout", required = false) String logout,
                             @RequestParam(value = "expired", required = false) String expired,
-                            Model model) {
+                            Model model,
+                            HttpServletRequest request) {
 
         if (error != null) {
-            model.addAttribute("errorMessage", "Tên đăng nhập hoặc mật khẩu không đúng!");
+            // Copy errorMessage from session to model if present
+            Object errorMsg = request.getSession().getAttribute("errorMessage");
+            if (errorMsg != null) {
+                model.addAttribute("errorMessage", errorMsg);
+                request.getSession().removeAttribute("errorMessage");
+            } else {
+                model.addAttribute("errorMessage", "Tên đăng nhập hoặc mật khẩu không đúng!");
+            }
         }
         if (logout != null) {
             model.addAttribute("successMessage", "Đăng xuất thành công!");
@@ -86,8 +99,8 @@ public class LoginController {
             return "loginPage/sign_up";
 
         }
-        redirectAttributes.addFlashAttribute("successMessage", "Đăng ký thành công! Vui lòng đăng nhập.");
-        return "redirect:/login";
+        redirectAttributes.addFlashAttribute("successMessage", "Đăng ký thành công! Vui lòng kiểm tra email để xác thực.");
+        return "redirect:/otp-verification?email=" + signUpDto.getEmail();
     }
 
     @GetMapping("/forgot-password")
@@ -133,7 +146,14 @@ public class LoginController {
                             @RequestParam("otp") String otp,
                             Model model, RedirectAttributes redirectAttributes) {
         if (passwordResetService.verifyOTP(email, otp)) {
-            return "redirect:/reset-password?email=" + email + "&otp=" + otp;
+            // Mark email as verified
+            User user = userRepository.findByEmail(email).orElse(null);
+            if (user != null) {
+                user.setEmailVerified(true);
+                userRepository.save(user);
+            }
+            redirectAttributes.addFlashAttribute("successMessage", "Xác thực email thành công! Vui lòng đăng nhập.");
+            return "redirect:/login";
         } else {
             redirectAttributes.addFlashAttribute("errorMessage", "Invalid or expired OTP.");
             return "redirect:/otp-verification?email=" + email + "&error=true";

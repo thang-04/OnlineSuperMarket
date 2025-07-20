@@ -13,6 +13,8 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.example.onlinesupermarket.security.CustomAuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -31,6 +33,11 @@ public class SecurityConfig {
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler() {
         return new CustomAuthenticationSuccessHandler();
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        return new CustomAuthenticationFailureHandler();
     }
 
     @Bean
@@ -55,7 +62,7 @@ public class SecurityConfig {
                         .usernameParameter("email")
                         .passwordParameter("password")
                         .successHandler(authenticationSuccessHandler())
-                        .failureUrl("/login?error=true")
+                        .failureHandler(authenticationFailureHandler())
                         .permitAll()
                 )
                 .oauth2Login(oauth2 -> oauth2

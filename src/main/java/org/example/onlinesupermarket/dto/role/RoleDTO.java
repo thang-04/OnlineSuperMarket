@@ -12,5 +12,4 @@ import java.util.Set;
 public class RoleDTO {
     private Integer roleId;
     private String roleName;
-    private Set<Integer> permissionIds;
 }

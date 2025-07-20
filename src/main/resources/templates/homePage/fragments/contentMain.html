@@ -43,7 +43,7 @@
             <!-- Product Grid -->
             <div class="col-md-9">
                 <div class="row g-4">
-                    <div class="col-12 col-sm-6 col-md-4 col-lg-3" th:each="product : ${products}">
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3" th:each="product : ${products}" >
                         <div class="product-item">
                             <a th:href="@{'/home/productdetail/' + ${product.productId}}" class="product-img">
                                 <img th:src="@{${product.images != null and !#strings.isEmpty(product.images) ? product.images : (product.images != null and !#strings.isEmpty(product.images) ? product.images : 'https://file.hstatic.net/200000585055/file/thit-heo-sach-la-gi-thit-3a_5240e3dc18e34d78bed1d4261c9d1b1a_grande.jpeg')}}" alt="" style="height: 200px; object-fit: cover;">
@@ -64,12 +64,12 @@
                     </div>
                 </div>
                 <!-- Pagination -->
-                <div class="row mt-5">
+                <div class="row mt-5 mb-5">
                     <div class="col-12">
-                        <ul class="pagination beautiful-pagination justify-content-center mt-4">
+                        <ul class="pagination beautiful-pagination justify-content-center mt-4" th:if="${totalPage > 1}">
                             <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
                                 <a class="page-link rounded-circle" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;" th:href="@{/home/listproduct(pageNo=${currentPage - 1}, name=${name}, categoryId=${categoryId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortType=${sortType})}" tabindex="-1">
-                                    <i class="uil uil-angle-left-b"></i>
+                                    <i class="fa fa-chevron-left"></i>
                                 </a>
                             </li>
                             <li th:each="page : ${#numbers.sequence(1, totalPage)}" class="page-item" th:classappend="${currentPage == page} ? 'active'">
@@ -77,7 +77,7 @@
                             </li>
                             <li class="page-item" th:classappend="${currentPage == totalPage} ? 'disabled'">
                                 <a class="page-link rounded-circle" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;" th:href="@{/home/listproduct(pageNo=${currentPage + 1}, name=${name}, categoryId=${categoryId}, minPrice=${minPrice}, maxPrice=${maxPrice}, sortType=${sortType})}">
-                                    <i class="uil uil-angle-right-b"></i>
+                                    <i class="fa fa-chevron-right"></i>
                                 </a>
                             </li>
                         </ul>
