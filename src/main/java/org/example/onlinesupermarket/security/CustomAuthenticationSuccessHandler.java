@@ -25,7 +25,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         if (savedRequest != null) {
             String targetUrl = savedRequest.getRedirectUrl();
             //check role
-            if (hasRole(authentication, "ROLE_ADMIN") || !targetUrl.contains("/dashboard")) {
+            if (hasRole(authentication, "ROLE_ADMIN") || !targetUrl.contains("/admin")) {
                 response.sendRedirect(targetUrl);
                 return;
             } else {

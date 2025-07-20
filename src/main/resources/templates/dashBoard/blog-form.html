@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title th:text="${blog.blogId == null ? 'Admin - Thêm bài viết mới' : 'Admin - Chỉnh sửa bài viết'}"></title>
     <link th:href="@{/dashBoard-static/css/styles.css}" rel="stylesheet">
     <link th:href="@{/dashBoard-static/css/admin-style.css}" rel="stylesheet">
     <link th:href="@{/dashBoard-static/vendor/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
@@ -14,13 +13,6 @@
     <div id="layoutSidenav_content">
         <main>
             <div class="container-fluid">
-                <h2 class="mt-30 page-title" th:text="${blog.blogId == null ? 'Thêm bài viết mới' : 'Chỉnh sửa bài viết'}"></h2>
-                <ol class="breadcrumb mb-30">
-                    <li class="breadcrumb-item"><a th:href="@{/admin}">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a th:href="@{/admin/blogs}">Bài viết</a></li>
-                    <li class="breadcrumb-item active" th:text="${blog.blogId == null ? 'Thêm mới' : 'Chỉnh sửa'}"></li>
-                </ol>
-
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card card-static-2 mb-30">
@@ -32,19 +24,21 @@
                                         <div class="form-group">
                                             <label class="form-label">Tiêu đề*</label>
                                             <input type="text" class="form-control" th:field="*{title}" placeholder="Nhập tiêu đề bài viết">
+                                            <div th:if="${#fields.hasErrors('title')}" class="text-danger mt-1" th:errors="*{title}"></div>
                                         </div>
 
                                         <div class="form-group mt-4">
                                             <label class="form-label">Nội dung*</label>
                                             <textarea class="form-control" th:field="*{content}" rows="10" placeholder="Nhập nội dung bài viết..."></textarea>
+                                            <div th:if="${#fields.hasErrors('content')}" class="text-danger mt-1" th:errors="*{content}"></div>
                                         </div>
 
                                         <div class="form-group mt-4">
                                             <label class="form-label">Ảnh đại diện</label>
-                                            <input class="form-control" type="file" name="imageFile">
+                                            <input class="form-control" type="file" name="imageFile" accept="image/*">
                                             <div class="text-muted mt-1">Để trống nếu không muốn thay đổi ảnh hiện tại.</div>
-                                            <div th:if="${blog.featuredImage}" class="mt-2">
-                                                <img th:src="${blog.featuredImage}" alt="Ảnh hiện tại" style="max-width: 200px; border-radius: 5px;">
+                                            <div th:if="${blog.featuredImage != null and !blog.featuredImage.isEmpty()}" class="mt-2">
+                                                <img th:src="@{${blog.featuredImage}}" alt="Ảnh hiện tại" style="max-width: 200px; border-radius: 5px;">
                                             </div>
                                         </div>
 
@@ -70,6 +64,5 @@
 <script th:src="@{/dashBoard-static/js/jquery.min.js}"></script>
 <script th:src="@{/dashBoard-static/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
 <script th:src="@{/dashBoard-static/js/scripts.js}"></script>
-
 </body>
 </html>

@@ -30,7 +30,7 @@
                                 <h4><b>Edit Banner Details</b></h4>
                             </div>
                             <div class="card-body-table">
-                                <form th:action="@{/admin/banners/update/{id}(id=${bannerDto.bannerId})}" th:object="${bannerDto}" method="post">
+                                <form th:action="@{/admin/banners/update/{id}(id=${bannerDto.bannerId})}" th:object="${bannerDto}" method="post" enctype="multipart/form-data">
                                     <div class="post-form">
                                         <input type="hidden" th:field="*{bannerId}" />
                                         <div class="form-group">
@@ -42,18 +42,29 @@
                                             <label class="form-label">Description</label>
                                             <textarea class="form-control" th:field="*{description}" placeholder="Enter Description"></textarea>
                                         </div>
+
                                         <div class="form-group">
-                                            <label class="form-label">Image URL*</label>
-                                            <input type="text" class="form-control" th:field="*{imageUrl}" placeholder="Enter Image URL">
-                                            <div th:if="${#fields.hasErrors('imageUrl')}" class="text-danger mt-1" th:errors="*{imageUrl}"></div>
+                                            <label class="form-label">Current Image</label>
+                                            <div>
+                                                <img th:if="${bannerDto.imageUrl != null}" th:src="@{${bannerDto.imageUrl}}" alt="Current Banner" style="max-width: 200px; max-height: 100px; margin-bottom: 10px; border: 1px solid #ddd; padding: 5px;">
+                                                <span th:if="${bannerDto.imageUrl == null}">No image</span>
+                                            </div>
                                         </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Upload New Image</label>
+                                            <small class="form-text text-muted">Để trống nếu không muốn thay đổi ảnh hiện tại.</small>
+                                            <input type="file" class="form-control" name="imageFile" accept="image/*">
+                                        </div>
+
                                         <div class="form-group">
                                             <label class="form-label">Link URL</label>
                                             <input type="text" class="form-control" th:field="*{linkUrl}" placeholder="Enter Link URL">
+                                            <div th:if="${#fields.hasErrors('linkUrl')}" class="text-danger mt-1" th:errors="*{linkUrl}"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label">Sort Order</label>
                                             <input type="number" class="form-control" th:field="*{sortOrder}">
+                                            <div th:if="${#fields.hasErrors('sortOrder')}" class="text-danger mt-1" th:errors="*{sortOrder}"></div>
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label">Status</label>

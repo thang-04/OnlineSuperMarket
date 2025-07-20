@@ -5,10 +5,15 @@ import org.example.onlinesupermarket.entity.Banner;
 import org.example.onlinesupermarket.mapper.banner.BannerMapper;
 import org.example.onlinesupermarket.repository.BannerRepository;
 import org.example.onlinesupermarket.service.banner.BannerService;
+import org.example.onlinesupermarket.service.file.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +26,9 @@ public class BannerServiceImpl implements BannerService {
 
     @Autowired
     private BannerMapper bannerMapper;
+
+    @Autowired
+    private FileService fileService;
 
     public List<BannerDTO> getAllBanners() {
         return bannerRepository.findAllOrderBySortOrder().stream()
@@ -35,22 +43,34 @@ public class BannerServiceImpl implements BannerService {
     }
 
     @Override
-    public BannerDTO createBanner(BannerDTO bannerDto) {
+    @Transactional
+    public void createBanner(BannerDTO bannerDto, MultipartFile imageFile) {
         Banner banner = bannerMapper.toEntity(bannerDto);
-        Banner savedBanner = bannerRepository.save(banner);
-        return bannerMapper.toDto(savedBanner);
+
+        String imageUrl = fileService.storeFile(imageFile);
+        banner.setImageUrl(imageUrl);
+
+        banner.setCreatedAt(LocalDateTime.now());
+        bannerRepository.save(banner);
     }
 
     @Override
-    public BannerDTO updateBanner(Integer id, BannerDTO bannerDto) {
-        Banner existingBanner = bannerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Banner not found with id: " + id));
+    @Transactional
+    public void updateBanner(Integer id, BannerDTO bannerDto, MultipartFile imageFile) {
+        Banner banner = bannerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Banner not found"));
 
-        bannerMapper.updateEntityFromDto(bannerDto, existingBanner);
+        bannerMapper.updateEntityFromDto(bannerDto, banner);
 
-        Banner updatedBanner = bannerRepository.save(existingBanner);
-        return bannerMapper.toDto(updatedBanner);
+        if (imageFile != null && !imageFile.isEmpty()) {
+            String newImageUrl = fileService.storeFile(imageFile);
+            banner.setImageUrl(newImageUrl);
+        }
+
+        banner.setUpdatedAt(LocalDateTime.now());
+        bannerRepository.save(banner);
     }
+
 
     @Override
     public void deleteBanner(Integer id) {
@@ -66,5 +86,12 @@ public class BannerServiceImpl implements BannerService {
                 .orElseThrow(() -> new RuntimeException("Banner not found with id: " + id));
         banner.setActive(!banner.isActive());
         bannerRepository.save(banner);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<BannerDTO> getBanners(String title, Boolean active, Pageable pageable) {
+        Page<Banner> bannerPage = bannerRepository.findWithFilters(title, active, pageable);
+        return bannerPage.map(bannerMapper::toDto); // Giả sử bạn có mapper
     }
 }

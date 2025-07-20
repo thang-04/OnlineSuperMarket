@@ -52,7 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/home/**","/home").permitAll()
 
                         // Admin routes
-                        .requestMatchers("/dashboard/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )

@@ -27,6 +27,7 @@ public class RoleController {
     @GetMapping("")
     public String showRolesList(Model model) {
         List<RoleDTO> roles = roleService.getAllRoles();
+
         model.addAttribute("roles", roles);
         if (!model.containsAttribute("role")) {
             model.addAttribute("role", new RoleDTO());

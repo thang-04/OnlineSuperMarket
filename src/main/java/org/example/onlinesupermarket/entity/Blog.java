@@ -31,5 +31,4 @@ public class Blog {
     private boolean published = false;
 
     private LocalDateTime createdAt;
-
 }

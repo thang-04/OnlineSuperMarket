@@ -1,35 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<th:block th:replace="dashBoard/fragments/header :: header"></th:block>
-
+<head th:replace="~{dashBoard/fragments/header :: header}"></head>
 
 <body class="sb-nav-fixed">
 
-<th:block th:replace="dashBoard/fragments/topbar :: topbar"></th:block>
+<div th:replace="~{dashBoard/fragments/topbar :: topbar}"></div>
 
+<div id="layoutSidenav">
+    <div th:replace="~{dashBoard/fragments/sidebar :: sidebar}"></div>
 
-        <div id="layoutSidenav">
+    <div id="layoutSidenav_content">
+        <main>
+            <div th:replace="~{dashBoard/fragments/contentMain :: contentMain}"></div>
+        </main>
 
-			<!--Sidebar Start-->
-			<th:block th:replace="dashBoard/fragments/sidebar :: sidebar"></th:block>
-			<!--Sidebar End-->
+        <div th:replace="~{dashBoard/fragments/footer :: footer}"></div>
+    </div>
+</div>
 
-			<!--Content Start-->
-			<div th:replace="~{__${fragmentContent}__}"></div>
-            <!--Content End-->
-
-        </div>
-
-        <script th:src="@{dashBoard/js/jquery.min.js}"></script>
-        <script th:src="@{dashBoard/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
-		<script th:src="@{dashBoard/vendor/chart/highcharts.js}"></script>
-		<script th:src="@{dashBoard/vendor/chart/exporting.js}"></script>
-		<script th:src="@{dashBoard/vendor/chart/export-data.js}"></script>
-		<script th:src="@{dashBoard/vendor/chart/accessibility.js}"></script>
-        <script th:src="@{dashBoard/js/scripts.js}"></script>
-        <script th:src="@{dashBoard/js/chart.js}"></script>
-       
-    </body>
-
+<script th:src="@{/dashBoard-static/js/jquery.min.js}"></script>
+<script th:src="@{/dashBoard-static/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dashBoard-static/vendor/chart/highcharts.js}"></script>
+<script th:src="@{/dashBoard-static/vendor/chart/exporting.js}"></script>
+<script th:src="@{/dashBoard-static/vendor/chart/export-data.js}"></script>
+<script th:src="@{/dashBoard-static/vendor/chart/accessibility.js}"></script>
+<script th:src="@{/dashBoard-static/js/scripts.js}"></script>
+<script th:src="@{/dashBoard-static/js/chart.js}"></script>
+</body>
 </html>

@@ -1,6 +1,8 @@
 package org.example.onlinesupermarket.service.user;
 
 import org.example.onlinesupermarket.dto.user.UserDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;
 import org.example.onlinesupermarket.dto.user.UserDTO;
 import org.example.onlinesupermarket.entity.User;
@@ -19,4 +21,6 @@ public interface UserService {
     List<UserDTO> getAllUsers();
     boolean isEmailExits(String emamil);
     User findByEmail(String email);
+
+    Page<UserDTO> getUsers(String keyword, Integer roleId, Pageable pageable);
 }

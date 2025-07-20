@@ -94,7 +94,7 @@ public class OrderController {
     }
 
     @GetMapping("/{id}")
-    public String orderDetail(@PathVariable Long id, Model model) {
+    public String orderDetail(@PathVariable Integer id, Model model) {
         Order order = orderService.getOrderById(id);
         model.addAttribute("order", order);
         return "order_detail";

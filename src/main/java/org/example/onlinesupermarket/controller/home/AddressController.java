@@ -39,8 +39,8 @@ public class AddressController {
     }
 
     @PostMapping("/add")
-    public String addAddress(@Validated @ModelAttribute("addressDto") AddressDTO addressDTO, 
-                           BindingResult bindingResult, 
+    public String addAddress(@Validated @ModelAttribute("addressDto") AddressDTO addressDTO,
+                           BindingResult bindingResult,
                            RedirectAttributes redirectAttributes,
                            Model model) {
         if (bindingResult.hasErrors()) {
@@ -51,7 +51,7 @@ public class AddressController {
             model.addAttribute("openModal", "add");
             return "homePage/index";
         }
-        
+
         try {
             User currentUser = getCurrentUser();
             addressService.createAddress((Integer) currentUser.getUserId(), addressDTO);
@@ -98,7 +98,7 @@ public class AddressController {
     }
 
     @GetMapping("/set-default/{addressId}")
-    public String setDefaultAddress(@PathVariable Integer addressId, 
+    public String setDefaultAddress(@PathVariable Integer addressId,
                                   @RequestParam(value = "redirect", defaultValue = "/home/address") String redirectUrl,
                                   RedirectAttributes redirectAttributes) {
         try {
@@ -112,8 +112,8 @@ public class AddressController {
     }
 
     @PostMapping("/edit")
-    public String editAddress(@Validated @ModelAttribute("addressDto") AddressDTO addressDTO, 
-                            BindingResult bindingResult, 
+    public String editAddress(@Validated @ModelAttribute("addressDto") AddressDTO addressDTO,
+                            BindingResult bindingResult,
                             RedirectAttributes redirectAttributes,
                             Model model) {
         if (bindingResult.hasErrors()) {
@@ -124,7 +124,7 @@ public class AddressController {
             model.addAttribute("openModal", "edit");
             return "homePage/index";
         }
-        
+
         try {
             User currentUser = getCurrentUser();
             addressService.updateAddress((Integer) currentUser.getUserId(), addressDTO);
@@ -142,4 +142,4 @@ public class AddressController {
         }
         throw new RuntimeException("User not authenticated");
     }
-} 
+}

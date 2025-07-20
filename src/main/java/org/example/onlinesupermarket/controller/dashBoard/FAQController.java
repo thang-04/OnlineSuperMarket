@@ -4,6 +4,9 @@ import org.example.onlinesupermarket.dto.faq.FAQDTO;
 import org.example.onlinesupermarket.service.faq.FAQService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,8 +21,20 @@ public class FAQController {
     private FAQService faqService;
 
     @GetMapping
-    public String listFAQs(Model model) {
-        model.addAttribute("faqs", faqService.getAllFAQs());
+    public String listFAQs(Model model,
+                           @RequestParam(name = "question", required = false) String question,
+                           @RequestParam(name = "status", required = false) Boolean status,
+                           @RequestParam(name = "page", defaultValue = "1") int page,
+                           @RequestParam(name = "size", defaultValue = "10") int size) {
+
+        Pageable pageable = PageRequest.of(page - 1, size);
+        Page<FAQDTO> faqPage = faqService.getFAQs(question, status, pageable);
+
+        model.addAttribute("faqPage", faqPage);
+        model.addAttribute("currentPage", page);
+        model.addAttribute("question", question);
+        model.addAttribute("status", status);
+
         return "dashBoard/faqs-list";
     }
 
@@ -45,6 +60,7 @@ public class FAQController {
                           BindingResult result,
                           RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
+            // Trả về form để hiển thị lỗi validation
             return "dashBoard/faq-form";
         }
         faqService.saveFAQ(faqDTO);

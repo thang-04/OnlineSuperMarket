@@ -13,9 +13,11 @@ public class RoleMapper {
         if (role == null) {
             return null;
         }
+
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setRoleId(role.getRoleId());
         roleDTO.setRoleName(role.getRoleName());
+
         return roleDTO;
     }
 
@@ -23,6 +25,7 @@ public class RoleMapper {
         if (roleDTO == null) {
             return null;
         }
+
         Role role = new Role();
         role.setRoleId(roleDTO.getRoleId());
         role.setRoleName(roleDTO.getRoleName());
