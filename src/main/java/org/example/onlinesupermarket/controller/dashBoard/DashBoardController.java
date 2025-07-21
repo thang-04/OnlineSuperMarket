@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -24,6 +25,13 @@ public class DashBoardController {
         model.addAttribute("processingOrders", statistics.get("processingOrders"));
         model.addAttribute("todayIncome", statistics.get("todayIncome"));
         model.addAttribute("recentOrders", statistics.get("recentOrders"));
+
+        List<Double> monthlyIncome = orderService.getMonthlyIncomeForYear(2025);
+        List<String> months = List.of("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec");
+
+        model.addAttribute("monthlyIncomeData", monthlyIncome);
+        model.addAttribute("monthsData", months);
+
 
         return "dashBoard/index";
     }

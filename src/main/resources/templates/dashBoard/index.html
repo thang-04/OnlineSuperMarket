@@ -21,11 +21,24 @@
 
 <script th:src="@{/dashBoard-static/js/jquery.min.js}"></script>
 <script th:src="@{/dashBoard-static/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+
 <script th:src="@{/dashBoard-static/vendor/chart/highcharts.js}"></script>
 <script th:src="@{/dashBoard-static/vendor/chart/exporting.js}"></script>
 <script th:src="@{/dashBoard-static/vendor/chart/export-data.js}"></script>
 <script th:src="@{/dashBoard-static/vendor/chart/accessibility.js}"></script>
+
 <script th:src="@{/dashBoard-static/js/scripts.js}"></script>
+
+<script th:inline="javascript">
+
+    const monthlyIncomeData = /*[[${monthlyIncomeData}]]*/ [];
+
+    // Lấy danh sách các tháng
+    const monthsData = /*[[${monthsData}]]*/ ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+</script>
+
 <script th:src="@{/dashBoard-static/js/chart.js}"></script>
+
 </body>
 </html>

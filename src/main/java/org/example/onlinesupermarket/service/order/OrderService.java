@@ -18,4 +18,6 @@ public interface OrderService {
     Double calculateOrderTotal(Order order);
 
     Map<String, Object> getDashboardStatistics();
+
+    List<Double> getMonthlyIncomeForYear(int year);
 }

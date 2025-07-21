@@ -1,90 +1,99 @@
-<div th:fragment="contentMain" class="container-fluid">
-    <h2 class="mt-30 page-title">Dashboard</h2>
-    <ol class="breadcrumb mb-30">
-        <li class="breadcrumb-item active">Dashboard</li>
-    </ol>
-    <div class="row">
-        <div class="col-xl-3 col-md-6">
-            <div class="dashboard-report-card purple">
-                <div class="card-content">
-                    <span class="card-title">Order Pending</span>
-                    <span class="card-count" th:text="${pendingOrders}">0</span>
-                </div>
-                <div class="card-media"><i class="fab fa-rev"></i></div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="dashboard-report-card red">
-                <div class="card-content">
-                    <span class="card-title">Order Cancel</span>
-                    <span class="card-count" th:text="${cancelledOrders}">0</span>
-                </div>
-                <div class="card-media"><i class="far fa-times-circle"></i></div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="dashboard-report-card info">
-                <div class="card-content">
-                    <span class="card-title">Order Process</span>
-                    <span class="card-count" th:text="${processingOrders}">0</span>
-                </div>
-                <div class="card-media"><i class="fas fa-sync-alt rpt_icon"></i></div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="dashboard-report-card success">
-                <div class="card-content">
-                    <span class="card-title">Today Income</span>
-                    <span class="card-count" th:text="${#numbers.formatCurrency(todayIncome)}">$0.00</span>
-                </div>
-                <div class="card-media"><i class="fas fa-money-bill rpt_icon"></i></div>
-            </div>
-        </div>
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-        <div class="col-xl-12 col-md-12">
-            <div class="card card-static-2 mb-30">
-                <div class="card-title-2 pb-3">
-                    <h4>Recent Orders</h4>
-                    <a href="orders.html" class="view-btn hover-btn">View All</a>
+<body>
+
+<div th:fragment="contentMain">
+    <div class="container-fluid px-4">
+        <h1 class="mt-4">Tổng quan</h1>
+        <ol class="breadcrumb mb-4">
+            <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+
+        <div class="row">
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-primary text-white mb-4">
+                    <div class="card-body">
+                        Đơn hàng chờ xử lý
+                        <h4 th:text="${pendingOrders}">0</h4>
+                    </div>
                 </div>
-                <div class="card-body-table">
-                    <div class="table-responsive">
-                        <table class="table ucp-table table-hover">
-                            <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>Customer</th>
-                                <th>Date</th>
-                                <th>Status</th>
-                                <th>Total</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="order : ${recentOrders}">
-                                <td th:text="${order.orderId}">ORDER12345</td>
-                                <td th:text="${order.customerName}">Customer Name</td>
-                                <td>
-                                    <span class="delivery-time" th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy')}"></span>
-                                    <span class="delivery-time" th:text="${#temporals.format(order.orderDate, 'HH:mm')}"></span>
-                                </td>
-                                <td>
-                                    <span class="badge-item badge-status" th:text="${order.status}">Pending</span>
-                                </td>
-                                <td th:text="${#numbers.formatCurrency(order.totalAmount)}">$90</td>
-                                <td class="action-btns">
-                                    <a href="#" class="views-btn"><i class="fas fa-eye"></i></a>
-                                    <a href="#" class="edit-btn"><i class="fas fa-edit"></i></a>
-                                </td>
-                            </tr>
-                            <tr th:if="${recentOrders == null or recentOrders.isEmpty()}">
-                                <td colspan="6" class="text-center">No recent orders found.</td>
-                            </tr>
-                            </tbody>
-                        </table>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-warning text-white mb-4">
+                    <div class="card-body">
+                        Đơn hàng đang giao
+                        <h4 th:text="${processingOrders}">0</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-success text-white mb-4">
+                    <div class="card-body">
+                        Thu nhập hôm nay
+                        <h4 th:text="${#numbers.formatDecimal(todayIncome, 0, 'COMMA', 0, 'POINT')} + ' VND'">0 VND</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card bg-danger text-white mb-4">
+                    <div class="card-body">
+                        Đơn hàng đã hủy
+                        <h4 th:text="${cancelledOrders}">0</h4>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div class="row">
+            <div class="col-xl-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <i class="fas fa-chart-area me-1"></i>
+                        Biểu đồ Doanh thu Hàng tháng (VND)
+                    </div>
+                    <div class="card-body">
+                        <div id="incomeChartContainer" style="height: 400px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-table me-1"></i>
+                Các đơn hàng gần đây
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th>ID Đơn hàng</th>
+                        <th>Khách hàng</th>
+                        <th>Ngày đặt</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="order : ${recentOrders}">
+                        <td th:text="${order.orderId}"></td>
+                        <td th:text="${order.user.fullName}"></td>
+                        <td th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></td>
+                        <td th:text="${#numbers.formatDecimal(order.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' VND'"></td>
+                        <td>
+                            <span th:classappend="${order.status == 'Pending' ? 'badge bg-warning' : (order.status == 'Processing' ? 'badge bg-info' : (order.status == 'Completed' ? 'badge bg-success' : 'badge bg-danger'))}"
+                                  th:text="${order.status}"></span>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
+<script th:src="@{/dashBoard-static/js/jquery.min.js}"></script>
+<script th:src="@{/dashBoard-static/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/dashBoard-static/js/scripts.js}"></script>
+</body>
+</html>

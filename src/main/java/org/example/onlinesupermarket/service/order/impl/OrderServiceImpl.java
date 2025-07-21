@@ -1,5 +1,6 @@
 package org.example.onlinesupermarket.service.order.impl;
 
+import org.example.onlinesupermarket.dto.order.MonthlyIncome;
 import org.example.onlinesupermarket.dto.order.OrderDTO;
 import org.example.onlinesupermarket.entity.*;
 import org.example.onlinesupermarket.repository.*;
@@ -98,5 +99,24 @@ public class OrderServiceImpl implements OrderService {
         Double todayIncome = orderRepo.findTodayIncome(startOfDay);
         stats.put("todayIncome", todayIncome != null ? todayIncome : 0.0);
         return stats;
+    }
+
+    @Override
+    public List<Double> getMonthlyIncomeForYear(int year) {
+        List<MonthlyIncome> monthlyIncomes = orderRepo.findMonthlyIncomeForYear(year);
+
+        Double[] yearlyIncome = new Double[12];
+        for (int i = 0; i < 12; i++) {
+            yearlyIncome[i] = 0.0;
+        }
+
+        for (MonthlyIncome income : monthlyIncomes) {
+            int monthIndex = income.getMonth() - 1;
+            if (monthIndex >= 0 && monthIndex < 12) {
+                yearlyIncome[monthIndex] = income.getTotal();
+            }
+        }
+
+        return List.of(yearlyIncome);
     }
 }

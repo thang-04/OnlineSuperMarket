@@ -1,92 +1,67 @@
-Highcharts.chart('earningGraph', {
-    chart: {
-        type: 'areaspline',
-		borderWidth: 0,
-		style: {
-            fontFamily: 'Roboto',
-			fontWeight: '500',
-        }
-    },
-    title: {
-		text: '2020 Income & Order Summary'
-	},
-	subtitle: {
-		text: 'Show monthly wise income & order graph.'
-	},
-    legend: {
-        layout: 'vertical',
-        align: 'left',
-        verticalAlign: 'top',
-        x: 0,
-        y: 0,
-        floating: true,
-        borderWidth: 1,
-        backgroundColor:
-            Highcharts.defaultOptions.legend.backgroundColor || '#FFFFFF'
-    },
-    xAxis: {
-        categories: ['January','February','March','April','May','June','July','August','September','October','November','December'],
-		title: {
-			text: 'Amount & Order',
-            align: 'high'
-		},
-		labels: {
-			overflow: 'justify'
-		},
-		tooltip: {
-			pointFormat: '{series.name}: <b>{point.y}</b>'
-		},
-		plotOptions: {
-			bar: {
-				dataLabels: {
-					enabled: true
+// Đợi cho toàn bộ trang web được tải xong trước khi thực thi mã
+document.addEventListener('DOMContentLoaded', function () {
+
+	// Kiểm tra xem phần tử chứa biểu đồ có tồn tại trên trang không
+	if (document.getElementById('incomeChartContainer')) {
+
+		// Sử dụng dữ liệu đã được truyền từ Controller qua index.html
+		// Các biến monthlyIncomeData và monthsData đã được định nghĩa trong file index.html
+
+		Highcharts.chart('incomeChartContainer', {
+			chart: {
+				type: 'area', // Bạn có thể đổi thành 'line', 'column', 'bar'
+				zoomType: 'x',
+				backgroundColor: '#FFFFFF' // Màu nền của biểu đồ
+			},
+			title: {
+				text: 'Tổng doanh thu theo tháng năm 2025',
+				align: 'left'
+			},
+			subtitle: {
+				text: 'Nhấp và kéo để phóng to',
+				align: 'left'
+			},
+			xAxis: {
+				// Sử dụng mảng tên các tháng làm nhãn cho trục X
+				categories: monthsData,
+				crosshair: true
+			},
+			yAxis: {
+				title: {
+					text: 'Doanh thu (VND)'
 				}
 			},
-			series: {
-				cursor: 'pointer',
-				point: {
-					events: {
-						click: function (e) {
-							LoadDayWiseExpenseOrIncome(this.type, this.monthID, this.monthName, this.dayWiseData);
+			tooltip: {
+				// Cấu hình thông tin hiển thị khi di chuột vào một điểm trên biểu đồ
+				headerFormat: '<span style="font-size:12px">{point.key}</span><table>',
+				pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+					'<td style="padding:0"><b>{point.y:,.0f} VND</b></td></tr>',
+				footerFormat: '</table>',
+				shared: true,
+				useHTML: true
+			},
+			plotOptions: {
+				area: {
+					marker: {
+						radius: 2
+					},
+					lineWidth: 1,
+					states: {
+						hover: {
+							lineWidth: 1
 						}
-					}
+					},
+					threshold: null
 				}
-			}
-		},
-		legend: {
-			layout: 'vertical',
-			align: 'left',
-			verticalAlign: 'top',
-			x: 5,
-			y: -10,
-			floating: true,
-			borderWidth: 1,
-			backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-			shadow: true
-		},
-		credits: {
-			enabled: false
-		},   
-    },
-    yAxis: {
-        title: {
-            text: 'Amount & Order'
-        }
-    },
-
-    series: [
-			{
-				name: 'Income',
-				data: [
-					{y:0, monthID:'1', monthName:'January', 'dayWiseData': '{"01":0}', 'type': 'income'},{y:0, monthID:'2', monthName:'February', 'dayWiseData': '{"01":0}', 'type': 'income'},{y:0, monthID:'3', monthName:'March', 'dayWiseData': '{"01":0}', 'type': 'income'},{y:0, monthID:'4', monthName:'April', 'dayWiseData': '{"28":145,"28":10}', 'type': 'income'},{y:0, monthID:'5', monthName:'May', 'dayWiseData': '{"01":0}', 'type': 'income'},{y:125, monthID:'6', monthName:'June', 'dayWiseData': '{"28":125,"28":10}', 'type': 'income'},{y:50, monthID:'7', monthName:'July', 'dayWiseData': '{"28":50,"28":0}', 'type': 'income'},{y:140, monthID:'8', monthName:'August', 'dayWiseData': '{"28":140,"28":0}', 'type': 'income'},{y:0, monthID:'9', monthName:'September', 'dayWiseData': '{"01":0}', 'type': 'income'},{y:0, monthID:'10', monthName:'October', 'dayWiseData': '{"01":0}', 'type': 'income'},{y:0, monthID:'11', monthName:'November', 'dayWiseData': '{"01":0}', 'type': 'income'},{y:0, monthID:'12', monthName:'December', 'dayWiseData': '{"01":0}', 'type': 'income'},                        ],
-				color: 'rgb(245,93,44)'
 			},
-			{
-				name: 'Order',
-				data: [
-					{y:0, monthID:'1', monthName:'January', 'dayWiseData': '{"01":0}', 'type': 'order'},{y:0, monthID:'2', monthName:'February', 'dayWiseData': '{"01":0}', 'type': 'order'},{y:0, monthID:'3', monthName:'March', 'dayWiseData': '{"01":0}', 'type': 'order'},{y:0, monthID:'4', monthName:'April', 'dayWiseData': '{"28":25,"28":10}', 'type': 'order'},{y:0, monthID:'5', monthName:'May', 'dayWiseData': '{"01":0}', 'type': 'order'},{y:15, monthID:'6', monthName:'June', 'dayWiseData': '{"28":15,"28":10}', 'type': 'order'},{y:10, monthID:'7', monthName:'July', 'dayWiseData': '{"28":10,"28":0}', 'type': 'order'},{y:35, monthID:'8', monthName:'August', 'dayWiseData': '{"28":10,"28":10}', 'type': 'order'},{y:0, monthID:'9', monthName:'September', 'dayWiseData': '{"01":0}', 'type': 'order'},{y:0, monthID:'10', monthName:'October', 'dayWiseData': '{"01":0}', 'type': 'order'},{y:0, monthID:'11', monthName:'November', 'dayWiseData': '{"01":0}', 'type': 'order'},{y:0, monthID:'12', monthName:'December', 'dayWiseData': '{"01":0}', 'type': 'order'},                        ],
-				color: 'rgb(43,47,76)'
+			series: [{
+				name: 'Doanh thu',
+				// Sử dụng mảng dữ liệu doanh thu
+				data: monthlyIncomeData
+			}],
+			credits: {
+				enabled: false // Tắt dòng chữ "Highcharts.com"
 			}
-		]
+		});
+	}
 });
-
