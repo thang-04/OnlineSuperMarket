@@ -6,19 +6,17 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "CartItems")
-public class CartItem {
+@Table(name = "ProductImages")
+public class ProductImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer cartItemId;
+    private Integer imageId;
 
-    @ManyToOne
-    @JoinColumn(name = "cartId", nullable = false)
-    private Cart cart;
-
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "ProductId", nullable = false)
     private Product product;
 
-    private int quantity;
+    private String imageUrl;
+
+    private boolean isPrimary = false;
 }

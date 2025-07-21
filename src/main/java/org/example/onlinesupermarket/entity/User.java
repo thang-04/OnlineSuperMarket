@@ -41,5 +41,8 @@ public class User {
 
     private boolean isLocked = false;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<WishList> wishLists;
+
 
 }

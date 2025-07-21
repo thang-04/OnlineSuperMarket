@@ -1,0 +1,38 @@
+<div th:fragment="similarProducts">
+    <div class="section145">
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-md-12">
+                    <h2>Sản phẩm tương tự (bán chạy)</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3" th:each="product : ${products}">
+                    <div class="product-item">
+                        <img th:src="${product.images}" alt="" class="product-img"/>
+                        <div class="product-text-dt">
+                            <h4 th:text="${product.name}"></h4>
+                            <div class="product-price" th:text="'Giá: $' + ${product.price}"></div>
+                            <div class="product-sold" th:text="'Đã bán: ' + ${product.totalSold}"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                            <a class="page-link" th:href="@{/home/similar-products(pageNo=${currentPage - 1})}" tabindex="-1">&laquo;</a>
+                        </li>
+                        <li th:each="page : ${#numbers.sequence(1, totalPage)}" class="page-item" th:classappend="${currentPage == page} ? 'active'">
+                            <a class="page-link" th:href="@{/home/similar-products(pageNo=${page})}" th:utext="${page}"></a>
+                        </li>
+                        <li class="page-item" th:classappend="${currentPage == totalPage} ? 'disabled'">
+                            <a class="page-link" th:href="@{/home/similar-products(pageNo=${currentPage + 1})}">&raquo;</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

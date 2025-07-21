@@ -17,13 +17,13 @@
                         </div>
                         <div class="text-muted small mb-1">Đơn giá: <span th:text="${#numbers.formatDecimal(item.product.price, 0, 'COMMA', 2, 'POINT')} + ' đ'"></span></div>
                         <div class="d-flex align-items-center mb-1">
-                            <form th:action="@{/cart/update}" method="post" class="d-flex align-items-center cart-qty-form" onsubmit="return false;">
+                            <form th:action="@{/home/cart/update}" method="post" class="d-flex align-items-center cart-qty-form" onsubmit="return false;">
                                 <input type="hidden" name="productId" th:value="${item.product.productId}" />
                                 <button type="button" class="btn btn-sm btn-outline-secondary qty-btn" onclick="updateQty(this, -1)">-</button>
                                 <input type="number" name="quantity" th:value="${item.quantity}" min="1" class="form-control form-control-sm mx-2 text-center qty-input" style="width:60px;" readonly />
                                 <button type="button" class="btn btn-sm btn-outline-secondary qty-btn" onclick="updateQty(this, 1)">+</button>
                             </form>
-                            <form th:action="@{/cart/remove}" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?');">
+                            <form th:action="@{/home/cart/remove}" method="post" class="d-inline" onsubmit="return confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?');">
                                 <input type="hidden" name="productId" th:value="${item.product.productId}" />
                                 <button type="submit" class="btn btn-sm btn-link text-danger p-0" title="Xóa khỏi giỏ hàng"><i class="uil uil-trash-alt fs-5"></i></button>
                             </form>
@@ -39,7 +39,7 @@
                 <b>Tổng tiền:</b>
                 <span class="fs-5 text-danger" th:text="${#numbers.formatDecimal(cart.totalAmount, 0, 'COMMA', 2, 'POINT')} + ' đ'"></span>
             </div>
-            <a th:href="@{home/orders/checkout}" class="btn btn-success btn-lg px-4">Thanh toán</a>
+            <a th:href="@{/home/orders/checkout}" class="btn btn-primary btn-sm px-4 float-end mt-3">Thanh toán</a>
         </div>
     </div>
     <style>

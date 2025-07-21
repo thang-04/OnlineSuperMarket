@@ -1,0 +1,53 @@
+
+<div class="wrapper" th:fragment="wishlist">
+    <div class="">
+        <div class="container">
+            <div class="row">
+                <div class="col-xl-3 col-lg-4 col-md-12">
+                    <div class="left-side-tabs">
+                        <div class="dashboard-left-links">
+                            <a href="dashboard_overview.html" class="user-item"><i class="uil uil-apps"></i>Overview</a>
+                            <a href="dashboard_my_orders.html" class="user-item"><i class="uil uil-box"></i>My Orders</a>
+                            <a href="dashboard_my_wishlist.html" class="user-item active"><i class="uil uil-heart"></i>Shopping Wishlist</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-9 col-lg-8 col-md-12">
+                    <div class="dashboard-right">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="main-title-tab">
+                                    <h4><i class="uil uil-heart"></i>Shopping Wishlist</h4>
+                                </div>
+                            </div>
+                            <div class="col-lg-12 col-md-12">
+                                <div class="pdpt-bg">
+                                    <div class="wishlist-body-dtt">
+                                        <div th:if="${#lists.isEmpty(wishLists)}">
+                                            <p>Bạn chưa có sản phẩm yêu thích nào.</p>
+                                        </div>
+                                        <div th:each="wishList : ${wishLists}" class="cart-item">
+                                            <div class="cart-product-img">
+                                                <a th:href="@{/home/productdetail/{id}(id=${wishList.product.productId})}">
+                                                <img th:src="${wishList.product.image}" alt="" style="width: 80px; height: 80px; object-fit: cover;">
+                                                </a>
+                                            </div>
+                                            <div class="cart-text">
+                                                <h4 th:text="${wishList.product.name}"></h4>
+                                                <div class="cart-item-price" th:text="${#numbers.formatDecimal(wishList.product.price, 0, 'COMMA', 0, 'POINT') + ' đ'}"></div>
+                                                <form th:action="@{'/home/wishlist/remove/' + ${wishList.product.productId} + '?from=wishlist'}" method="post" style="display:inline">
+                                                    <button type="submit" class="cart-close-btn"><i class="uil uil-trash-alt"></i></button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -10,12 +10,15 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
+    User findByUserId(Integer userId);
+    @Query("select p from User p where p.userId = :userId")
+    Optional<User> getUserId(@Param("userId") Integer userId);
+
     boolean existsByEmail(String email);
 
     long countByRole_RoleId(Integer roleRoleId);
-    Optional<User> findByEmail(String email);
 
-    Optional<User> findByUserId(Integer userId);
+    Optional<User> findByEmail(String email);
 
     @Query("SELECT u FROM User u WHERE u.email = :email AND u.isLocked = false")
     Optional<User> findByEmailAndNotLocked(@Param("email") String email);

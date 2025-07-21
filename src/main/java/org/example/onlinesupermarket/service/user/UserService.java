@@ -12,11 +12,11 @@ import java.util.List;
 public interface UserService {
     UserDTO getCurrentUserDTO();
     void updateCurrentUserProfile(String fullName, String phoneNumber, MultipartFile profileImage);
-    User findByEmail(String email);
     void updateUser(Integer id, UserDTO userDto);
     void deleteUser(Integer id);
     UserDTO getUserById(Integer id);
     void createUser(UserDTO userDto, MultipartFile imageFile);
     List<UserDTO> getAllUsers();
     boolean isEmailExits(String emamil);
+    User findByEmail(String email);
 }

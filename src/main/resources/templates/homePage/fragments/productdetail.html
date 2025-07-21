@@ -1,0 +1,183 @@
+<div th:fragment="productdetail" class="wrapper">
+    <div class="all-product-grid">
+        <div class="container">
+            <div class="row">
+                <!-- Ảnh sản phẩm -->
+                <div class="col-lg-3 col-md-4 d-flex justify-content-center align-items-start" style="padding-right: 0;">
+                        <img th:src="${#lists.isEmpty(detail.image) ? 'https://file.hstatic.net/200000585055/file/thit-heo-sach-la-gi-thit-3a_5240e3dc18e34d78bed1d4261c9d1b1a_grande.jpeg' : detail.image}" alt="" style="width: 300px; height: 300px; object-fit: cover;">
+                </div>
+                <!-- Thông tin sản phẩm -->
+                <div class="col-lg-9 col-md-8">
+                    <div class="product-dt-right">
+                        <h2 th:utext="${detail.name}"></h2>
+                        <div class="no-stock">
+                            <p class="stock-qty">Số sản phẩm: <span th:utext="${detail.stockQuantity}"></span></p>
+                        </div>
+                        <p class="pp-descp" th:utext="${detail.description}"></p>
+                        <div class="product-group-dt">
+                            <ul>
+                                <li><div class="main-price fs-2 fw-bold text-danger mb-3" style="font-size:2.2rem; letter-spacing:1px; background: #fffbe7; display:inline-block; padding: 6px 18px; border-radius: 12px; box-shadow: 0 2px 8px #ffe08280;">
+    Giá: <span th:utext="${#numbers.formatDecimal(detail.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></span>
+</div></li>
+                            </ul>
+                            <ul class="gty-wish-share">
+                                <li>
+                                    <div class="qty-product">
+                                        <div class="quantity buttons_added">
+                                            <input type="button" value="-" class="minus minus-btn">
+                                            <input type="number" step="1" name="quantity" value="1" class="input-text qty text">
+                                            <input type="button" value="+" class="plus plus-btn">
+                                        </div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <form th:action="@{${isInWishlist} ? '/home/wishlist/remove/' + ${detail.productId} : '/home/wishlist/add/' + ${detail.productId}}" method="post" style="display:inline">
+                                        <button type="submit" th:classappend="${isInWishlist} ? 'wishlist-heart active' : 'wishlist-heart'" style="background:none; border:none; cursor:pointer; font-size: 28px;">
+                                            <span th:if="${isInWishlist}" style="color: #e74c3c;">&#10084;</span>
+                                            <span th:unless="${isInWishlist}" style="color: #aaa;">&#10084;</span>
+                                        </button>
+                                    </form>
+                                </li>
+                            </ul>
+                            <ul class="ordr-crt-share">
+                                <li>
+                                    <form id="addToCartForm" th:action="@{/home/cart/add}" method="post" style="display:inline;">
+                                        <input type="hidden" name="productId" th:value="${detail.productId}" />
+                                        <input type="hidden" name="quantity" id="addToCartQty" value="1" />
+                                        <button type="button" class="add-cart-btn hover-btn" onclick="submitAddToCart()"><i class="uil uil-shopping-cart-alt"></i>Add to Cart</button>
+                                    </form>
+                                </li>
+                                <li>
+                                    <form id="orderNowForm" th:action="@{/home/orders/checkout}" method="get" style="display:inline;">
+                                        <input type="hidden" name="productId" th:value="${detail.productId}" />
+                                        <input type="hidden" name="quantity" id="orderNowQty" value="1" />
+                                        <button type="button" class="order-btn hover-btn" onclick="submitOrderNow()">Order Now</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-5">
+                <!-- Sản phẩm tương tự -->
+                <div class="col-lg-12">
+                    <div class="pdpt-bg">
+                        <div class="pdpt-title">
+                            <h4>More Like This</h4>
+                        </div>
+
+                        <div class="pdpt-body scrollstyle_4" >
+                            <div class="cart-item border_radius" th:each="more : ${moreProduct}">
+                                <a th:href="@{/home/productdetail/{id}(id=${more.productId})}" class="cart-product-img">
+                                    <img th:src="${#lists.isEmpty(more.images) ? 'https://file.hstatic.net/200000585055/file/thit-heo-sach-la-gi-thit-3a_5240e3dc18e34d78bed1d4261c9d1b1a_grande.jpeg' : more.images}" alt="" style="width: 100px; height: 100px; object-fit: cover;">
+                                    <div class="product-absolute-options">
+                                        <form th:action="@{${more.inWishlist} ? '/home/wishlist/remove/' + ${more.productId} + '?fromDetail=' + ${detail.productId} : '/home/wishlist/add/' + ${more.productId} + '?fromDetail=' + ${detail.productId}}" method="post" style="display:inline">
+                                            <button type="submit" th:classappend="${more.inWishlist} ? 'wishlist-heart active' : 'wishlist-heart'" style="background:none; border:none; cursor:pointer; font-size: 22px;">
+                                                <span th:if="${more.inWishlist}" style="color: #e74c3c;">&#10084;</span>
+                                                <span th:unless="${more.inWishlist}" style="color: #aaa;">&#10084;</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </a>
+                                <div class="cart-text">
+                                    <h4 th:utext="${more.name}"></h4>
+                                    <div class="qty-group">
+                                        <div class="quantity buttons_added">
+                                            <input type="button" value="-" class="minus minus-btn">
+                                            <input type="number" step="1" name="quantity" value="1" class="input-text qty text">
+                                            <input type="button" value="+" class="plus plus-btn">
+                                        </div>
+                                        <div class="cart-item-price text-danger fw-bold mb-2" style="font-size:1.2rem; background: #fffbe7; display:inline-block; padding: 3px 12px; border-radius: 8px; box-shadow: 0 1px 4px #ffe08280;" th:utext="${#numbers.formatDecimal(more.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+                <!-- description-->
+            </div>
+        </div>
+    </div>
+    <!-- Featured Products Start -->
+<!--    <div class="section145">-->
+<!--        <div class="container">-->
+<!--            <div class="row">-->
+<!--                <div class="col-md-12">-->
+<!--                    <div class="main-title-tt">-->
+<!--                        <div class="main-title-left">-->
+<!--                            <span>For You</span>-->
+<!--                            <h2>Top Featured Products</h2>-->
+<!--                        </div>-->
+<!--                        <a href="#" class="see-more-btn">See More</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-md-12">-->
+<!--                    <div class="owl-carousel featured-slider owl-theme">-->
+<!--                        <div class="item" th:each="product : ${featuredProducts}">-->
+<!--                            <div class="product-item">-->
+<!--                                <a th:href="@{/home/productdetail/{id}(id=${product.productId})}" class="product-img">-->
+<!--                                    <img th:src="${#lists.isEmpty(product.productImages) ? '/homePage/images/product/big-1.jpg' : product.productImages.get(0).imageUrl}" alt="">-->
+<!--                                    <div class="product-absolute-options">-->
+<!--                                        <span class="like-icon" title="wishlist"></span>-->
+<!--                                    </div>-->
+<!--                                </a>-->
+<!--                                <div class="product-text-dt">-->
+<!--                                    <h4 th:text="${product.name}"></h4>-->
+<!--                                    <div class="product-price" th:text="${product.price}"></div>-->
+<!--                                    <div class="qty-cart">-->
+<!--                                        <div class="quantity buttons_added">-->
+<!--                                            <input type="button" value="-" class="minus minus-btn">-->
+<!--                                            <input type="number" step="1" name="quantity" value="1" class="input-text qty text">-->
+<!--                                            <input type="button" value="+" class="plus plus-btn">-->
+<!--                                        </div>-->
+<!--                                        <span class="cart-icon"><i class="uil uil-shopping-cart-alt"></i></span>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<style>
+    .wishlist-heart {
+        transition: color 0.2s;
+    }
+    .wishlist-heart.active span {
+        color: #e74c3c !important;
+        text-shadow: 0 0 6px #e74c3c44;
+    }
+    .wishlist-heart span {
+        color: #aaa;
+    }
+    .wishlist-heart:hover span {
+        color: #e74c3c;
+    }
+</style>
+<script>
+// Đồng bộ số lượng cho cả 2 form khi tăng/giảm
+const qtyInput = document.querySelector('.quantity input[name="quantity"]');
+const addToCartQty = document.getElementById('addToCartQty');
+const orderNowQty = document.getElementById('orderNowQty');
+if(qtyInput && addToCartQty && orderNowQty) {
+    qtyInput.addEventListener('input', function() {
+        addToCartQty.value = this.value;
+        orderNowQty.value = this.value;
+    });
+}
+function submitAddToCart() {
+    addToCartQty.value = qtyInput.value;
+    document.getElementById('addToCartForm').submit();
+}
+function submitOrderNow() {
+    orderNowQty.value = qtyInput.value;
+    document.getElementById('orderNowForm').submit();
+}
+</script>
+</div>

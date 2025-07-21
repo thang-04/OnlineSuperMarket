@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 
 @Controller
-@RequestMapping("home/cart")
+
+@RequestMapping("/home/cart")
+
 public class CartController {
     @Autowired
     private CartService cartService;
@@ -46,6 +48,6 @@ public class CartController {
     public String removeFromCart(@RequestParam Integer productId, Principal principal) {
         User user = userService.findByEmail(principal.getName());
         cartService.removeItem(user, productId);
-        return "redirect:/cart";
+        return "redirect:/home/cart";
     }
 } 
